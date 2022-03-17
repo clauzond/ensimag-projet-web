@@ -13,6 +13,7 @@
   },
   "scripts": {
     "start": "tsc && node src/app.js",
+    "db": "tsc && node src/createDb.js",
     "test": "echo 'write tests'"
   }
 }
