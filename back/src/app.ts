@@ -1,4 +1,6 @@
 import express from "express";
+import { Sequelize, Model, DataTypes } from "sequelize";
+import path from "path";
 
 const PORT = 8080;
 const app = express();
