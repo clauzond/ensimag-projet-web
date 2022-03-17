@@ -12,8 +12,7 @@
     "sequelize-cli": "^6.4.1"
   },
   "scripts": {
-    "start": "tsc && node src/app.js",
-    "db": "tsc && node src/createDb.js",
+    "start": "tsc && node --es-module-specifier-resolution=node src/app.js",
     "test": "echo 'write tests'"
   }
 }

@@ -5,33 +5,21 @@ const database = new Sequelize({
   dialect: "sqlite",
   storage: path.join(path.dirname(""), "sqlite.db"),
 });
-const client = database.define(
-  "Client",
+
+export const utilisateur = database.define(
+  "Utilisateur",
   {
     id: {
       type: DataTypes.INTEGER,
-      autoIncrement: true,
       primaryKey: true,
     },
-    prenom: {
+    pwd: {
       type: DataTypes.STRING(30),
       allowNull: false,
-      validate: {
-        is: /^[A-Za-z\-]{2,30}$/,
-      },
-    },
-    nom: {
-      type: DataTypes.STRING(30),
-      allowNull: false,
-      validate: {
-        is: /^[A-Za-z\-]{2,30}$/,
-      },
-    },
-    type: {
-      type: DataTypes.ENUM("Particulier", "Entreprise", "Public"),
     },
   },
   { timestamps: false }
 );
 
+// Sync les models a la db
 await database.sync({ force: true });
