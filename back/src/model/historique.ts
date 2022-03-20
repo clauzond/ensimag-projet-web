@@ -2,9 +2,8 @@ import { DataTypes } from 'sequelize';
 import { database } from './database';
 import { utilisateur } from './utilisateur';
 import { histoire } from './histoire';
-import { paragraphe } from './paragraphe';
 
-// Historique(idUtil {pk, fk}, idHist {pk, fk}, idPara{fk})
+// Historique(idUtil {pk, fk}, idHist {pk, fk}, arrayPara)
 export const historique = database.define(
 	'Historique',
 	{
@@ -26,14 +25,10 @@ export const historique = database.define(
 				key: 'id'
 			}
 		},
-		idPara: {
+		arrayPara: {
 			type: DataTypes.ARRAY(DataTypes.INTEGER),
 			primaryKey: true,
-			allowNull: false,
-			references: {
-				model: paragraphe,
-				key: 'id'
-			}
+			allowNull: false
 		}
 	},
 	{}

@@ -18,6 +18,8 @@ const clauzond = await utilisateur.create({
 	pwd: 'clauzonmdp'
 });
 const paragrapheclauzond = await paragraphe.create({ contenu: 'woooow' });
+const p2 = await paragraphe.create({ contenu: 'hooo' });
+
 const histoireClauzond = await histoire.create({
 	titre: 'Histoire de clauzond (ya des dingueries)',
 	idAuteur: clauzond.get('id'),
@@ -26,7 +28,7 @@ const histoireClauzond = await histoire.create({
 const histoClauzond = await historique.create({
 	idUtil: clauzond.get('id'),
 	idHist: histoireClauzond.get('id'),
-	idPara: [paragrapheclauzond.get('id')]
+	arrayPara: [p2.get('id'), paragrapheclauzond.get('id')]
 });
 
 // Retour backend
