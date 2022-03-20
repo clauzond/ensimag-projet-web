@@ -17,6 +17,7 @@ export const utilisateur = database.define(
 		id: {
 			type: DataTypes.STRING,
 			primaryKey: true,
+			autoIncrement: true,
 			allowNull: false
 		},
 		pwd: {
@@ -63,6 +64,10 @@ export const histoire = database.define(
 			type: DataTypes.INTEGER,
 			primaryKey: true,
 			autoIncrement: true,
+			allowNull: false
+		},
+		titre: {
+			type: DataTypes.STRING,
 			allowNull: false
 		},
 		idAuteur: {
@@ -133,7 +138,7 @@ export const collaborateur = database.define(
 				key: 'id'
 			}
 		},
-		idPara: {
+		idUtil: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
 			allowNull: false,
