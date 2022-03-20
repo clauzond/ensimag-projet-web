@@ -175,8 +175,7 @@ export const aPourChoix = database.define(
 	{}
 );
 
-// Historique(idUtil {pk, fk}, idHist {pk, fk}, idPara{pk, fk})
-// TODO: remplacer par un stockage + efficace ?
+// Historique(idUtil {pk, fk}, idHist {pk, fk}, arrayPara)
 export const historique = database.define(
 	'Historique',
 	{
@@ -196,13 +195,9 @@ export const historique = database.define(
 				key: 'id'
 			}
 		},
-		idPara: {
-			type: DataTypes.INTEGER,
-			primaryKey: true,
-			references: {
-				model: paragraphe,
-				key: 'id'
-			}
+		arrayPara: {
+			type: DataTypes.ARRAY(DataTypes.INTEGER),
+			allowNull: false
 		}
 	},
 	{}
