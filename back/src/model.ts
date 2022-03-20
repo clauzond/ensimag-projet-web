@@ -128,7 +128,7 @@ export const collaborateur = database.define(
 				key: 'id'
 			}
 		},
-		idPara: {
+		idUtil: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
 			references: {
