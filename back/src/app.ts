@@ -1,9 +1,18 @@
 import express from 'express';
-import { utilisateur, histoire, paragraphe, historique } from './model';
+import { database } from './model/database';
+import { utilisateur } from './model/utilisateur';
+import { paragraphe } from './model/paragraphe';
+import { histoire } from './model/histoire';
+import { historique } from './model/historique';
 
 const PORT = 8080;
 const app = express();
 
+// Sync les models a la db
+await database.sync({ force: true });
+console.log('All models were synchronized successfully.');
+
+// Tests
 const clauzond = await utilisateur.create({
 	id: 'clauzondid',
 	pwd: 'clauzonmdp'
@@ -20,6 +29,7 @@ const histoClauzond = await historique.create({
 	idPara: [paragrapheclauzond.get('id')]
 });
 
+// Retour backend
 app.use((req, res) => {
 	res.send(
 		"Salut clauzond, ton id c'est" +
