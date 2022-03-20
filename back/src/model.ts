@@ -17,7 +17,6 @@ export const utilisateur = database.define(
 		id: {
 			type: DataTypes.STRING,
 			primaryKey: true,
-			autoIncrement: true,
 			allowNull: false
 		},
 		pwd: {

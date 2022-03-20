@@ -8,7 +8,8 @@ const clauzond = await utilisateur.create({ id: "clauzondid", pwd: "clauzonmdp" 
 const paragrapheclauzond = await paragraphe.create({ contenu: 'woooow' });
 const histoireClauzond = await histoire.create({
   idAuteur: clauzond.get("id"),
-  idParaInit: paragrapheclauzond.get("id")
+  idParaInit: paragrapheclauzond.get("id"),
+  titre: "oeoeo"
 });
 const histoClauzond = await historique.create({
   idUtil: clauzond.get("id"),
@@ -17,7 +18,7 @@ const histoClauzond = await historique.create({
 })
 
 app.use((req, res) => {
-  res.send("Salut clauzond, ton id c'est" + clauzond.get("id") + " et ton historique c'est" + histoClauzond.get("idPara"));
+  res.send("Salut clauzond, ton id c'est" + clauzond.get("id") + " et ton historique c'est " + histoClauzond.get("idPara"));
 });
 
 app.listen(PORT, () => {
