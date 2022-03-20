@@ -63,6 +63,10 @@ export const histoire = database.define(
 			primaryKey: true,
 			autoIncrement: true
 		},
+		titre: {
+			type: DataTypes.STRING,
+			allowNull: false
+		},
 		idAuteur: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
