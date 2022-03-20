@@ -15,9 +15,9 @@ export const utilisateur = database.define(
 	'Utilisateur',
 	{
 		id: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.STRING,
 			primaryKey: true,
-			autoIncrement: true
+			allowNull: false
 		},
 		pwd: {
 			type: DataTypes.STRING,
@@ -27,20 +27,21 @@ export const utilisateur = database.define(
 	{}
 );
 
-// Paragraphe(idPara {pk}, contenu, estVerrouillé, estConclusion)
+// Paragraphe(idPara {pk}, contenu, estVerrouille, estConclusion)
 export const paragraphe = database.define(
 	'Paragraphe',
 	{
 		id: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
-			autoIncrement: true
+			autoIncrement: true,
+			allowNull: false
 		},
 		contenu: {
 			type: DataTypes.STRING,
 			allowNull: true
 		},
-		estVerrouillé: {
+		estVerrouille: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
 			defaultValue: false
@@ -61,7 +62,8 @@ export const histoire = database.define(
 		id: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
-			autoIncrement: true
+			autoIncrement: true,
+			allowNull: false
 		},
 		idAuteur: {
 			type: DataTypes.INTEGER,
@@ -100,6 +102,7 @@ export const ecritPar = database.define(
 		idUtil: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
+			allowNull: false,
 			references: {
 				model: utilisateur,
 				key: 'id'
@@ -107,6 +110,7 @@ export const ecritPar = database.define(
 		},
 		idPara: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			references: {
 				model: paragraphe,
 				key: 'id'
@@ -123,6 +127,7 @@ export const collaborateur = database.define(
 		idHist: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
+			allowNull: false,
 			references: {
 				model: histoire,
 				key: 'id'
@@ -131,6 +136,7 @@ export const collaborateur = database.define(
 		idPara: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
+			allowNull: false,
 			references: {
 				model: utilisateur,
 				key: 'id'
@@ -147,6 +153,7 @@ export const aPourChoix = database.define(
 		idPara: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
+			allowNull: false,
 			references: {
 				model: paragraphe,
 				key: 'id'
@@ -154,6 +161,7 @@ export const aPourChoix = database.define(
 		},
 		idChoix: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			references: {
 				model: paragraphe,
 				key: 'id'
@@ -175,14 +183,14 @@ export const aPourChoix = database.define(
 	{}
 );
 
-// Historique(idUtil {pk, fk}, idHist {pk, fk}, idPara{pk, fk})
-// TODO: remplacer par un stockage + efficace ?
+// Historique(idUtil {pk, fk}, idHist {pk, fk}, idPara{fk})
 export const historique = database.define(
 	'Historique',
 	{
 		idUtil: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
+			allowNull: false,
 			references: {
 				model: utilisateur,
 				key: 'id'
@@ -191,14 +199,16 @@ export const historique = database.define(
 		idHist: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
+			allowNull: false,
 			references: {
 				model: histoire,
 				key: 'id'
 			}
 		},
 		idPara: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.ARRAY(DataTypes.INTEGER),
 			primaryKey: true,
+			allowNull: false,
 			references: {
 				model: paragraphe,
 				key: 'id'
