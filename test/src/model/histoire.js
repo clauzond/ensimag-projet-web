@@ -1,7 +1,7 @@
 import { DataTypes, HasOne } from 'sequelize';
 import { database } from './database';
-import { Utilisateur } from './utilisateur';
-import { Paragraphe } from './paragraphe';
+import { Utilisateur } from './utilisateur.js';
+import { Paragraphe } from './paragraphe.js';
 
 // Histoire(idHist {pk}, estOuverte, estPublique, idAuteur {fk}, idParaInit {fk})
 const Histoire = database.define(
