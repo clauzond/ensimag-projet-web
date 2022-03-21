@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { database } from './database';
-import { Utilisateur } from './utilisateur';
+import { Utilisateur } from './utilisateur.js';
 
 // Paragraphe(idPara {pk}, contenu, estVerrouille, estConclusion)
 const Paragraphe = database.define(

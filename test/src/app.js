@@ -1,8 +1,8 @@
 import express from 'express';
-import { database } from './model/database';
-import { Utilisateur } from './model/utilisateur';
-import { Paragraphe } from './model/paragraphe';
-import { Histoire } from './model/histoire';
+import { database } from './model/database.js';
+import { Utilisateur } from './model/utilisateur.js';
+import { Paragraphe } from './model/paragraphe.js';
+import { Histoire } from './model/histoire.js';
 
 const PORT = 8080;
 const app = express();
