@@ -26,6 +26,7 @@ const histoireClauzond = await Histoire.create({
 	idParaInit: paragrapheclauzond.get('id')
 });
 histoireClauzond.setParagrapheInitial(paragrapheclauzond);
+paragrapheclauzond.addChoix(paragrapheclauzond, {through: {titreChoix: "hey", condititon: 1}});
 
 // Retour backend
 app.use((req, res) => {
