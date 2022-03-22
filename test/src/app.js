@@ -25,7 +25,7 @@ const histoireClauzond = await Histoire.create({
 	idAuteur: clauzond.get('id'),
 	idParaInit: paragrapheclauzond.get('id')
 });
-
+histoireClauzond.setParagrapheInitial(paragrapheclauzond);
 
 // Retour backend
 app.use((req, res) => {
