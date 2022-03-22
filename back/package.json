@@ -9,6 +9,6 @@
   },
   "scripts": {
     "start": "node --es-module-specifier-resolution=node src/app.js",
-    "test": "echo 'write tests'"
+    "start-dev": "nodemon src/app.js"
   }
 }

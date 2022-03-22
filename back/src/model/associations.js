@@ -65,10 +65,9 @@ export const init = () => {
 	};
 
 	Utilisateur.prototype.getHistorique = async function (histoire) {
-		const historique = await Historique.findOne({
+		return await Historique.findOne({
 			where: { idUtilisateur: this.id, idHistoire: histoire.get('id') }
 		});
-		return historique;
 	};
 
 	Utilisateur.prototype.addHistorique = async function (
@@ -109,7 +108,7 @@ export const init = () => {
 			if (historique !== null) {
 				const newArray = historique.arrayParagraphe
 					.split(',')
-					.filter(id => id != paragraphe.id);
+					.filter(id => id !== paragraphe.id);
 				historique.update({
 					arrayParagraphe: newArray
 				});
