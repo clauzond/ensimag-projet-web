@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
-import { database } from './database';
+import { database } from './database.js';
 import { Utilisateur } from './utilisateur.js';
 
-// Paragraphe(idPara {pk}, contenu, estVerrouille, estConclusion)
+// Paragraphe(id {pk}, contenu, estVerrouille, estConclusion, redacteurId {fk})
 const Paragraphe = database.define(
 	'Paragraphe',
 	{
@@ -45,7 +45,9 @@ const ChoixTable = database.define('ChoixTable', {
 	}
 });
 
+Paragraphe.belongsTo(Utilisateur, { as: 'Redacteur', foreignKey: 'idRedacteur', }); // ajoute (get|set)Redacteur
+
+// ChoixTable(titreChoix, condition, ParagrapheId {pk, fk}, ChoixId {pk, fk})
 Paragraphe.belongsToMany(Paragraphe, { as: 'Choix', through: ChoixTable }); // ajoute table ChoixTable + (add|count|create|get|has|remove|set)Choix
-Paragraphe.belongsTo(Utilisateur, { as: 'Redacteur' }); // ajoute (get|set)Redacteur
 
 export { Paragraphe };

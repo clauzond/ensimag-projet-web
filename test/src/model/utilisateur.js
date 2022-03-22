@@ -1,5 +1,5 @@
-import { database } from './database';
 import { DataTypes } from 'sequelize';
+import { database } from './database.js';
 
 // Utilisateur(idUtil {pk}, pwd)
 const Utilisateur = database.define(
@@ -17,5 +17,13 @@ const Utilisateur = database.define(
 	},
 	{}
 );
+
+Utilisateur.prototype.setHistorique = (histoire, arrayParagraphe) => {
+	// TODO
+};
+
+Utilisateur.prototype.getHistorique = () => {
+	// TODO
+}
 
 export { Utilisateur };
