@@ -1,4 +1,4 @@
-import { DataTypes, HasOne } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import { database } from './database';
 import { Utilisateur } from './utilisateur.js';
 import { Paragraphe } from './paragraphe.js';
@@ -31,9 +31,10 @@ const Histoire = database.define(
 	{}
 );
 
-Histoire.belongsTo(Utilisateur, { as: 'Auteur' });
-Histoire.belongsTo(Paragraphe, { as: 'ParagrapheInitial' });
-Histoire.belongsToMany(Utilisateur, { through: 'Collaborateur' });
-Utilisateur.belongsToMany(Histoire, { through: 'Collaborateur' });
+Histoire.belongsTo(Utilisateur, { as: 'Auteur' }); // ajoute AuteurId dans Histoire + (get|set)Auteur
+Histoire.belongsTo(Paragraphe, { as: 'ParagrapheInitial' }); // ajoute ParagrapheInitialId dans Histoire + (get|set)ParagrapheInitial
+Histoire.belongsToMany(Utilisateur, { as: 'Collaborateur', through: 'CollaborateurTable' }); // ajoute (add|count|create|get|has|remove|set)Collaborateur
+Utilisateur.belongsToMany(Histoire, { as: 'Histoire', through: 'CollaborateurTable' }); // ajoute table CollaborateurTable + (add|count|create|get|has|remove|set)Histoire
+
 
 export { Histoire };

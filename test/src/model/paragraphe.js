@@ -45,7 +45,7 @@ const ChoixTable = database.define('ChoixTable', {
 	}
 });
 
-Paragraphe.belongsToMany(Paragraphe, { as: 'Choix', through: ChoixTable });
-Paragraphe.belongsTo(Utilisateur, { as: 'Redacteur' });
+Paragraphe.belongsToMany(Paragraphe, { as: 'Choix', through: ChoixTable }); // ajoute table ChoixTable + (add|count|create|get|has|remove|set)Choix
+Paragraphe.belongsTo(Utilisateur, { as: 'Redacteur' }); // ajoute (get|set)Redacteur
 
 export { Paragraphe };
