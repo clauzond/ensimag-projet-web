@@ -1,18 +1,18 @@
 import { DataTypes } from 'sequelize';
 import { database } from './database.js';
-import { utilisateur } from './utilisateur.js';
-import { histoire } from './histoire.js';
+import { Utilisateur } from './utilisateur.js';
+import { Histoire } from './histoire.js';
 
 // Historique(idUtilisateur {pk, fk}, idHistoire {pk, fk}, arrayParagraphe)
-export const historique = database.define(
+const Historique = database.define(
 	'Historique',
 	{
 		idUtilisateur: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.STRING,
 			primaryKey: true,
 			allowNull: false,
 			references: {
-				model: utilisateur,
+				model: Utilisateur,
 				key: 'id'
 			}
 		},
@@ -21,15 +21,16 @@ export const historique = database.define(
 			primaryKey: true,
 			allowNull: false,
 			references: {
-				model: histoire,
+				model: Histoire,
 				key: 'id'
 			}
 		},
 		arrayParagraphe: {
 			type: DataTypes.ARRAY(DataTypes.INTEGER),
-			primaryKey: true,
 			allowNull: false
 		}
 	},
 	{}
 );
+
+export { Historique };

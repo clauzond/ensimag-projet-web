@@ -18,12 +18,4 @@ const Utilisateur = database.define(
 	{}
 );
 
-Utilisateur.prototype.setHistorique = (histoire, arrayParagraphe) => {
-	// TODO
-};
-
-Utilisateur.prototype.getHistorique = () => {
-	// TODO
-}
-
 export { Utilisateur };

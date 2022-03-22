@@ -1,7 +1,7 @@
-import { Sequelize } from 'sequelize';
 import path from 'path';
+import { Sequelize } from 'sequelize';
 
-export const database = new Sequelize({
+const database = new Sequelize({
 	dialect: 'sqlite',
 	storage: path.join(path.dirname(''), 'sqlite.db'),
 	define: {
@@ -9,3 +9,5 @@ export const database = new Sequelize({
 		freezeTableName: true
 	}
 });
+
+export { database };
