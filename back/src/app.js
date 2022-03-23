@@ -32,18 +32,12 @@ const h1 = await Histoire.create({
 await h1.setParagrapheInitial(p1);
 await p1.addChoix(p2, { through: { titreChoix: 'hey', condititon: null } });
 
-await u1.setHistorique(h1, [p5.id, p3.id]);
-console.log(
-	'set [p5.id, p3.id]:' + (await u1.getHistorique(h1)).arrayParagraphe
-);
-await u1.addHistorique(h1, p2);
-console.log('add p2.id:' + (await u1.getHistorique(h1)).arrayParagraphe);
-await u1.removeHistorique(h1, p3);
-console.log('remove p3:' + (await u1.getHistorique(h1)).arrayParagraphe);
-await u1.clearHistorique(h1);
-console.log('clear:' + (await u1.getHistorique(h1)).arrayParagraphe);
-await u1.addHistorique(h1, p4);
-console.log('add p4:' + (await u1.getHistorique(h1)).arrayParagraphe);
+await u1.setHistorique(h1, [p5.id, p3.id]).then(u => u.getHistorique(h1)).then(h => console.log("set [p5.id, p3.id]: " + h.arrayParagraphe));
+await u1.addHistorique(h1, p2).then(u => u.getHistorique(h1)).then(h => console.log("add p2: " + h.arrayParagraphe));
+await u1.removeHistorique(h1, p3).then(u => u.getHistorique(h1)).then(h => console.log("remove p3: " + h.arrayParagraphe));
+await u1.clearHistorique(h1).then(u => u.getHistorique(h1)).then(h => console.log("clear: " + h.arrayParagraphe));
+await u1.addHistorique(h1, p4).then(u => u.getHistorique(h1)).then(h => console.log("add p4: " + h.arrayParagraphe));
+await u1.addHistorique(h1, p1).then(u => u.getHistorique(h1)).then(h => console.log("add p1: " + h.arrayParagraphe));
 
 // Assign Routes
 app.use('/', router);
