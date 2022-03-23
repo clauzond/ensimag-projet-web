@@ -1,9 +1,13 @@
 import express from 'express';
-import { database } from './model/database.js';
-import { Utilisateur, Histoire, Paragraphe } from './model/index.js';
+import { database } from './models/database.js';
+import { Utilisateur, Histoire, Paragraphe } from './models/index.js';
+import { router } from './routes/router.js';
 
-const PORT = 8080;
 const app = express();
+
+// Configure Express App Instance
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Sync les models a la db
 await database.sync({ force: true });
@@ -41,11 +45,6 @@ console.log('clear:' + (await u1.getHistorique(h1)).arrayParagraphe);
 await u1.addHistorique(h1, p4);
 console.log('add p4:' + (await u1.getHistorique(h1)).arrayParagraphe);
 
-// Retour backend
-app.use((req, res) => {
-	res.send("Salut clauzond, ton id c'est" + u1.get('id'));
-});
-
-app.listen(PORT, () => {
-	console.log(`Backend up at http://localhost:${PORT}`);
-});
+// Assign Routes
+app.use('/', router);
+export { app };

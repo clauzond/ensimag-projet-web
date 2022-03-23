@@ -1,7 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { database } from './database.js';
 import { Historique } from './historique.js';
-import { Histoire } from './histoire.js';
 
 // Utilisateur(idUtil {pk}, pwd)
 export class Utilisateur extends Model {

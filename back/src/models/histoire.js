@@ -1,7 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
 import { database } from './database.js';
-import { Utilisateur } from './utilisateur.js';
-import { Paragraphe } from './paragraphe.js';
 
 // Histoire(id {pk}, estOuverte, estPublique, idAuteur {fk}, idParagrapheInitial {fk})
 export class Histoire extends Model {}
