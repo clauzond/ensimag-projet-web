@@ -1,9 +1,12 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { database } from './database.js';
+import { Utilisateur } from './utilisateur.js';
+import { Paragraphe } from './paragraphe.js';
 
 // Histoire(id {pk}, estOuverte, estPublique, idAuteur {fk}, idParagrapheInitial {fk})
-const Histoire = database.define(
-	'Histoire',
+export class Histoire extends Model {}
+
+Histoire.init(
 	{
 		id: {
 			type: DataTypes.INTEGER,
@@ -26,7 +29,7 @@ const Histoire = database.define(
 			defaultValue: false
 		}
 	},
-	{}
+	{
+		sequelize: database
+	}
 );
-
-export { Histoire };
