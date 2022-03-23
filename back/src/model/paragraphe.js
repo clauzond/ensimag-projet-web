@@ -1,9 +1,10 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { database } from './database.js';
 
 // Paragraphe(id {pk}, contenu, estVerrouille, estConclusion, redacteurId {fk})
-const Paragraphe = database.define(
-	'Paragraphe',
+export class Paragraphe extends Model {}
+
+Paragraphe.init(
 	{
 		id: {
 			type: DataTypes.INTEGER,
@@ -26,7 +27,7 @@ const Paragraphe = database.define(
 			defaultValue: false
 		}
 	},
-	{}
+	{
+		sequelize: database
+	}
 );
-
-export { Paragraphe };

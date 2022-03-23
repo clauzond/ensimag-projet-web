@@ -1,15 +1,11 @@
 import express from 'express';
 import { database } from './model/database.js';
-import { Utilisateur } from './model/utilisateur.js';
-import { Histoire } from './model/histoire.js';
-import { Paragraphe } from './model/paragraphe.js';
-import { init } from './model/associations.js';
+import { Utilisateur, Histoire, Paragraphe } from './model/index.js';
 
 const PORT = 8080;
 const app = express();
 
 // Sync les models a la db
-init();
 await database.sync({ force: true });
 console.log('All models were synchronized successfully.');
 
