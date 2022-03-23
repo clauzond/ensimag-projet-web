@@ -5,6 +5,12 @@ Installer le projet:
 npm i 
 ```
 
+Mettre en place la base de données (ou remise a zéro):
+
+```
+npm run create-db
+```
+
 Lancer le server:
 ```
 npm start
