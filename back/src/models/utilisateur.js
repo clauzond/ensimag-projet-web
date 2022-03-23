@@ -11,6 +11,7 @@ export class Utilisateur extends Model {
 			idHistoire: histoire.get('id'),
 			arrayParagraphe: arrayParagraphe
 		});
+		return this;
 	}
 
 	async getHistorique(histoire) {
@@ -27,14 +28,14 @@ export class Utilisateur extends Model {
 				Historique.create({
 					idUtilisateur: this.id,
 					idHistoire: histoire.get('id'),
-					arrayParagraphe: [paragraphe.id]
+					arrayParagraphe: [String(paragraphe.id)]
 				});
 			} else {
 				let newArray;
 				if (historique.arrayParagraphe.length === 0) {
 					newArray = [];
 				} else {
-					newArray = historique.arrayParagraphe.split(',');
+					newArray = String(historique.arrayParagraphe).split(',');
 				}
 				newArray.push(paragraphe.id);
 				historique.update({
@@ -42,6 +43,7 @@ export class Utilisateur extends Model {
 				});
 			}
 		});
+		return this;
 	}
 
 	async removeHistorique(histoire, paragraphe) {
@@ -51,12 +53,13 @@ export class Utilisateur extends Model {
 			if (historique !== null) {
 				const newArray = historique.arrayParagraphe
 					.split(',')
-					.filter(id => id !== paragraphe.id);
+					.filter(id => id != paragraphe.id);
 				historique.update({
 					arrayParagraphe: newArray
 				});
 			}
 		});
+		return this;
 	}
 
 	async clearHistorique(histoire) {
@@ -69,6 +72,7 @@ export class Utilisateur extends Model {
 				}
 			}
 		);
+		return this;
 	}
 }
 
