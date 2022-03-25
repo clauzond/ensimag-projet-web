@@ -1,10 +1,9 @@
 import express from 'express';
+import story from './histoire.js';
+import login from './login.js';
 const router = express.Router();
 
-// TODO: call 'histoire' route
-router.use(function (req, res, next) {
-	console.log('Bravo tu es sur le router bg');
-	next();
-});
+router.use(story);
+router.use(login);
 
 export { router };
