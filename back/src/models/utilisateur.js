@@ -53,7 +53,7 @@ export class Utilisateur extends Model {
 			if (historique !== null) {
 				const newArray = historique.arrayParagraphe
 					.split(',')
-					.filter(id => id != paragraphe.id);
+					.filter(id => id !== paragraphe.id);
 				historique.update({
 					arrayParagraphe: newArray
 				});
@@ -83,6 +83,7 @@ Utilisateur.init(
 			primaryKey: true,
 			allowNull: false
 		},
+		// encrypted pwd
 		pwd: {
 			type: DataTypes.STRING,
 			allowNull: false

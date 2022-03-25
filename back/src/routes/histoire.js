@@ -1,8 +1,7 @@
 import express from 'express';
+import { story } from '../controllers/histoire.js';
+
 const router = express.Router();
-
-const story = import('../controllers/histoire.js');
-
 router.get('/api/histoire/:id', story.getStoryById);
 
-export { router };
+export default router;
