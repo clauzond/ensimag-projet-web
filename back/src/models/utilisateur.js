@@ -51,9 +51,10 @@ export class Utilisateur extends Model {
 			where: { idUtilisateur: this.id, idHistoire: histoire.get('id') }
 		}).then(historique => {
 			if (historique !== null) {
+				// ne pas corriger != en !=== svp
 				const newArray = historique.arrayParagraphe
 					.split(',')
-					.filter(id => id !== paragraphe.id);
+					.filter(id => id != paragraphe.id);
 				historique.update({
 					arrayParagraphe: newArray
 				});
