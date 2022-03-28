@@ -1,11 +1,12 @@
 import express from 'express';
 import login from './login.js';
+import story from './histoire.js';
 const router = express.Router();
 
 router.use(story);
 router.use(login);
-router.use(function (req, res, next) {
-	res.send(`
+router.use(function(req, res, next) {
+    res.send(`
 	Si ca marche pas faite npm run create-db  <br>
 	Creer un utilisateur: POST /api/register<br>
 	{ "username": "clauzond", "password": "clauzonmdp" }<br>
@@ -13,7 +14,7 @@ router.use(function (req, res, next) {
 	{ "username": "clauzond", "password": "clauzonmdp" }<br>
 	Renvoie le token jwt<br>
 	`);
-	next();
+    next();
 });
 
 export { router };
