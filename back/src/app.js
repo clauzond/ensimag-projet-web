@@ -68,8 +68,6 @@ app.use('/', router);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-	console.log('Error Handling Middleware called');
-
 	res.status(err.code ?? 400).json({
 		status: false,
 		message: err.message

@@ -1,20 +1,15 @@
 import express from 'express';
 import login from './login.js';
 import story from './histoire.js';
+import { auth } from '../middleware.js';
+
 const router = express.Router();
 
-router.use(story);
+// Login route (no auth required)
 router.use(login);
-router.use(function(req, res, next) {
-    res.send(`
-	Si ca marche pas faite npm run create-db  <br>
-	Creer un utilisateur: POST /api/register<br>
-	{ "username": "clauzond", "password": "clauzonmdp" }<br>
-	Se connecter: POST /api/login<br>
-	{ "username": "clauzond", "password": "clauzonmdp" }<br>
-	Renvoie le token jwt<br>
-	`);
-    next();
-});
+
+// Require auth past this point
+router.use(auth);
+router.use(story);
 
 export { router };

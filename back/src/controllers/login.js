@@ -13,6 +13,9 @@ const { SECRET } = process.env;
 Check if login and password are formatted as expected
  */
 function checkLoginFormat(req) {
+	// #swagger.tags = ['Authentification']
+	// #swagger.summary = 'Create a new user || 'Login with an existing user'
+	// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $username: 'clauzond', $password: 'clauzonmdp' }}
 	if (!has(req.body, ['username', 'password'])) {
 		throw new RequestError(
 			'You must specify the username and password',
@@ -57,6 +60,10 @@ export const login = {
 
 		const hash = await bcrypt.hash(password, 10);
 		await Utilisateur.create({ id: username, pwd: hash });
+		/* #swagger.responses[201] = {
+			description: 'User was registered',
+			schema: { $status:true, $message: 'User clauzond was registered'}
+		} */
 		res.statusCode = status.CREATED;
 		res.json({ status: true, message: `User ${username} was registered` });
 	},
@@ -82,10 +89,10 @@ export const login = {
 
 		const signature = jws.sign({
 			header: { alg: 'HS256' },
-			payload: JSON.stringify({ username: user.id }),
+			payload: JSON.stringify({ id: user.id }),
 			secret: SECRET
 		});
 
-		res.json({ status: true, message: 'Returning token', signature });
+		res.json({ status: true, message: 'Returning token', data: signature });
 	}
 };
