@@ -1,9 +1,9 @@
 import { app } from '../app.js';
-import { request } from 'express';
+import request from 'supertest';
 
 describe('POST /api/register', () => {
 	test('Test of registration', async () => {
-		await request(app).post('/api/users');
+		await request(app).post('/api/register');
 
 		const username = 'clauzond';
 
@@ -19,7 +19,7 @@ describe('POST /api/register', () => {
 		expect(response.body.message).toBe(`User ${username} was registered`);
 
 		const response2 = await request(app)
-			.post('/api/users')
+			.post('/api/login')
 			.send({
 				data: JSON.stringify({
 					name: 'clauzond',
