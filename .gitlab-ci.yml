@@ -23,6 +23,8 @@ eslint:
 testing_backend:
   stage: test
   image: node:16
+  tags:
+    - docker
   script:
     - cd ./back
     - npm i # install all modules
