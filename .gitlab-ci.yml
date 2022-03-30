@@ -22,7 +22,7 @@ eslint:
 
 testing_backend:
   stage: test
-  image: debian:bullseye
+  image: node:16-bullseye
   script:
     - cd ./back
     - npm i # install all modules
