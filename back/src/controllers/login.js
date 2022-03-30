@@ -13,9 +13,11 @@ const { SECRET } = process.env;
 Check if login and password are formatted as expected
  */
 function checkLoginFormat(req) {
-	// #swagger.tags = ['Authentification']
-	// #swagger.summary = 'Create a new user || 'Login with an existing user'
-	// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $username: 'clauzond', $password: 'clauzonmdp' }}
+	/* #swagger.responses[400] = {
+			description: 'User was registered',
+			schema: { $status:true, $message: 'User clauzond was registered'}
+		} */
+
 	if (!has(req.body, ['username', 'password'])) {
 		throw new RequestError(
 			'You must specify the username and password',
@@ -48,10 +50,21 @@ function checkLoginFormat(req) {
 
 export const login = {
 	async registerUser(req, res) {
+		// #swagger.tags = ['Authentification']
+		// #swagger.summary = 'Create a new user
+		// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $username: 'clauzond', $password: 'clauzonmdp' }}
+		/* #swagger.responses[400] = {
+			description: 'Validation error',
+			schema: { $status:true, $message: 'You must specify the username and password'}
+		} */
 		checkLoginFormat(req);
 		const { username, password } = req.body;
 		const userAlreadyExists = await Utilisateur.findByPk(username);
 		if (userAlreadyExists) {
+			/* #swagger.responses[304] = {
+				description: 'User already exists',
+				schema: { $status:true, $message: 'User clauzond is already registered'}
+			} */
 			throw new RequestError(
 				`User ${username} is already registered`,
 				status.NOT_MODIFIED
@@ -60,15 +73,18 @@ export const login = {
 
 		const hash = await bcrypt.hash(password, 10);
 		await Utilisateur.create({ id: username, pwd: hash });
+		res.statusCode = status.CREATED;
 		/* #swagger.responses[201] = {
 			description: 'User was registered',
 			schema: { $status:true, $message: 'User clauzond was registered'}
 		} */
-		res.statusCode = status.CREATED;
 		res.json({ status: true, message: `User ${username} was registered` });
 	},
 
-	async login(req, res) {
+	async loginUser(req, res) {
+		// #swagger.tags = ['Authentification']
+		// #swagger.summary = 'Login with an existing user'
+		// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $username: 'clauzond', $password: 'clauzonmdp' }}
 		checkLoginFormat(req);
 		const { username, password } = req.body;
 		const user = await Utilisateur.findByPk(username);
@@ -78,6 +94,7 @@ export const login = {
 				status.BAD_REQUEST
 			);
 		}
+		console.log('found user');
 
 		const match = await bcrypt.compare(password, user.pwd);
 		if (!match) {
@@ -86,6 +103,7 @@ export const login = {
 				status.BAD_REQUEST
 			);
 		}
+		console.log('match correct');
 
 		const signature = jws.sign({
 			header: { alg: 'HS256' },
@@ -93,6 +111,11 @@ export const login = {
 			secret: SECRET
 		});
 
+		/* #swagger.responses[200] = {
+			description: 'Returning token',
+			schema: { $status:true, $message: 'Returning token',
+			$data:'eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNsYXV6b25kIn0.t0N93YTKjGXiDwTNlviLhyZyk0aIpGlVS1tdGGKYPbM'}
+		} */
 		res.json({ status: true, message: 'Returning token', data: signature });
 	}
 };
