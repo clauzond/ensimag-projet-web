@@ -7,12 +7,13 @@ describe('POST /api/register', () => {
 
 		const response = await request(app)
 			.post('/api/register')
-			.send({
-				data: JSON.stringify({
+			.set('Content-Type', 'application/json')
+			.send(
+				JSON.stringify({
 					username: username,
 					password: 'clauzondmdp'
 				})
-			});
+			);
 		expect(response.statusCode).toBe(201);
 		expect(response.body.message).toBe(`User ${username} was registered`);
 
@@ -24,6 +25,6 @@ describe('POST /api/register', () => {
 					email: 'clauzondmdp2'
 				})
 			});
-		expect(response2.statusCode).toBe(304);
+		expect(response2.statusCode).toBe(400);
 	});
 });
