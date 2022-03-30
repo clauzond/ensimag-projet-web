@@ -1,3 +1,10 @@
 {
-  "type": "module"
+  "type":"module",
+  "name": "src",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
