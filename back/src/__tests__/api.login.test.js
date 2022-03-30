@@ -3,12 +3,10 @@ import request from 'supertest';
 
 describe('POST /api/register', () => {
 	test('Test of registration', async () => {
-		await request(app).post('/api/register');
-
 		const username = 'clauzond';
 
 		const response = await request(app)
-			.post('/api/users')
+			.post('/api/register')
 			.send({
 				data: JSON.stringify({
 					username: username,
@@ -19,7 +17,7 @@ describe('POST /api/register', () => {
 		expect(response.body.message).toBe(`User ${username} was registered`);
 
 		const response2 = await request(app)
-			.post('/api/login')
+			.post('/api/register')
 			.send({
 				data: JSON.stringify({
 					name: 'clauzond',
