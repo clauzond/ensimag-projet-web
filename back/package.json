@@ -7,11 +7,13 @@
     "express-custom-error": "^1.9.4",
     "has-keys": "^0.1.0",
     "http-status": "^1.5.0",
+    "jest": "^27.5.1",
     "jws": "^4.0.0",
     "mandatoryenv": "^3.0.4",
     "nodemon": "^2.0.15",
     "sequelize": "^6.17.0",
     "sqlite3": "^5.0.2",
+    "supertest": "^6.2.2",
     "swagger-autogen": "^2.20.7",
     "swagger-ui-express": "^4.3.0"
   },
@@ -22,6 +24,7 @@
     "start": "node --es-module-specifier-resolution=node src/server.js",
     "create-db": "node --es-module-specifier-resolution=node src/createDb.js",
     "start-dev": "nodemon --es-module-specifier-resolution=node src/server.js",
-    "doc": "node src/util/swagger.js"
+    "doc": "node src/util/swagger.js",
+    "test": "DB=sqlite.db npm run create-db && DB=sqlite.db jest --experimental-vm-modules"
   }
 }

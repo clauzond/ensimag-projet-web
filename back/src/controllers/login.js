@@ -51,12 +51,13 @@ export const login = {
 		if (userAlreadyExists) {
 			throw new RequestError(
 				`User ${username} is already registered`,
-				status.BAD_REQUEST
+				status.NOT_MODIFIED
 			);
 		}
 
 		const hash = await bcrypt.hash(password, 10);
 		await Utilisateur.create({ id: username, pwd: hash });
+		res.statusCode = status.CREATED;
 		res.json({ status: true, message: `User ${username} was registered` });
 	},
 
