@@ -54,15 +54,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // 	.then(u => u.getHistorique(h1))
 // 	.then(h => console.log('add p1: ' + h.arrayParagraphe));
 
-// This middleware adds the json header to every response
-app.use('*', (req, res, next) => {
-	res.setHeader('Content-Type', 'application/json');
-	next();
-});
-
-// Swagger Documentation
-app.use('/doc', serve, setup(swaggerFile));
-
 // Assign Routes
 app.use('/', router);
 
