@@ -9,36 +9,44 @@ import { Utilisateur } from '../models/index.js';
 env.load(['SECRET']);
 const { SECRET } = process.env;
 
+/*
+Check if login and password are formatted as expected
+ */
+function checkLoginFormat(req) {
+	if (!has(req.body, ['username', 'password'])) {
+		throw new RequestError(
+			'You must specify the username and password',
+			status.BAD_REQUEST
+		);
+	}
+
+	const { username, password } = req.body;
+
+	if (username === '' || password === '') {
+		throw new RequestError(
+			'Username or password must not be empty',
+			status.BAD_REQUEST
+		);
+	}
+
+	if (password.length < 6) {
+		throw new RequestError(
+			'Password must be at least 6 characters',
+			status.BAD_REQUEST
+		);
+	}
+	if (password.length > 72) {
+		throw new RequestError(
+			'Password must be less than 72 characters',
+			status.BAD_REQUEST
+		);
+	}
+}
+
 export const login = {
 	async registerUser(req, res) {
-		if (!has(req.body, ['username', 'password'])) {
-			throw new RequestError(
-				'You must specify the username and password',
-				status.BAD_REQUEST
-			);
-		}
-
+		checkLoginFormat(req);
 		const { username, password } = req.body;
-		if (username === '' || password === ``) {
-			throw new RequestError(
-				'Username or password must not be empty',
-				status.BAD_REQUEST
-			);
-		}
-
-		if (password.length < 6) {
-			throw new RequestError(
-				'Password must be at least 6 characters',
-				status.BAD_REQUEST
-			);
-		}
-		if (password.length > 72) {
-			throw new RequestError(
-				'Password must be less than 72 characters',
-				status.BAD_REQUEST
-			);
-		}
-
 		const userAlreadyExists = await Utilisateur.findByPk(username);
 		if (userAlreadyExists) {
 			throw new RequestError(
@@ -53,34 +61,8 @@ export const login = {
 	},
 
 	async login(req, res) {
-		if (!has(req.body, ['username', 'password'])) {
-			throw new RequestError(
-				'You must specify the username and password',
-				status.BAD_REQUEST
-			);
-		}
-
+		checkLoginFormat(req);
 		const { username, password } = req.body;
-		if (username === '' || password === ``) {
-			throw new RequestError(
-				'Username or password must not be empty',
-				status.BAD_REQUEST
-			);
-		}
-
-		if (password.length < 6) {
-			throw new RequestError(
-				'Password must be at least 6 characters',
-				status.BAD_REQUEST
-			);
-		}
-		if (password.length > 72) {
-			throw new RequestError(
-				'Password must be less than 72 characters',
-				status.BAD_REQUEST
-			);
-		}
-
 		const user = await Utilisateur.findByPk(username);
 		if (!user) {
 			throw new RequestError(
