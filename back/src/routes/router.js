@@ -1,7 +1,7 @@
 import express from 'express';
 import login from './login.js';
 import story from './histoire.js';
-import { auth } from '../middleware.js';
+import { auth } from '../util/middleware.js';
 
 const router = express.Router();
 

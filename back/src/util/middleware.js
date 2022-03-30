@@ -1,5 +1,5 @@
-import { RequestError } from './util/requestError.js';
-import { Utilisateur } from './models/index.js';
+import { RequestError } from './requestError.js';
+import { Utilisateur } from '../models/index.js';
 import jws from 'jws';
 import status from 'http-status';
 import env from 'mandatoryenv';
