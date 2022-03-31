@@ -56,7 +56,7 @@ heroku:
   image: ruby:latest
   tags: [docker]
   script:
-    - source .env
+    - cd back/
     - gem install dpl --pre
     - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
 
