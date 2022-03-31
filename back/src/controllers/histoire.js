@@ -33,4 +33,12 @@ export const story = {
 	async updateStory(req, res) {
 		res.json({ status: true, message: 'Returning user' });
 	},
+	async updateStory(req, res) {
+		//TODO
+		res.json({ status: true, message: 'Returning user' });
+	},
+	async getStory(req, res) {
+		//TODO
+		res.json({ status: true, message: 'Returning user' });
+	}
 };

@@ -10,7 +10,7 @@ env.load(['SECRET']);
 const { SECRET } = process.env;
 
 /*
-Check if login and password are formatted as expected
+Check if utilisateur and password are formatted as expected
  */
 function checkLoginFormat(req) {
 	/* #swagger.responses[400] = {
@@ -48,7 +48,7 @@ function checkLoginFormat(req) {
 	}
 }
 
-export const login = {
+export const utilisateur = {
 	async registerUser(req, res) {
 		// #swagger.tags = ['Authentification']
 		// #swagger.summary = 'Create a new user
