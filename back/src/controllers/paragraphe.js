@@ -207,8 +207,6 @@ export const paragraphe = {
 		// Remove the paragraph from the database
 		await paragraphe.destroy();
 
-		res.statusCode = status.OK;
-
 		res.json({
 			status: true,
 			message: 'Paragraph has been successfully deleted'
