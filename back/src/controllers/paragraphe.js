@@ -102,6 +102,14 @@ export const paragraphe = {
 			);
 		}
 
+		// Check if the paragraph is not already written by another user
+		if (paragraph.estVerrouille || paragraph.idRedacteur != null) {
+			throw new RequestError(
+				'This paragraph is already modified by another user',
+				status.FORBIDDEN
+			);
+		}
+
 		// Set paragraph locked
 		await paragraph.update({
 			estVerrouille: true
