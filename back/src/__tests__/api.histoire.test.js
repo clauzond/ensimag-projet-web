@@ -24,28 +24,38 @@ describe('Test fonctions histoire', () => {
         await p1.addChoix(p2, { through: { titreChoix: 'hey', condititon: null } });
 
         let u = await u1.setHistorique(h1, [p5.id, p3.id]);
-        let h = await u.getHistorique(h1);
-        expect(h.arrayParagraphe).toBe('5,3');
+        let h = await u.getHistoriqueArrayParagraphe(h1);
+        expect(h.length).toBe(2);
+        expect(h[0].id).toBe(p5.id);
+        expect(h[1].id).toBe(p3.id);
 
         await u1.addHistorique(h1, p2);
-        h = await u.getHistorique(h1);
-        expect(h.arrayParagraphe).toBe('5,3,2');
+        h = await u.getHistoriqueArrayParagraphe(h1);
+        expect(h.length).toBe(3);
+        expect(h[0].id).toBe(p5.id);
+        expect(h[1].id).toBe(p3.id);
+        expect(h[2].id).toBe(p2.id);
 
         await u1.removeHistorique(h1, p3);
-        h = await u.getHistorique(h1);
-        expect(h.arrayParagraphe).toBe('5,2');
+        h = await u.getHistoriqueArrayParagraphe(h1);
+        expect(h.length).toBe(2);
+        expect(h[0].id).toBe(p5.id);
+        expect(h[1].id).toBe(p2.id);
 
         await u1.clearHistorique(h1);
-        h = await u.getHistorique(h1);
-        expect(h.arrayParagraphe).toBe('');
+        h = await u.getHistoriqueArrayParagraphe(h1);
+        expect(h.length).toBe(0);
 
         await u1.addHistorique(h1, p4);
-        h = await u.getHistorique(h1);
-        expect(h.arrayParagraphe).toBe(4);
+        h = await u.getHistoriqueArrayParagraphe(h1);
+        expect(h.length).toBe(1);
+        expect(h[0].id).toBe(p4.id);
 
         await u1.addHistorique(h1, p1);
-        h = await u.getHistorique(h1);
-        expect(h.arrayParagraphe).toBe('4,1');
+        h = await u.getHistoriqueArrayParagraphe(h1);
+        expect(h.length).toBe(2);
+        expect(h[0].id).toBe(p4.id);
+        expect(h[1].id).toBe(p1.id);
 
     });
 });

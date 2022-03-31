@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { database } from './database.js';
 import { Historique } from './historique.js';
+import { Paragraphe } from './paragraphe.js';
 
 // Utilisateur(idUtil {pk}, pwd)
 export class Utilisateur extends Model {
@@ -18,6 +19,22 @@ export class Utilisateur extends Model {
 		return await Historique.findOne({
 			where: { idUtilisateur: this.id, idHistoire: histoire.get('id') }
 		});
+	}
+
+	async getHistoriqueArrayParagraphe(histoire) {
+		const historique = await Historique.findOne({
+			where: { idUtilisateur: this.id, idHistoire: histoire.get('id') }
+		});
+		let arrayParagraphe = [];
+		if (historique.arrayParagraphe.length !== 0) {
+			for (const id of String(historique.arrayParagraphe).split(',')) {
+				if (Number.isInteger(Number(id))) {
+					const paragraphe = await Paragraphe.findOne({ where: { id: id } });
+					arrayParagraphe.push(paragraphe);
+				}
+			}
+		}
+		return arrayParagraphe;
 	}
 
 	async addHistorique(histoire, paragraphe) {
