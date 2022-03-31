@@ -46,32 +46,53 @@ async function checkIfUserIsWriter(user, paragraph) {
 }
 
 export const paragraphe = {
+	// Create paragraph as a choice
 	async createParagraph(req, res) {
 		const story = await checkStoryId(req);
-
-		if (!has(req.body, 'titreChoix')) {
-			throw new RequestError(
-				'You must specified choice title',
-				status.BAD_REQUEST
-			);
-		}
 
 		// Check if the user is a collaborator of the story
 		if (!(await story.isCollaborator(req.user))) {
 			throw new RequestError('You are not allowed to create a paragraph');
 		}
 
-		// Add empty paragraphe
-		const paragraph = await Paragraphe.create({
-			contenu: null,
-			estVerrouille: false,
-			estConclusion: false
-		});
+		if (!has(req.body, 'titreChoix')) {
+			throw new RequestError('You must specify titreChoix param', status.BAD_REQUEST);
+		}
 
-		// Add choice
-		const choice = await paragraph.addChoix({
-			titreChoix: req.body.titreChoix,
-			condition: has(req.body, 'condition') ? req.body.condition : null
+		if (!has(req.body, 'idParagraphe')) {
+			throw new RequestError('You must specify idParagraphe param', status.BAD_REQUEST);
+		}
+
+		if (!has(req.body, 'idChoix')) {
+			throw new RequestError('You must specify idChoix param', status.BAD_REQUEST);
+		}
+
+		const paragraph = await Paragraphe.findByPk(req.body.idParagraphe);
+		let choice;
+
+		if (req.body.idChoix !== null) {
+			// Verify that existing paragraph is not already a choice
+			const nb = await paragraphe.countChoix({ where: { ParagrapheId: req.body.idParagraphe, ChoixId: req.body.idChoix } });
+			if (nb !== 0) {
+				throw new RequestError('The choice made already exists', status.BAD_REQUEST);
+			}
+
+			choice = await Paragraphe.findByPk(req.body.idChoix);
+		} else {
+			// Create an empty paragraph
+			choice = await Paragraphe.create({
+				contenu: null,
+				estVerrouille: false,
+				estConclusion: false
+			});
+		}
+
+		// Add choice to ChoixTable
+		await paragraph.addChoix(choice, {
+			through: {
+				titreChoix: req.body.titreChoix,
+				condition: has(req.body, 'condition') ? req.body.condition : null
+			}
 		});
 
 		res.statusCode = status.CREATED;
@@ -175,7 +196,7 @@ export const paragraphe = {
 			message: 'Modification canceled'
 		});
 	},
-	async deleteParagraphe(req, res) {
+	async deleteParagraph(req, res) {
 		await checkStoryId(req);
 		const paragraphe = checkParagrapheId(req);
 

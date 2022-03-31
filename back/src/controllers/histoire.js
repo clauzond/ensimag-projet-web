@@ -27,28 +27,23 @@ export const story = {
 			throw new RequestError('Title not found', status.BAD_REQUEST);
 		}
 
-		// Par défaut, l'histoire est fermée, non publique
-		const utilisateur = req.user;
-		const titre = req.body.titre;
-		const estOuverte = has(req.body, 'estOuverte')
-			? req.body.estOuverte
-			: false;
-		const estPublique = has(req.body, 'estPublique')
-			? req.body.estPublique
-			: false;
-
 		// Création de l'histoire
+		// par défaut, l'histoire est fermée, non publique
 		const histoire = await Histoire.create({
-			titre: titre,
-			estOuverte: estOuverte,
-			estPublique: estPublique
+			titre: req.body.titre,
+			estOuverte: has(req.body, 'estOuverte')
+				? req.body.estOuverte
+				: false,
+			estPublique: has(req.body, 'estPublique')
+			? req.body.estPublique
+			: false
 		});
 
 		// Ajout de l'utilisateur en tant qu'auteur
-		await histoire.setAuteur(utilisateur);
+		await histoire.setAuteur(req.user);
 
 		// Ajout de l'utilisateur dans les collaborateurs
-		await histoire.addCollaborateur(utilisateur);
+		await histoire.addCollaborateur(req.user);
 
 		// Création du paragraphe initial
 		const paragrapheInitial = await Paragraphe.create({
