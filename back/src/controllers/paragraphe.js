@@ -95,7 +95,7 @@ export const paragraphe = {
 	},
 	async askToUpdateParagraph(req, res) {
 		await checkStoryId(req);
-		const paragraph = checkParagraphId(req);
+		const paragraph = await checkParagraphId(req);
 
 		// Check if the user can write a paragraph
 		if (!(await verifyUserIsFree(req.user.id))) {
