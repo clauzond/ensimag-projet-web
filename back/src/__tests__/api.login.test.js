@@ -94,10 +94,10 @@ describe('POST /api/register', () => {
 	});
 });
 
-describe('POST /api/utilisateur', () => {
+describe('POST /api/login', () => {
 	test('Test of valid utilisateur', async () => {
 		const response = await request(app)
-			.post('/api/utilisateur')
+			.post('/api/login')
 			.set('Content-Type', 'application/json')
 			.send(
 				JSON.stringify({
@@ -111,7 +111,7 @@ describe('POST /api/utilisateur', () => {
 
 	test('Test of unvalid utilisateur', async () => {
 		const response = await request(app)
-			.post('/api/utilisateur')
+			.post('/api/login')
 			.set('Content-Type', 'application/json')
 			.send(
 				JSON.stringify({

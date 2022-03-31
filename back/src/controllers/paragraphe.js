@@ -107,8 +107,6 @@ export const paragraphe = {
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
-		// TODO : ajouter à l'historique si l'utilisateur est connecté
-
 		res.json({
 			status: true,
 			message: 'Returning paragraph',
@@ -118,7 +116,7 @@ export const paragraphe = {
 	},
 	async askToUpdateParagraph(req, res) {
 		await checkStoryId(req);
-		const paragraph = checkParagraphId(req);
+		const paragraph = await checkParagraphId(req);
 
 		// Check if the user can write a paragraph
 		if (!(await verifyUserIsFree(req.user.id))) {
@@ -129,7 +127,11 @@ export const paragraphe = {
 		}
 
 		// Check if the paragraph is not already written by another user
-		if (paragraph.estVerrouille || (paragraph.idRedacteur != null && paragraph.idRedacteur != req.user.id)) {
+		if (
+			paragraph.estVerrouille ||
+			(paragraph.idRedacteur != null &&
+				paragraph.idRedacteur !== req.user.id)
+		) {
 			throw new RequestError(
 				'This paragraph is already modified by another user',
 				status.FORBIDDEN
@@ -156,8 +158,8 @@ export const paragraphe = {
 
 		// Check if the content of the paragraph is present
 		if (
-			!has(req.body, 'content') ||
-			(req.body.content != null && req.body.content.length === 0)
+			!has(req.body, 'contenu') ||
+			(req.body.contenu != null && req.body.contenu.length === 0)
 		) {
 			throw new RequestError(
 				'Content cannot be null or empty',
@@ -169,7 +171,7 @@ export const paragraphe = {
 
 		// Update paragraph data
 		await paragraph.update({
-			contenu: String(req.body.content),
+			contenu: String(req.body.contenu),
 			estVerrouille: false
 		});
 
