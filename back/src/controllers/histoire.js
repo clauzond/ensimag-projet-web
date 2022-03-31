@@ -42,6 +42,7 @@ export const story = {
 		// Ajout du paragraphe initial à l'histoire
 		await histoire.setParagrapheInitial(paragrapheInitial);
 
+		res.statusCode = status.CREATED;
 		res.json({
 			status: true,
 			message: 'Story created! Returning story and initial paragraph',
@@ -50,9 +51,54 @@ export const story = {
 		});
 	},
 	async updateStory(req, res) {
-		// Get story
+		if (!has(req.params, 'id')) {
+			throw new RequestError(
+				'You must specified story id',
+				status.BAD_REQUEST
+			);
+		}
 
-		res.json({ status: true, message: 'Returning user' });
+		const storyId = req.params.id;
+
+		// Get story
+		const story = await Histoire.findByPk(storyId);
+		if (!story) {
+			throw new RequestError("The story doesn't exist", status.NOT_FOUND);
+		}
+
+		// Check if the user is the author
+		if (!(await story.isAuthor(req.user))) {
+			throw new RequestError(
+				'You are not allowed to modified this story',
+				status.FORBIDDEN
+			);
+		}
+
+		// Change story params
+		if (has(req.params, 'estPublique')) {
+			await story.update({
+				estPublique: req.params.estPublique
+			});
+		}
+		if (has(req.params, 'estOuverte')) {
+			await story.update({
+				estOuvert: req.params.estOuverte
+			});
+		}
+
+		// Throws error if the params are not correct
+		if (!has(req.params, 'estOuverte') && !has(req.params, 'estPublique')) {
+			throw new RequestError(
+				'You must specified estPublique or estOuverte params',
+				status.BAD_REQUEST
+			);
+		}
+
+		res.json({
+			status: true,
+			message: 'Story modified',
+			histoire: story
+		});
 	},
 	async getStory(req, res) {
 		//TODO
