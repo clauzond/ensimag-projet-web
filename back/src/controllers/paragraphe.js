@@ -3,7 +3,6 @@ import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
 import { Paragraphe, ChoixTable } from '../models/index.js';
 import { checkStoryId } from './histoire.js';
-import { database } from '../models/database.js';
 
 async function checkParagraphId(req) {
 	if (!has(req.params, 'idParagraphe')) {
@@ -47,8 +46,6 @@ export const paragraphe = {
 			throw new RequestError('You are not allowed to create a paragraph');
 		}
 
-		// TODO: check if the user write only one paragraphe
-
 		// Add empty paragraphe
 		const paragraph = await Paragraphe.create({
 			contenu: null,
@@ -80,7 +77,7 @@ export const paragraphe = {
 		const nbChoix = await paragraphe.countChoix();
 		if (nbChoix > 0) {
 			throw new RequestError(
-				"The paragraph has choices and thus cannot be deleted",
+				'The paragraph has choices and thus cannot be deleted',
 				status.BAD_REQUEST
 			);
 		}
@@ -88,14 +85,15 @@ export const paragraphe = {
 		// For every paragraph which has this one as a choice,
 		// remove the choice and update its state to locked
 		// if it becomes invalid
-		const arrayChoix = await ChoixTable.findAll({ where: { ChoixId: paragraphe.id }});
+		const arrayChoix = await ChoixTable.findAll({
+			where: { ChoixId: paragraphe.id }
+		});
 		for (choix of arrayChoix) {
 			const paragraphChoix = await Paragraphe.findOne({ where: { id: choix.ParagrapheId } });
 			paragraphChoix.updateState();
 			// TODO: remove paragraphChoix from "ChoixTable"
 		}
 		// TODO: remove paragraphe from Paragraphe
-
 
 		res.json({ status: true, message: 'Returning user' });
 	},
