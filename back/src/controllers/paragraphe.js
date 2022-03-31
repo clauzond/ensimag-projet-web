@@ -25,14 +25,17 @@ async function checkParagraphId(req) {
 async function verifyUserIsFree(idUser) {
 	// Verify that user is not the redactor of another paragraph
 	const nb = await Paragraphe.findAndCountAll({
-		where: { idRedacteur: idUser }
+		where: { estVerrouille: true, idRedacteur: idUser }
 	});
 	return nb === 0;
 }
 
 async function checkIfUserIsWriter(user, paragraph) {
 	// Check if the current user is the writer of the paragraph
-	if (paragraph.idRedacteur !== null && paragraph.idRedacteur.id !== user.id) {
+	if (
+		paragraph.idRedacteur !== null &&
+		paragraph.idRedacteur.id !== user.id
+	) {
 		throw new RequestError(
 			'You are not allowed to write on this paragraph',
 			status.FORBIDDEN
@@ -206,6 +209,9 @@ export const paragraphe = {
 
 		res.statusCode = status.OK;
 
-		res.json({ status: true, message: 'Paragraph has been successfully deleted' });
+		res.json({
+			status: true,
+			message: 'Paragraph has been successfully deleted'
+		});
 	}
 };
