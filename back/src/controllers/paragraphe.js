@@ -27,7 +27,7 @@ async function verifyUserIsFree(idUser) {
 	const nb = await Paragraphe.findAndCountAll({
 		where: { idRedacteur: idUser }
 	});
-	return nb === 0;
+	return nb > 1;
 }
 
 async function verifyUserCouldModifyParagraph(user, paragraph) {
@@ -40,7 +40,7 @@ async function verifyUserCouldModifyParagraph(user, paragraph) {
 	}
 
 	// Check if the current user is the writer of the paragraph
-	if (paragraph.estVerrouille && paragraph.idRedacteur.id !== user.id) {
+	if (paragraph.idRedacteur.id !== user.id) {
 		throw new RequestError(
 			'You are not allowed to write on this paragraph',
 			status.FORBIDDEN
@@ -68,12 +68,11 @@ export const paragraphe = {
 		const paragraph = await Paragraphe.create({
 			contenu: null,
 			estVerrouille: false,
-			estConclusion: false,
-			idRedacteur: req.user
+			estConclusion: false
 		});
 
 		// Add choice
-		const choice = await addChoix({
+		const choice = await paragraph.addChoix({
 			titreChoix: req.body.titreChoix,
 			condition: has(req.body, 'condition') ? req.body.condition : null
 		});
@@ -109,6 +108,9 @@ export const paragraphe = {
 			estVerrouille: true
 		});
 
+		// Put the user as the writer
+		await paragraph.setRedacteur(req.user);
+
 		res.json({
 			status: true,
 			message: 'Paragraph modification allowed',
@@ -141,6 +143,24 @@ export const paragraphe = {
 		res.json({
 			status: true,
 			message: 'Paragraph modification successful'
+		});
+	},
+	async cancelModification(req, res) {
+		await checkStoryId(req);
+		const paragraph = await checkParagraphId(req);
+		await verifyUserCouldModifyParagraph(req.user, paragraph);
+
+		// Remove writer status of the user
+		await paragraph.setRedacteur(null);
+
+		// Unlock paragraph
+		await paragraph.update({
+			estVerrouille: false
+		});
+
+		res.json({
+			status: true,
+			message: 'Modification canceled'
 		});
 	},
 	async deleteParagraphe(req, res) {

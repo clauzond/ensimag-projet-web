@@ -18,6 +18,10 @@ router.put(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
 	paragraphe.updateParagraph
 );
+router.put(
+	'/api/histoire/:idHistoire/paragraphe/:idParagraphe/cancel-modification',
+	paragraphe.cancelModification
+);
 // router.delete(
 // 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
 // 	paragraphe.deleteParagraph
