@@ -1,8 +1,8 @@
 import has from 'has-keys';
 import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
-import { checkStoryId } from './histoire.js';
 import { Paragraphe } from '../models/index.js';
+import { checkStoryId } from './histoire.js';
 
 async function checkParagrapheId(req) {
 	if (!has(req.params, 'idParagraphe')) {
@@ -27,7 +27,15 @@ async function checkParagrapheId(req) {
 
 export const paragraphe = {
 	async createParagraphe(req, res) {
-		//TODO
+		const story = checkStoryId();
+
+		// Check if the user is a collaborator of the story
+		if (!(await story.isCollaborator(req.user))) {
+			throw new RequestError(
+				'You are not allowed to create a paragraphe'
+			);
+		}
+
 		res.json({ status: true, message: 'Returning user' });
 	},
 	async updateParagraphe(req, res) {
