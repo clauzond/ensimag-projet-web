@@ -14,9 +14,9 @@ router.put(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
 	paragraphe.updateParagraph
 );
-router.delete(
-	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
-	paragraphe.deleteParagraph
-);
+// router.delete(
+// 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
+// 	paragraphe.deleteParagraph
+// );
 
 export default router;
