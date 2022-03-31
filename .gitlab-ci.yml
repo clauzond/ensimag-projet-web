@@ -50,9 +50,13 @@ badging:
 
 # CD: deploy to heroku
 heroku:
- stage: deploy
- only:
- - master
- script:
- - git remote add heroku https://git.heroku.com/clauzond.git
- - git subtree push --prefix back heroku master
+  stage: deploy
+  only:
+  - master
+  image: ruby:latest
+  tags: [docker]
+  script:
+    - cd back/
+    - gem install dpl --pre
+    - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
+
