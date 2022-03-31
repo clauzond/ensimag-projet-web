@@ -3,6 +3,24 @@ import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
 import { Histoire, Paragraphe } from '../models/index.js';
 
+async function checkStoryId(req) {
+	if (!has(req.params, 'id')) {
+		throw new RequestError(
+			'You must specified story id',
+			status.BAD_REQUEST
+		);
+	}
+
+	const storyId = req.params.id;
+
+	// Get story
+	const story = await Histoire.findByPk(storyId);
+	if (!story) {
+		throw new RequestError("The story doesn't exist", status.NOT_FOUND);
+	}
+	return story;
+}
+
 export const story = {
 	async createStory(req, res) {
 		if (!has(req.body, 'titre')) {
@@ -51,20 +69,8 @@ export const story = {
 		});
 	},
 	async updateStory(req, res) {
-		if (!has(req.params, 'id')) {
-			throw new RequestError(
-				'You must specified story id',
-				status.BAD_REQUEST
-			);
-		}
-
-		const storyId = req.params.id;
-
-		// Get story
-		const story = await Histoire.findByPk(storyId);
-		if (!story) {
-			throw new RequestError("The story doesn't exist", status.NOT_FOUND);
-		}
+		// Get story object
+		const story = checkStoryId(req);
 
 		// Check if the user is the author
 		if (!(await story.isAuthor(req.user))) {
@@ -101,7 +107,8 @@ export const story = {
 		});
 	},
 	async getStory(req, res) {
-		//TODO
-		res.json({ status: true, message: 'Returning user' });
+		// Get story object
+		const story = checkStoryId(req);
+		res.json({ status: true, message: 'Returning story', story: story });
 	}
 };
