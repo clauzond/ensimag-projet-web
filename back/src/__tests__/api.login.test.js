@@ -94,10 +94,10 @@ describe('POST /api/register', () => {
 	});
 });
 
-describe('POST /api/login', () => {
-	test('Test of valid login', async () => {
+describe('POST /api/utilisateur', () => {
+	test('Test of valid utilisateur', async () => {
 		const response = await request(app)
-			.post('/api/login')
+			.post('/api/utilisateur')
 			.set('Content-Type', 'application/json')
 			.send(
 				JSON.stringify({
@@ -109,9 +109,9 @@ describe('POST /api/login', () => {
 		expect(response.body.message).toBe('Returning token');
 	});
 
-	test('Test of unvalid login', async () => {
+	test('Test of unvalid utilisateur', async () => {
 		const response = await request(app)
-			.post('/api/login')
+			.post('/api/utilisateur')
 			.set('Content-Type', 'application/json')
 			.send(
 				JSON.stringify({

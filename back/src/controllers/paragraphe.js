@@ -2,15 +2,20 @@ import has from 'has-keys';
 import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
 
-export const story = {
-	async createStory(req, res) {
-		res.json({ status: true, message: 'Returning user' });
-	},
-	async updateStory(req, res) {
+export const paragraphe = {
+	async createParagraphe(req, res) {
 		//TODO
 		res.json({ status: true, message: 'Returning user' });
 	},
-	async getStory(req, res) {
+	async updateParagraphe(req, res) {
+		//TODO
+		res.json({ status: true, message: 'Returning user' });
+	},
+	async deleteParagraphe(req, res) {
+		//TODO
+		res.json({ status: true, message: 'Returning user' });
+	},
+	async getParagraphe(req, res) {
 		//TODO
 		res.json({ status: true, message: 'Returning user' });
 	}

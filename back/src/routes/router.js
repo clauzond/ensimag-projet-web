@@ -1,6 +1,7 @@
 import express from 'express';
-import login from './login.js';
+import login from './utilisateur.js';
 import story from './histoire.js';
+import paragraphe from './paragraphe.js';
 import { auth } from '../util/middleware.js';
 import { serve, setup } from 'swagger-ui-express';
 import swaggerFile from '../../swagger_output.json';
@@ -23,5 +24,6 @@ router.use(login);
 // Require auth past this point
 router.use(auth);
 router.use(story);
+router.use(paragraphe);
 
 export { router };
