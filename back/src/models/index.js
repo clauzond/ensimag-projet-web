@@ -51,4 +51,4 @@ Utilisateur.belongsToMany(Histoire, {
 	through: 'CollaborateurTable'
 });
 
-export { Utilisateur, Histoire, Paragraphe, Historique };
+export { Utilisateur, Histoire, Paragraphe, Historique, ChoixTable };

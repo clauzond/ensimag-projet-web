@@ -1,7 +1,7 @@
 import has from 'has-keys';
 import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
-import { Paragraphe } from '../models/index.js';
+import { Paragraphe, ChoixTable } from '../models/index.js';
 import { checkStoryId } from './histoire.js';
 
 async function checkParagrapheId(req) {
@@ -51,7 +51,26 @@ export const paragraphe = {
 		res.json({ status: true, message: 'Returning user' });
 	},
 	async deleteParagraphe(req, res) {
-		//TODO
+		const paragraphe = checkParagrapheId(req);
+
+		// Check that the paragraph does not lead to other paragraphs
+		const nbChoix = await paragraphe.countChoix();
+		if (nbChoix > 0) {
+			throw new RequestError(
+				"The paragraph has choices and thus cannot be deleted",
+				status.BAD_REQUEST
+			);
+		}
+
+		// For every paragraph which has this one as a choice,
+		// remove the choice and update its state to locked
+		// if it becomes invalid
+		const arrayChoix = await ChoixTable.findAll({ where: { ChoixId: paragraphe.id }});
+		for (choix of arrayChoix) {
+			choix
+		}
+
+
 		res.json({ status: true, message: 'Returning user' });
 	},
 	async getParagraphe(req, res) {

@@ -3,7 +3,7 @@ import { database } from './database.js';
 
 // Paragraphe(id {pk}, contenu, estVerrouille, estConclusion, redacteurId {fk})
 export class Paragraphe extends Model {
-	async isAuthor(utilisateur) {
+	async isRedacteur(utilisateur) {
 		const redacteur = await this.getRedacteur();
 		if (redacteur === null) {
 			return false;
@@ -17,6 +17,12 @@ export class Paragraphe extends Model {
 		}
 		const nb = await this.countChoix({ where: 'condition = NULL' });
 		return nb > 0;
+	}
+
+	async updateState() {
+		if (!this.hasPossibleChoix) {
+			this.set('estVerrouille', true);
+		}
 	}
 }
 
