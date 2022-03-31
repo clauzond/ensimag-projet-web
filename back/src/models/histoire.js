@@ -1,11 +1,14 @@
 import { DataTypes, Model } from 'sequelize';
 import { database } from './database.js';
-import { Historique } from './historique.js';
 
 // Histoire(id {pk}, estOuverte, estPublique, idAuteur {fk}, idParagrapheInitial {fk})
 export class Histoire extends Model {
 	async isAuthor(user) {
-		return this.getAuteur() === user.get('username');
+		return this.getAuteur() === user.id;
+	}
+
+	async isCollaborator(user) {
+		return this.hasCollaborateur(user);
 	}
 }
 

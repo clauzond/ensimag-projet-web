@@ -54,5 +54,5 @@ heroku:
  only:
  - master
  script:
- - npm i
- - npm run deploy
+ - git remote add heroku https://git.heroku.com/clauzond.git
+ - git subtree push --prefix back heroku master
