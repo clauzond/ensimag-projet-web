@@ -1,10 +1,11 @@
 import { app } from '../app.js';
 import request from 'supertest';
 import status from 'http-status';
+const username = 'clauzond';
+const password = 'clauzondmdp';
 
 describe('POST /api/register', () => {
-	test('Test of registration', async () => {
-		const username = 'clauzond';
+	test('Test of unvalid registration', async () => {
 		let response;
 
 		response = await request(app)
@@ -13,7 +14,7 @@ describe('POST /api/register', () => {
 			.send(
 				JSON.stringify({
 					name: username,
-					password: 'clauzondmdp'
+					password: password
 				})
 			);
 		expect(response.statusCode).toBe(status.BAD_REQUEST);
@@ -27,7 +28,7 @@ describe('POST /api/register', () => {
 			.send(
 				JSON.stringify({
 					username: '',
-					password: 'clauzondmdp'
+					password: password
 				})
 			);
 		expect(response.statusCode).toBe(status.BAD_REQUEST);
@@ -63,28 +64,62 @@ describe('POST /api/register', () => {
 		expect(response.body.message).toBe(
 			'Password must be less than 72 characters'
 		);
+	});
 
-		response = await request(app)
+	test('Test of valid registration', async () => {
+		const response = await request(app)
 			.post('/api/register')
 			.set('Content-Type', 'application/json')
 			.send(
 				JSON.stringify({
 					username: username,
-					password: 'clauzondmdp'
+					password: password
 				})
 			);
 		expect(response.statusCode).toBe(status.CREATED);
 		expect(response.body.message).toBe(`User ${username} was registered`);
+	});
 
-		let response1 = await request(app)
+	test('Test of double registration', async () => {
+		const response = await request(app)
 			.post('/api/register')
 			.set('Content-Type', 'application/json')
 			.send(
 				JSON.stringify({
 					username: username,
-					password: 'clauzondmdp'
+					password: password
 				})
 			);
-		expect(response1.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+	});
+});
+
+describe('POST /api/login', () => {
+	test('Test of valid login', async () => {
+		const response = await request(app)
+			.post('/api/login')
+			.set('Content-Type', 'application/json')
+			.send(
+				JSON.stringify({
+					username: username,
+					password: password
+				})
+			);
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Returning token');
+	});
+
+	test('Test of unvalid login', async () => {
+		const response = await request(app)
+			.post('/api/login')
+			.set('Content-Type', 'application/json')
+			.send(
+				JSON.stringify({
+					username: username,
+					password: 'fakemdp'
+				})
+			);
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
+		expect(response.body.message).toBe(`Invalid username or password`);
 	});
 });
