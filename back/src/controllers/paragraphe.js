@@ -90,8 +90,11 @@ export const paragraphe = {
 		// if it becomes invalid
 		const arrayChoix = await ChoixTable.findAll({ where: { ChoixId: paragraphe.id }});
 		for (choix of arrayChoix) {
-			choix
+			const paragraphChoix = await Paragraphe.findOne({ where: { id: choix.ParagrapheId } });
+			paragraphChoix.updateState();
+			// TODO: remove paragraphChoix from "ChoixTable"
 		}
+		// TODO: remove paragraphe from Paragraphe
 
 
 		res.json({ status: true, message: 'Returning user' });
