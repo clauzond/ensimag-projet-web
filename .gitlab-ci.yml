@@ -53,7 +53,7 @@ heroku:
   stage: deploy
   only:
   - master
-  image: ruby:latest
+  image: ruby:2.7.5
   tags: [docker]
   script:
     - cd back/
