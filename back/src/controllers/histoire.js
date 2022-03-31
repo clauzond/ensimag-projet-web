@@ -4,14 +4,14 @@ import status from 'http-status';
 import { Histoire, Paragraphe } from '../models/index.js';
 
 async function checkStoryId(req) {
-	if (!has(req.params, 'id')) {
+	if (!has(req.params, 'idHistoire')) {
 		throw new RequestError(
 			'You must specified story id',
 			status.BAD_REQUEST
 		);
 	}
 
-	const storyId = req.params.id;
+	const storyId = req.params.idHistoire;
 
 	// Get story
 	const story = await Histoire.findByPk(storyId);
@@ -112,3 +112,5 @@ export const story = {
 		res.json({ status: true, message: 'Returning story', story: story });
 	}
 };
+
+export { checkStoryId };
