@@ -105,7 +105,7 @@ export const paragraphe = {
 		}
 
 		// Check if the paragraph is not already written by another user
-		if (paragraph.estVerrouille || paragraph.idRedacteur != null) {
+		if (paragraph.estVerrouille || (paragraph.idRedacteur != null && paragraph.idRedacteur != req.user.id)) {
 			throw new RequestError(
 				'This paragraph is already modified by another user',
 				status.FORBIDDEN
