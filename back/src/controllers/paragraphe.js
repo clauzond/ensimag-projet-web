@@ -27,11 +27,11 @@ async function verifyUserIsFree(idUser) {
 	const nb = await Paragraphe.findAndCountAll({
 		where: { idRedacteur: idUser }
 	});
-	return nb > 1;
+	return nb === 0;
 }
 
-async function verifyUserCouldModifyParagraph(user, paragraph) {
-	// Check if the user could write a paragraph
+async function verifyUserCanModifyParagraph(user, paragraph) {
+	// Check if the user can write a paragraph
 	if (!(await verifyUserIsFree(user.id))) {
 		throw new RequestError(
 			'You are currently write another paragraph',
@@ -40,12 +40,14 @@ async function verifyUserCouldModifyParagraph(user, paragraph) {
 	}
 
 	// Check if the current user is the writer of the paragraph
-	if (paragraph.idRedacteur.id !== user.id) {
+	if (paragraph.idRedacteur !== null && paragraph.idRedacteur.id !== user.id) {
 		throw new RequestError(
 			'You are not allowed to write on this paragraph',
 			status.FORBIDDEN
 		);
 	}
+
+	return true;
 }
 
 export const paragraphe = {
@@ -100,8 +102,8 @@ export const paragraphe = {
 	},
 	async askToUpdateParagraph(req, res) {
 		await checkStoryId(req);
-		const paragraph = checkParagraphId(req);
-		await verifyUserCouldModifyParagraph(req.user, paragraph);
+		const paragraph = await checkParagraphId(req);
+		await verifyUserCanModifyParagraph(req.user, paragraph);
 
 		// Set paragraph locked
 		await paragraph.update({
@@ -132,7 +134,7 @@ export const paragraphe = {
 			);
 		}
 
-		await verifyUserCouldModifyParagraph(req.user, paragraph);
+		await verifyUserCanModifyParagraph(req.user, paragraph);
 
 		// Update paragraph data
 		await paragraph.update({
@@ -142,13 +144,13 @@ export const paragraphe = {
 
 		res.json({
 			status: true,
-			message: 'Paragraph modification successful'
+			message: 'Paragraph has been successfully modified'
 		});
 	},
 	async cancelModification(req, res) {
 		await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
-		await verifyUserCouldModifyParagraph(req.user, paragraph);
+		await verifyUserCanModifyParagraph(req.user, paragraph);
 
 		// Remove writer status of the user
 		await paragraph.setRedacteur(null);
@@ -164,6 +166,7 @@ export const paragraphe = {
 		});
 	},
 	async deleteParagraphe(req, res) {
+		await checkStoryId(req);
 		const paragraphe = checkParagrapheId(req);
 
 		// Check that the paragraph does not lead to other paragraphs
@@ -185,11 +188,17 @@ export const paragraphe = {
 			const paragraphChoix = await Paragraphe.findOne({
 				where: { id: choix.ParagrapheId }
 			});
-			paragraphChoix.updateState();
-			// TODO: remove paragraphChoix from "ChoixTable"
+			// Update the state of paragraphChoix (it can become locked)
+			await paragraphChoix.updateState();
+			// Destroy the choice leading to the paragraph
+			await choix.destroy();
 		}
-		// TODO: remove paragraphe from Paragraphe
 
-		res.json({ status: true, message: 'Returning user' });
+		// Remove the paragraph from the database
+		await paragraphe.destroy();
+
+		res.statusCode = status.OK;
+
+		res.json({ status: true, message: 'Paragraph has been successfully deleted' });
 	}
 };
