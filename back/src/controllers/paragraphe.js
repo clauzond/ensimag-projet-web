@@ -86,8 +86,6 @@ export const paragraphe = {
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
-		// TODO : ajouter à l'historique si l'utilisateur est connecté
-
 		res.json({
 			status: true,
 			message: 'Returning paragraph',
@@ -108,7 +106,11 @@ export const paragraphe = {
 		}
 
 		// Check if the paragraph is not already written by another user
-		if (paragraph.estVerrouille || (paragraph.idRedacteur != null && paragraph.idRedacteur != req.user.id)) {
+		if (
+			paragraph.estVerrouille ||
+			(paragraph.idRedacteur != null &&
+				paragraph.idRedacteur !== req.user.id)
+		) {
 			throw new RequestError(
 				'This paragraph is already modified by another user',
 				status.FORBIDDEN
