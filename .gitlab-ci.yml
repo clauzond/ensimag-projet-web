@@ -54,4 +54,5 @@ heroku:
  only:
  - master
  script:
+ - git remote add heroku https://git.heroku.com/clauzond.git
  - git subtree push --prefix back heroku master
