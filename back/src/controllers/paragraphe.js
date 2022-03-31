@@ -30,9 +30,27 @@ async function verifyUserIsFree(idUser) {
 	return nb === 0;
 }
 
+async function verifyUserCouldModifyParagraph(user, paragraph) {
+	// Check if the user could write a paragraph
+	if (!(await verifyUserIsFree(user.id))) {
+		throw new RequestError(
+			'You are currently write another paragraph',
+			status.FORBIDDEN
+		);
+	}
+
+	// Check if the current user is the writer of the paragraph
+	if (paragraph.estVerrouille && paragraph.idRedacteur.id !== user.id) {
+		throw new RequestError(
+			'You are not allowed to write on this paragraph',
+			status.FORBIDDEN
+		);
+	}
+}
+
 export const paragraphe = {
 	async createParagraph(req, res) {
-		const story = checkStoryId(req);
+		const story = await checkStoryId(req);
 
 		if (!has(req.body, 'titreChoix')) {
 			throw new RequestError(
@@ -50,7 +68,8 @@ export const paragraphe = {
 		const paragraph = await Paragraphe.create({
 			contenu: null,
 			estVerrouille: false,
-			estConclusion: false
+			estConclusion: false,
+			idRedacteur: req.user
 		});
 
 		// Add choice
@@ -59,6 +78,7 @@ export const paragraphe = {
 			condition: has(req.body, 'condition') ? req.body.condition : null
 		});
 
+		res.statusCode = status.CREATED;
 		res.json({
 			status: true,
 			message: 'Paragraph created',
@@ -66,9 +86,62 @@ export const paragraphe = {
 			choice: choice
 		});
 	},
+	async getParagraph(req, res) {
+		const story = await checkStoryId(req);
+		const paragraph = await checkParagraphId(req);
+
+		// TODO : ajouter à l'historique si l'utilisateur est connecté
+
+		res.json({
+			status: true,
+			message: 'Returning paragraph',
+			story: story,
+			paragraph: paragraph
+		});
+	},
+	async askToUpdateParagraph(req, res) {
+		await checkStoryId(req);
+		const paragraph = checkParagraphId(req);
+		await verifyUserCouldModifyParagraph(req.user, paragraph);
+
+		// Set paragraph locked
+		await paragraph.update({
+			estVerrouille: true
+		});
+
+		res.json({
+			status: true,
+			message: 'Paragraph modification allowed',
+			paragraph: paragraph
+		});
+	},
 	async updateParagraph(req, res) {
-		//TODO
-		res.json({ status: true, message: 'Returning user' });
+		await checkStoryId(req);
+		const paragraph = await checkParagraphId(req);
+
+		// Check if the content of the paragraph is present
+		if (
+			!has(req.body, 'content') ||
+			(req.body.content != null && req.body.content.length === 0)
+		) {
+			throw new RequestError(
+				'Content cannot be null or empty',
+				status.NOT_MODIFIED
+			);
+		}
+
+		await verifyUserCouldModifyParagraph(req.user, paragraph);
+
+		// Update paragraph data
+		await paragraph.update({
+			contenu: String(req.body.content),
+			estVerrouille: false
+		});
+
+		res.json({
+			status: true,
+			message: 'Paragraph modification successful'
+		});
 	},
 	async deleteParagraphe(req, res) {
 		const paragraphe = checkParagrapheId(req);
@@ -89,16 +162,14 @@ export const paragraphe = {
 			where: { ChoixId: paragraphe.id }
 		});
 		for (choix of arrayChoix) {
-			const paragraphChoix = await Paragraphe.findOne({ where: { id: choix.ParagrapheId } });
+			const paragraphChoix = await Paragraphe.findOne({
+				where: { id: choix.ParagrapheId }
+			});
 			paragraphChoix.updateState();
 			// TODO: remove paragraphChoix from "ChoixTable"
 		}
 		// TODO: remove paragraphe from Paragraphe
 
-		res.json({ status: true, message: 'Returning user' });
-	},
-	async getParagraph(req, res) {
-		//TODO
 		res.json({ status: true, message: 'Returning user' });
 	}
 };

@@ -70,7 +70,7 @@ export const story = {
 	},
 	async updateStory(req, res) {
 		// Get story object
-		const story = checkStoryId(req);
+		const story = await checkStoryId(req);
 
 		// Check if the user is the author
 		if (!(await story.isAuthor(req.user))) {
@@ -108,7 +108,7 @@ export const story = {
 	},
 	async getStory(req, res) {
 		// Get story object
-		const story = checkStoryId(req);
+		const story = await checkStoryId(req);
 		res.json({ status: true, message: 'Returning story', story: story });
 	}
 };

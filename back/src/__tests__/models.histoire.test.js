@@ -1,5 +1,3 @@
-import { app } from '../app.js';
-import request from 'supertest';
 import { Utilisateur, Paragraphe, Histoire } from '../models/index.js';
 
 describe('Test fonctions histoire', () => {

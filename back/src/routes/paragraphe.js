@@ -11,6 +11,10 @@ router.get(
 	paragraphe.getParagraph
 );
 router.put(
+	'/api/histoire/:idHistoire/paragraphe/:idParagraphe/modified',
+	paragraphe.askToUpdateParagraph
+);
+router.put(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
 	paragraphe.updateParagraph
 );
