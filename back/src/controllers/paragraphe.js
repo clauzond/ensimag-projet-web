@@ -27,18 +27,10 @@ async function verifyUserIsFree(idUser) {
 	const nb = await Paragraphe.findAndCountAll({
 		where: { idRedacteur: idUser }
 	});
-	return nb > 1;
+	return nb === 0;
 }
 
-async function verifyUserCouldModifyParagraph(user, paragraph) {
-	// Check if the user could write a paragraph
-	if (!(await verifyUserIsFree(user.id))) {
-		throw new RequestError(
-			'You are currently write another paragraph',
-			status.FORBIDDEN
-		);
-	}
-
+async function checkIfUserIsWriter(user, paragraph) {
 	// Check if the current user is the writer of the paragraph
 	if (paragraph.idRedacteur.id !== user.id) {
 		throw new RequestError(
@@ -101,7 +93,14 @@ export const paragraphe = {
 	async askToUpdateParagraph(req, res) {
 		await checkStoryId(req);
 		const paragraph = checkParagraphId(req);
-		await verifyUserCouldModifyParagraph(req.user, paragraph);
+
+		// Check if the user could write a paragraph
+		if (!(await verifyUserIsFree(req.user.id))) {
+			throw new RequestError(
+				'You are currently write another paragraph',
+				status.FORBIDDEN
+			);
+		}
 
 		// Set paragraph locked
 		await paragraph.update({
@@ -132,7 +131,7 @@ export const paragraphe = {
 			);
 		}
 
-		await verifyUserCouldModifyParagraph(req.user, paragraph);
+		await checkIfUserIsWriter(req.user, paragraph);
 
 		// Update paragraph data
 		await paragraph.update({
@@ -148,7 +147,7 @@ export const paragraphe = {
 	async cancelModification(req, res) {
 		await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
-		await verifyUserCouldModifyParagraph(req.user, paragraph);
+		await checkIfUserIsWriter(req.user, paragraph);
 
 		// Remove writer status of the user
 		await paragraph.setRedacteur(null);
