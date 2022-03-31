@@ -5,7 +5,7 @@ stages:
 
 eslint:
   stage: test
-  image: debian:bullseye
+  image: node:16
   script:
     # Install eslint tool
     - npm install eslint
