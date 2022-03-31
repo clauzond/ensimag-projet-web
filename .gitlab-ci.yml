@@ -54,5 +54,6 @@ heroku:
  only:
  - master
  script:
+ - cd ./back
  - npm i
  - npm run deploy
