@@ -5,6 +5,8 @@ import paragraphe from './paragraphe.js';
 import { serve, setup } from 'swagger-ui-express';
 import swaggerFile from '../../swagger_output.json';
 import { auth } from '../util/middleware.js';
+import status from 'http-status';
+import { RequestError } from '../util/requestError.js';
 
 const router = express.Router();
 
@@ -25,5 +27,10 @@ router.use(login);
 router.use(auth);
 router.use(story);
 router.use(paragraphe);
+
+// Default 404 page
+router.use('*', () => {
+	throw new RequestError("Page doesn't exist", status.NOT_FOUND);
+});
 
 export { router };
