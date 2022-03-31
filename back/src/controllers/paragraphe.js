@@ -23,6 +23,14 @@ async function checkParagraphId(req) {
 	return paragraphe;
 }
 
+async function verifyUserIsFree(idUser) {
+	// Verify that user is not the redactor of another paragraph
+	const nb = await Paragraphe.findAndCountAll({
+		where: { idRedacteur: idUser }
+	});
+	return nb === 0;
+}
+
 export const paragraphe = {
 	async createParagraph(req, res) {
 		const story = checkStoryId(req);
