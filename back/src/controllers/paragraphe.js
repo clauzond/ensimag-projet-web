@@ -108,7 +108,7 @@ export const paragraphe = {
 		}
 
 		// Check if the paragraph is not already written by another user
-		if (paragraph.estVerrouille || paragraph.idRedacteur != null) {
+		if (paragraph.estVerrouille || (paragraph.idRedacteur != null && paragraph.idRedacteur != req.user.id)) {
 			throw new RequestError(
 				'This paragraph is already modified by another user',
 				status.FORBIDDEN
@@ -206,8 +206,6 @@ export const paragraphe = {
 
 		// Remove the paragraph from the database
 		await paragraphe.destroy();
-
-		res.statusCode = status.OK;
 
 		res.json({
 			status: true,
