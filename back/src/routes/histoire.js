@@ -2,6 +2,6 @@ import express from 'express';
 import { story } from '../controllers/histoire.js';
 
 const router = express.Router();
-router.get('/api/histoire/:id', story.getStoryById);
+router.get('/api/histoire/:id', story.createStory);
 
 export default router;

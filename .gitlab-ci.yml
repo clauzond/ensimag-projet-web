@@ -1,0 +1,58 @@
+stages:
+  - test
+  - badge
+  - deploy
+
+eslint:
+  stage: test
+  image: debian:bullseye
+  script:
+    # Install eslint tool
+    - npm install eslint
+    # Install eslint-formatter-gitlab to generate badge
+    - npm install eslint-formatter-gitlab
+    - npm ci
+    # Verify JavaScript code quality
+    - npx eslint --format gitlab ./back/src/**/*.js
+  artifacts:
+    reports:
+      codequality: codequality.json
+    paths:
+      - codequality.json
+    when: always
+
+testing_backend:
+  stage: test
+  image: node:16
+  tags:
+    - docker
+  script:
+    - cd ./back
+    - npm i # install all modules
+    - node --version
+    - npm run doc
+    - npm run test
+
+badging:
+  stage: badge
+  tags:
+    - shell
+  dependencies:
+    - eslint
+  script:
+    - pip install anybadge
+    # if there are no warnings, green badge ; else, yellow badge with the number of warnings
+    - if [[ $(grep -o "fingerprint" ./codequality.json | wc -l) -eq 0 ]] ; then ~/.local/bin/anybadge --label=eslint --value=passing --file=eslint.svg -c green ; else ~/.local/bin/anybadge --label=eslint --value=warnings:$(grep -o "fingerprint" ./codequality.json | wc -l) --file=eslint.svg -c yellow;fi
+  artifacts:
+    paths:
+      - eslint.svg
+    when: always
+
+# CD: deploy to heroku
+heroku:
+ stage: deploy
+ only:
+ - master
+ script:
+ - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/clauzond.git
+ - git push -f heroku master

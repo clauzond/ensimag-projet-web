@@ -1,9 +1,8 @@
 import express from 'express';
 import 'express-async-errors';
 import { router } from './routes/router.js';
-
-// await database.sync({ force: true });
-// console.log('All models were synchronized successfully.');
+import { serve, setup } from 'swagger-ui-express';
+import swaggerFile from '../swagger_output.json';
 
 const app = express();
 
@@ -58,16 +57,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Assign Routes
 app.use('/', router);
 
-// This middleware adds the json header to every response
-app.use('*', (req, res, next) => {
-	res.setHeader('Content-Type', 'application/json');
-	next();
-});
-
 // Error handling middleware
 app.use((err, req, res, next) => {
-	console.log('Error Handling Middleware called');
-
 	res.status(err.code ?? 400).json({
 		status: false,
 		message: err.message
