@@ -2,7 +2,23 @@ import { DataTypes, Model } from 'sequelize';
 import { database } from './database.js';
 
 // Paragraphe(id {pk}, contenu, estVerrouille, estConclusion, redacteurId {fk})
-export class Paragraphe extends Model {}
+export class Paragraphe extends Model {
+	async isAuthor(utilisateur) {
+		const redacteur = await this.getRedacteur();
+		if (redacteur === null) {
+			return false;
+		}
+		return redacteur.id === utilisateur.id;
+	}
+
+	async hasPossibleChoix() {
+		if (this.estConclusion) {
+			return true;
+		}
+		const nb = await this.countChoix({ where: 'condition = NULL' });
+		return nb > 0;
+	}
+}
 
 Paragraphe.init(
 	{
