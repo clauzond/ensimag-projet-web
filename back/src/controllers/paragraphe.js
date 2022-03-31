@@ -137,8 +137,8 @@ export const paragraphe = {
 
 		// Check if the content of the paragraph is present
 		if (
-			!has(req.body, 'content') ||
-			(req.body.content != null && req.body.content.length === 0)
+			!has(req.body, 'contenu') ||
+			(req.body.contenu != null && req.body.contenu.length === 0)
 		) {
 			throw new RequestError(
 				'Content cannot be null or empty',
@@ -150,7 +150,7 @@ export const paragraphe = {
 
 		// Update paragraph data
 		await paragraph.update({
-			contenu: String(req.body.content),
+			contenu: String(req.body.contenu),
 			estVerrouille: false
 		});
 
