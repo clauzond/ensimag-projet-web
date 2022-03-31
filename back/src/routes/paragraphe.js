@@ -4,19 +4,19 @@ import { paragraphe } from '../controllers/paragraphe.js';
 const router = express.Router();
 router.post(
 	'/api/histoire/:idHistoire/paragraphe/',
-	paragraphe.createParagraphe
+	paragraphe.createParagraph
 );
 router.get(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
-	paragraphe.getParagraphe
+	paragraphe.getParagraph
 );
 router.put(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
-	paragraphe.updateParagraphe
+	paragraphe.updateParagraph
 );
 router.delete(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
-	paragraphe.deleteParagraphe
+	paragraphe.deleteParagraph
 );
 
 export default router;
