@@ -3,6 +3,7 @@ import { Utilisateur } from '../models/index.js';
 import jws from 'jws';
 import status from 'http-status';
 import env from 'mandatoryenv';
+import has from 'has-keys';
 
 env.load(['SECRET']);
 const { SECRET } = process.env;
@@ -12,13 +13,14 @@ const { SECRET } = process.env;
  * The token must be passed via the x-access-token header
  */
 export async function auth(req, res, next) {
-	const token = req.get('x-access-token');
-	if (token == null) {
+	if (!has(req.headers, 'x-access-token')) {
 		throw new RequestError(
-			'You must specify your access token in the "x-access-token" header',
+			"You must specify your access token in the 'x-access-token' header",
 			status.BAD_REQUEST
 		);
 	}
+
+	const token = req.get('x-access-token');
 
 	if (!jws.verify(token, 'HS256', SECRET)) {
 		throw new RequestError('Invalid token', status.BAD_REQUEST);
