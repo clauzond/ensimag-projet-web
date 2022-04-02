@@ -32,10 +32,7 @@ async function verifyUserIsFree(idUser) {
 
 async function checkIfUserIsWriter(user, paragraph) {
 	// Check if the current user is the writer of the paragraph
-	if (
-		paragraph.idRedacteur !== null &&
-		paragraph.idRedacteur.id !== user.id
-	) {
+	if (await paragraph.isRedacteur(user)) {
 		throw new RequestError(
 			'You are not allowed to write on this paragraph',
 			status.FORBIDDEN
@@ -56,15 +53,24 @@ export const paragraphe = {
 		}
 
 		if (!has(req.body, 'titreChoix')) {
-			throw new RequestError('You must specify titreChoix param', status.BAD_REQUEST);
+			throw new RequestError(
+				'You must specify titreChoix param',
+				status.BAD_REQUEST
+			);
 		}
 
 		if (!has(req.body, 'idParagraphe')) {
-			throw new RequestError('You must specify idParagraphe param', status.BAD_REQUEST);
+			throw new RequestError(
+				'You must specify idParagraphe param',
+				status.BAD_REQUEST
+			);
 		}
 
 		if (!has(req.body, 'idChoix')) {
-			throw new RequestError('You must specify idChoix param', status.BAD_REQUEST);
+			throw new RequestError(
+				'You must specify idChoix param',
+				status.BAD_REQUEST
+			);
 		}
 
 		const paragraph = await Paragraphe.findByPk(req.body.idParagraphe);
@@ -72,9 +78,17 @@ export const paragraphe = {
 
 		if (req.body.idChoix !== null) {
 			// Verify that existing paragraph is not already a choice
-			const nb = await paragraphe.countChoix({ where: { ParagrapheId: req.body.idParagraphe, ChoixId: req.body.idChoix } });
+			const nb = await paragraphe.countChoix({
+				where: {
+					ParagrapheId: req.body.idParagraphe,
+					ChoixId: req.body.idChoix
+				}
+			});
 			if (nb !== 0) {
-				throw new RequestError('The choice made already exists', status.BAD_REQUEST);
+				throw new RequestError(
+					'The choice made already exists',
+					status.BAD_REQUEST
+				);
 			}
 
 			choice = await Paragraphe.findByPk(req.body.idChoix);
@@ -91,7 +105,9 @@ export const paragraphe = {
 		await paragraph.addChoix(choice, {
 			through: {
 				titreChoix: req.body.titreChoix,
-				condition: has(req.body, 'condition') ? req.body.condition : null
+				condition: has(req.body, 'condition')
+					? req.body.condition
+					: null
 			}
 		});
 

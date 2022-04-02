@@ -1,7 +1,7 @@
 import has from 'has-keys';
 import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
-import { Histoire, Paragraphe } from '../models/index.js';
+import { Histoire, Paragraphe, Utilisateur } from '../models/index.js';
 
 async function checkStoryId(req) {
 	if (!has(req.params, 'idHistoire')) {
@@ -22,6 +22,17 @@ async function checkStoryId(req) {
 }
 
 export const story = {
+	async getStories(req, res) {
+		const stories = await Histoire.findAll({
+			attributes: ['titre', 'idAuteur']
+		});
+
+		res.json({
+			status: true,
+			message: 'Returning stories',
+			stories: stories
+		});
+	},
 	async createStory(req, res) {
 		if (!has(req.body, 'titre')) {
 			throw new RequestError('Title not found', status.BAD_REQUEST);
@@ -35,8 +46,8 @@ export const story = {
 				? req.body.estOuverte
 				: false,
 			estPublique: has(req.body, 'estPublique')
-			? req.body.estPublique
-			: false
+				? req.body.estPublique
+				: false
 		});
 
 		// Ajout de l'utilisateur en tant qu'auteur

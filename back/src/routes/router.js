@@ -7,6 +7,7 @@ import swaggerFile from '../../swagger_output.json';
 import { auth } from '../util/middleware.js';
 import status from 'http-status';
 import { RequestError } from '../util/requestError.js';
+import readOnly from './readOnly.js';
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router.use('*', (req, res, next) => {
 
 // No authentification required
 router.use(login);
+router.use(readOnly);
 
 // Authentification required
 router.use(auth);
