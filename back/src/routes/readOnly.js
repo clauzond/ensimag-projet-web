@@ -4,7 +4,7 @@ import { paragraphe } from '../controllers/paragraphe.js';
 
 const router = express.Router();
 
-router.get('/api/readOnly/histoire', story.getStories);
+router.get('/api/readOnly/histoire', story.getPublicStories);
 router.get(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
 	paragraphe.getParagraph

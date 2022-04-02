@@ -1,7 +1,8 @@
 import has from 'has-keys';
 import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
-import { Histoire, Paragraphe, Utilisateur } from '../models/index.js';
+import { Histoire, Paragraphe } from '../models/index.js';
+import { Op } from 'sequelize';
 
 async function checkStoryId(req) {
 	if (!has(req.params, 'idHistoire')) {
@@ -22,15 +23,34 @@ async function checkStoryId(req) {
 }
 
 export const story = {
-	async getStories(req, res) {
-		const stories = await Histoire.findAll({
-			attributes: ['titre', 'idAuteur']
+	async getPublicStories(req, res) {
+		const storiesFromDB = await Histoire.findAll({
+			attributes: ['titre', 'idAuteur'],
+			include: [
+				{
+					model: Paragraphe,
+					as: 'ParagrapheInitial',
+					where: {
+						contenu: {
+							[Op.not]: null
+						}
+					}
+				}
+			],
+			where: { estPublique: true }
 		});
+
+		let stories = {};
+		// Check the initial paragraph of each story
+		for (let story of storiesFromDB) {
+			const initParagraph = await story.getParagrapheInitial();
+			console.log(initParagraph);
+		}
 
 		res.json({
 			status: true,
-			message: 'Returning stories',
-			stories: stories
+			message: 'Returning public stories',
+			stories: storiesFromDB
 		});
 	},
 	async createStory(req, res) {
