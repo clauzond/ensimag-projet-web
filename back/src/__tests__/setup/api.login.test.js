@@ -1,4 +1,4 @@
-import { app } from '../app.js';
+import { app } from '../../app.js';
 import request from 'supertest';
 import status from 'http-status';
 const username = 'clauzond';

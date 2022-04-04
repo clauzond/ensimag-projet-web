@@ -25,7 +25,6 @@ async function checkStoryId(req) {
 export const story = {
 	async getPublicStories(req, res) {
 		const storiesFromDB = await Histoire.findAll({
-			attributes: ['titre', 'idAuteur'],
 			include: [
 				{
 					model: Paragraphe,
@@ -40,17 +39,23 @@ export const story = {
 			where: { estPublique: true }
 		});
 
-		let stories = {};
+		let stories = { stories: [] };
 		// Check the initial paragraph of each story
 		for (let story of storiesFromDB) {
+			// await story.setParagrapheInitial();
 			const initParagraph = await story.getParagrapheInitial();
-			console.log(initParagraph);
+			// Skip story when the content of the first paragraph is empty
+			if (initParagraph.contenu.length === 0) continue;
+
+			//TODO: vérfier que le paragraph initial amène à une conclusion
+
+			stories['stories'].push(story);
 		}
 
 		res.json({
 			status: true,
 			message: 'Returning public stories',
-			stories: storiesFromDB
+			stories: stories
 		});
 	},
 	async createStory(req, res) {
