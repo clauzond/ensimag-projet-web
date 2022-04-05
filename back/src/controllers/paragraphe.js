@@ -79,7 +79,7 @@ export const paragraphe = {
 		if (paragraph === null) {
 			throw new RequestError(
 				'The specified paragraph does not exist',
-				status.BAD_REQUEST
+				status.NOT_FOUND
 			);
 		}
 		let choice;
@@ -102,7 +102,7 @@ export const paragraphe = {
 			if (choice === null) {
 				throw new RequestError(
 					'The specified choice does not exist',
-					status.BAD_REQUEST
+					status.NOT_FOUND
 				);
 			}
 		} else {
