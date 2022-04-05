@@ -76,7 +76,6 @@ describe('POST /api/register', () => {
 					password: password
 				})
 			);
-		console.log(response.body);
 		expect(response.statusCode).toBe(status.CREATED);
 		expect(response.body.message).toBe(`User ${username} was registered`);
 	});

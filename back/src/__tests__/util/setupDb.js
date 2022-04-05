@@ -1,31 +1,36 @@
 import request from 'supertest';
 import { app } from '../../app.js';
 
-const username = 'clauzond';
-const password = 'clauzondmdp';
+const USERNAME = 'clauzond';
+const PASSWORD = 'clauzondmdp';
 
-async function userRegistration() {
+async function userRegistration(username) {
 	await request(app)
 		.post('/api/register')
 		.set('Content-Type', 'application/json')
 		.send(
 			JSON.stringify({
-				username: username,
-				password: password
+				username: username === undefined ? USERNAME : username,
+				password: PASSWORD
 			})
 		);
 }
 
-async function getToken() {
-	await userRegistration();
+/**
+ * Return the token of the created user.
+ * @param username This parameter is optional
+ * @returns {Promise<*>}
+ */
+async function getToken(username) {
+	await userRegistration(username);
 
 	const response = await request(app)
 		.post('/api/login')
 		.set('Content-Type', 'application/json')
 		.send(
 			JSON.stringify({
-				username: username,
-				password: password
+				username: username === undefined ? USERNAME : username,
+				password: PASSWORD
 			})
 		);
 

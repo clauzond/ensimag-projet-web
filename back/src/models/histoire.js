@@ -4,11 +4,11 @@ import { database } from './database.js';
 // Histoire(id {pk}, estOuverte, estPublique, idAuteur {fk}, idParagrapheInitial {fk})
 export class Histoire extends Model {
 	async isAuthor(user) {
-		return this.getAuteur() === user.id;
+		return (await this.getAuteur()).id === user.id;
 	}
 
 	async isCollaborator(user) {
-		return this.hasCollaborateur(user);
+		return await this.hasCollaborateur(user);
 	}
 }
 

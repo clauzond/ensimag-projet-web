@@ -94,7 +94,6 @@ export const utilisateur = {
 				status.BAD_REQUEST
 			);
 		}
-		console.log('found user');
 
 		const match = await bcrypt.compare(password, user.pwd);
 		if (!match) {
@@ -103,7 +102,6 @@ export const utilisateur = {
 				status.BAD_REQUEST
 			);
 		}
-		console.log('match correct');
 
 		const signature = jws.sign({
 			header: { alg: 'HS256' },

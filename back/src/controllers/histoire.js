@@ -80,8 +80,9 @@ export const story = {
 		// Check the initial paragraph of each story
 		for (const story of storiesFromDB) {
 			// Verify that user has access to the story
-			if (!story.estPublique && !story.hasCollaborateur(req.user)) continue;
-			
+			if (!story.estPublique && !story.hasCollaborateur(req.user))
+				continue;
+
 			const initParagraph = await story.getParagrapheInitial();
 			// Skip story when the content of the first paragraph is empty
 			if (initParagraph.contenu.length === 0) continue;
@@ -152,24 +153,24 @@ export const story = {
 			);
 		}
 
-		// Change story params
-		if (has(req.params, 'estPublique')) {
-			await story.update({
-				estPublique: req.params.estPublique
-			});
-		}
-		if (has(req.params, 'estOuverte')) {
-			await story.update({
-				estOuvert: req.params.estOuverte
-			});
-		}
-
 		// Throws error if the params are not correct
-		if (!has(req.params, 'estOuverte') && !has(req.params, 'estPublique')) {
+		if (!has(req.body, 'estOuverte') && !has(req.body, 'estPublique')) {
 			throw new RequestError(
 				'You must specified estPublique or estOuverte params',
 				status.BAD_REQUEST
 			);
+		}
+
+		// Change story params
+		if (has(req.body, 'estPublique')) {
+			await story.update({
+				estPublique: req.params.estPublique
+			});
+		}
+		if (has(req.body, 'estOuverte')) {
+			await story.update({
+				estOuvert: req.params.estOuverte
+			});
 		}
 
 		res.json({
