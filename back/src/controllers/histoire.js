@@ -32,7 +32,8 @@ export const story = {
 					where: {
 						contenu: {
 							[Op.not]: null
-						}
+						},
+						estVerrouille: false
 					}
 				}
 			],
@@ -42,7 +43,6 @@ export const story = {
 		let stories = { stories: [] };
 		// Check the initial paragraph of each story
 		for (let story of storiesFromDB) {
-			// await story.setParagrapheInitial();
 			const initParagraph = await story.getParagrapheInitial();
 			// Skip story when the content of the first paragraph is empty
 			if (initParagraph.contenu.length === 0) continue;
@@ -59,6 +59,46 @@ export const story = {
 			stories: stories
 		});
 	},
+
+	async getPublicAuthentifiedStories(req, res) {
+		const storiesFromDB = await Histoire.findAll({
+			include: [
+				{
+					model: Paragraphe,
+					as: 'ParagrapheInitial',
+					where: {
+						contenu: {
+							[Op.not]: null
+						},
+						estVerrouille: false
+					}
+				}
+			]
+		});
+
+		const stories = { stories: [] };
+		// Check the initial paragraph of each story
+		for (const story of storiesFromDB) {
+			// Verify that user has access to the story
+			if (!story.estPublique && !story.hasCollaborateur(req.user)) continue;
+			
+			const initParagraph = await story.getParagrapheInitial();
+			// Skip story when the content of the first paragraph is empty
+			if (initParagraph.contenu.length === 0) continue;
+
+			// Verify that initial paragraph can lead to a conclusion
+			if (await initParagraph.leadToConclusion()) {
+				stories['stories'].push(story);
+			}
+		}
+
+		res.json({
+			status: true,
+			message: 'Returning public stories',
+			stories: stories
+		});
+	},
+
 	async createStory(req, res) {
 		if (!has(req.body, 'titre')) {
 			throw new RequestError('Title not found', status.BAD_REQUEST);
