@@ -1,8 +1,8 @@
 import { app } from '../app.js';
 import request from 'supertest';
 import status from 'http-status';
-const username = 'clauzond';
-const password = 'clauzondmdp';
+const username = 'clauzond_login';
+const password = 'clauzondmdp_login';
 
 describe('POST /api/register', () => {
 	test('Test of unvalid registration', async () => {
@@ -76,6 +76,7 @@ describe('POST /api/register', () => {
 					password: password
 				})
 			);
+		console.log(response.body);
 		expect(response.statusCode).toBe(status.CREATED);
 		expect(response.body.message).toBe(`User ${username} was registered`);
 	});

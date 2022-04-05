@@ -5,7 +5,7 @@ const username = 'clauzond';
 const password = 'clauzondmdp';
 
 async function userRegistration() {
-	request(app)
+	await request(app)
 		.post('/api/register')
 		.set('Content-Type', 'application/json')
 		.send(
@@ -32,4 +32,20 @@ async function getToken() {
 	return response.body.data;
 }
 
-export { getToken };
+async function createStory(title) {
+	const token = await getToken();
+
+	const response = await request(app)
+		.post('/api/histoire')
+		.set('Content-Type', 'application/json')
+		.set('x-access-token', token)
+		.send(
+			JSON.stringify({
+				titre: title
+			})
+		);
+
+	return response.body.histoire;
+}
+
+export { getToken, createStory };

@@ -22,9 +22,9 @@ router.post(
 	'/api/histoire/:idHistoire/paragraphe/',
 	paragraphe.createParagraph
 );
-// router.delete(
-// 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
-// 	paragraphe.deleteParagraph
-// );
+router.delete(
+	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
+	paragraphe.deleteParagraph
+);
 
 export default router;

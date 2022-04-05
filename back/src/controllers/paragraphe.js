@@ -59,6 +59,7 @@ export const paragraphe = {
 			);
 		}
 
+		// idParagraphe is the paragraphe which leads to the new choice being created 
 		if (!has(req.body, 'idParagraphe')) {
 			throw new RequestError(
 				'You must specify idParagraphe param',
@@ -66,6 +67,7 @@ export const paragraphe = {
 			);
 		}
 
+		// idChoix can be null to create a new paragraph as a choice
 		if (!has(req.body, 'idChoix')) {
 			throw new RequestError(
 				'You must specify idChoix param',
@@ -74,14 +76,19 @@ export const paragraphe = {
 		}
 
 		const paragraph = await Paragraphe.findByPk(req.body.idParagraphe);
+		if (paragraph === null) {
+			throw new RequestError(
+				'The specified paragraph does not exist',
+				status.BAD_REQUEST
+			);
+		}
 		let choice;
 
 		if (req.body.idChoix !== null) {
 			// Verify that existing paragraph is not already a choice
-			const nb = await paragraphe.countChoix({
+			const nb = await paragraph.countChoix({
 				where: {
-					ParagrapheId: req.body.idParagraphe,
-					ChoixId: req.body.idChoix
+					id: req.body.idChoix
 				}
 			});
 			if (nb !== 0) {
@@ -92,6 +99,12 @@ export const paragraphe = {
 			}
 
 			choice = await Paragraphe.findByPk(req.body.idChoix);
+			if (choice === null) {
+				throw new RequestError(
+					'The specified choice does not exist',
+					status.BAD_REQUEST
+				);
+			}
 		} else {
 			// Create an empty paragraph
 			choice = await Paragraphe.create({

@@ -55,7 +55,7 @@ export const utilisateur = {
 		// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $username: 'clauzond', $password: 'clauzonmdp' }}
 		/* #swagger.responses[400] = {
 			description: 'Validation error',
-			schema: { $status:true, $message: 'You must specify the username and password'}
+			schema: { $status:false, $message: 'You must specify the username and password'}
 		} */
 		checkLoginFormat(req);
 		const { username, password } = req.body;
