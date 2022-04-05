@@ -228,11 +228,19 @@ export const paragraphe = {
 		});
 	},
 	async deleteParagraph(req, res) {
-		await checkStoryId(req);
-		const paragraphe = checkParagrapheId(req);
+		const story = await checkStoryId(req);
+		const paragraph = await checkParagraphId(req);
+
+		// Check that the paragraph is not the initial paragraph
+		if ((await story.getParagrapheInitial()).id === paragraph.id) {
+			throw new RequestError(
+				'The paragraph is the beginning of a story and thus cannot be deleted',
+				status.BAD_REQUEST
+			);
+		}
 
 		// Check that the paragraph does not lead to other paragraphs
-		const nbChoix = await paragraphe.countChoix();
+		const nbChoix = await paragraph.countChoix();
 		if (nbChoix > 0) {
 			throw new RequestError(
 				'The paragraph has choices and thus cannot be deleted',
@@ -244,9 +252,9 @@ export const paragraphe = {
 		// remove the choice and update its state to locked
 		// if it becomes invalid
 		const arrayChoix = await ChoixTable.findAll({
-			where: { ChoixId: paragraphe.id }
+			where: { ChoixId: paragraph.id }
 		});
-		for (choix of arrayChoix) {
+		for (const choix of arrayChoix) {
 			const paragraphChoix = await Paragraphe.findOne({
 				where: { id: choix.ParagrapheId }
 			});
@@ -257,7 +265,7 @@ export const paragraphe = {
 		}
 
 		// Remove the paragraph from the database
-		await paragraphe.destroy();
+		await paragraph.destroy();
 
 		res.json({
 			status: true,
