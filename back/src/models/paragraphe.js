@@ -3,10 +3,9 @@ import { database } from './database.js';
 
 // Paragraphe(id {pk}, contenu, estVerrouille, estConclusion, redacteurId {fk})
 export class Paragraphe extends Model {
-
 	/**
 	 * Returns true iff user is the redactor of the paragraph
-	 * @param {*} utilisateur 
+	 * @param {*} utilisateur
 	 * @returns boolean
 	 */
 	async isRedacteur(utilisateur) {
@@ -44,11 +43,11 @@ export class Paragraphe extends Model {
 	 * @returns boolean
 	 */
 	async leadToConclusion() {
-		const toVisit = this.getChoix();
+		const toVisit = await this.getChoix();
 		const alreadySeen = [];
-	
+
 		// Breadth-first search
-		while (toVisit.length > 0 ) {
+		while (toVisit.length > 0) {
 			const choice = toVisit.pop();
 			if (choice.estConclusion) {
 				return true;
@@ -57,9 +56,8 @@ export class Paragraphe extends Model {
 				continue;
 			}
 			alreadySeen.push(choice);
-			toVisit.push(...choice.getChoix());
+			toVisit.push(...(await choice.getChoix()));
 		}
-	
 		return false;
 	}
 }
