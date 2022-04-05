@@ -1,8 +1,8 @@
 import has from 'has-keys';
-import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
-import { Histoire, Paragraphe } from '../models/index.js';
 import { Op } from 'sequelize';
+import { Histoire, Paragraphe } from '../models/index.js';
+import { RequestError } from '../util/requestError.js';
 
 async function checkStoryId(req) {
 	if (!has(req.params, 'idHistoire')) {
@@ -47,9 +47,10 @@ export const story = {
 			// Skip story when the content of the first paragraph is empty
 			if (initParagraph.contenu.length === 0) continue;
 
-			//TODO: vérfier que le paragraph initial amène à une conclusion
-
-			stories['stories'].push(story);
+			// Verify that initial paragraph can lead to a conclusion
+			if (await initParagraph.leadToConclusion()) {
+				stories['stories'].push(story);
+			}
 		}
 
 		res.json({
