@@ -189,10 +189,14 @@ export const paragraphe = {
 		await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
+		// TODO: verify estVerrouille==true ?
+
 		// Check if the content of the paragraph is present
 		if (
 			!has(req.body, 'contenu') ||
-			(req.body.contenu != null && req.body.contenu.length === 0)
+			req.body.contenu == null ||
+			req.body.contenu.length === 0 ||
+			req.body.contenu === paragraph.contenu
 		) {
 			throw new RequestError(
 				'Content cannot be null or empty',
