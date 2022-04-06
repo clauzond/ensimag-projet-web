@@ -37,7 +37,7 @@ async function getToken(username) {
 	return response.body.data;
 }
 
-async function createStory(title) {
+async function createStory(title, estPublique) {
 	const token = await getToken();
 
 	const response = await request(app)
@@ -46,7 +46,8 @@ async function createStory(title) {
 		.set('x-access-token', token)
 		.send(
 			JSON.stringify({
-				titre: title
+				titre: title,
+				estPublique: estPublique === undefined ? false : estPublique
 			})
 		);
 

@@ -71,7 +71,7 @@ describe('GET /api/histoire/:idHistoire', () => {
 		const token = await getToken();
 
 		const response = await request(app)
-			.get('/api/histoire/' + idStory)
+			.get(`/api/histoire/${idStory}`)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token);
 		expect(response.statusCode).toBe(status.OK);
@@ -104,7 +104,7 @@ describe('PUT /api/histoire/:idHistoire', () => {
 	test('Test of update story wrote by another user', async () => {
 		const token = await getToken('otherUser');
 		const response = await request(app)
-			.put('/api/histoire/' + idStory)
+			.put(`/api/histoire/${idStory}`)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token);
 		expect(response.statusCode).toBe(status.FORBIDDEN);
@@ -116,7 +116,7 @@ describe('PUT /api/histoire/:idHistoire', () => {
 	test('Test of update story without specify correct parameters', async () => {
 		const token = await getToken();
 		const response = await request(app)
-			.put('/api/histoire/' + idStory)
+			.put(`/api/histoire/${idStory}`)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
@@ -135,7 +135,7 @@ describe('PUT /api/histoire/:idHistoire', () => {
 		const token = await getToken();
 
 		let response = await request(app)
-			.put('/api/histoire/' + idStory)
+			.put(`/api/histoire/${idStory}`)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
@@ -163,7 +163,7 @@ describe('PUT /api/histoire/:idHistoire', () => {
 		const token = await getToken();
 
 		const response = await request(app)
-			.put('/api/histoire/' + idStory)
+			.put(`/api/histoire/${idStory}`)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
