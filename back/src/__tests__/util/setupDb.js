@@ -37,8 +37,9 @@ async function getToken(username) {
 	return response.body.data;
 }
 
-async function createStory(title, estPublique, initFirstParagraph) {
-	const token = await getToken();
+async function createStory(title, username, estPublique, initFirstParagraph) {
+	const token =
+		username === undefined ? await getToken() : await getToken(username);
 
 	const response = await request(app)
 		.post('/api/histoire')

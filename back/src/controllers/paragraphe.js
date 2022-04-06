@@ -1,6 +1,7 @@
 import has from 'has-keys';
-import { RequestError } from '../util/requestError.js';
 import status from 'http-status';
+import { Op } from 'sequelize';
+import { RequestError } from '../util/requestError.js';
 import { Paragraphe, ChoixTable } from '../models/index.js';
 import { checkStoryId } from './histoire.js';
 
@@ -22,12 +23,23 @@ async function checkParagraphId(req) {
 	return paragraphe;
 }
 
-async function verifyUserIsFree(idUser) {
+async function checkIfUserIsFree(idUser, idParagraph) {
 	// Verify that user is not the redactor of another paragraph
-	const nb = await Paragraphe.findAndCountAll({
-		where: { estVerrouille: true, idRedacteur: idUser }
-	});
-	return nb === 0;
+	const nb = (
+		await Paragraphe.findAll({
+			where: {
+				estVerrouille: true,
+				idRedacteur: idUser,
+				id: { [Op.not]: idParagraph }
+			}
+		})
+	).length;
+	if (nb !== 0) {
+		throw new RequestError(
+			'You are currently writing another paragraph',
+			status.FORBIDDEN
+		);
+	}
 }
 
 async function checkIfUserIsWriter(user, paragraph) {
@@ -110,7 +122,9 @@ export const paragraphe = {
 			choice = await Paragraphe.create({
 				contenu: null,
 				estVerrouille: false,
-				estConclusion: has(req.body, 'estConclusion')? req.body.estConclusion : false
+				estConclusion: has(req.body, 'estConclusion')
+					? req.body.estConclusion
+					: false
 			});
 		}
 
@@ -152,18 +166,13 @@ export const paragraphe = {
 		const paragraph = await checkParagraphId(req);
 
 		// Check if the user can write a paragraph
-		if (!(await verifyUserIsFree(req.user.id))) {
-			throw new RequestError(
-				'You are currently write another paragraph',
-				status.FORBIDDEN
-			);
-		}
+		await checkIfUserIsFree(req.user.id, paragraph.id);
 
 		// Check if the paragraph is not already written by another user
 		if (
-			paragraph.estVerrouille ||
-			(paragraph.idRedacteur != null &&
-				paragraph.idRedacteur !== req.user.id)
+			paragraph.estVerrouille &&
+			paragraph.idRedacteur != null &&
+			paragraph.idRedacteur !== req.user.id
 		) {
 			throw new RequestError(
 				'This paragraph is already modified by another user',
@@ -204,6 +213,7 @@ export const paragraphe = {
 			);
 		}
 
+		// Check that user can write on this paragraph
 		await checkIfUserIsWriter(req.user, paragraph);
 
 		// Update paragraph data

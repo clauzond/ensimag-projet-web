@@ -352,8 +352,25 @@ describe('DELETE /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 });
 
 describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/modified', () => {
-	test('Test of valid utilisateur', async () => {
+	test('Test of askToUpdateParagraph', async () => {
 		// TODO: test paragraphe.askToUpdateParagraph
+
+		let response;
+
+		const username = 'yojesuisunnouvelutilisateur';
+		const token = await getToken(username);
+		const story = await createStory('1. Test of askToUpdateParagraph', username);
+
+		// Modify story's initial paragraph
+		response = await request(app)
+			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}/modified`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send();
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Paragraph modification allowed');
+		expect(response.body.paragraph.estVerrouille).toBe(true);
+		expect(response.body.paragraph.idRedacteur).not.toBe(null);
 	});
 });
 
