@@ -76,7 +76,7 @@ export const story = {
 			]
 		});
 
-		const stories = { stories: [] };
+		const stories = [];
 		// Check the initial paragraph of each story
 		for (const story of storiesFromDB) {
 			// Verify that user has access to the story
@@ -89,7 +89,7 @@ export const story = {
 
 			// Verify that initial paragraph can lead to a conclusion
 			if (await initParagraph.leadToConclusion()) {
-				stories['stories'].push(story);
+				stories.push(story);
 			}
 		}
 

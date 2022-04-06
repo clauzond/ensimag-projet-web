@@ -229,9 +229,19 @@ export const paragraphe = {
 		});
 	},
 	async cancelModification(req, res) {
-		await checkStoryId(req);
+		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
+
+		// Verify that user is the writer of the paragraph
 		await checkIfUserIsWriter(req.user, paragraph);
+
+		// Verify that paragraph is not the initial paragraph of the story
+		if (story.idParagrapheInitial === paragraph.id) {
+			throw new RequestError(
+				'You cannot abandon the initial paragraph',
+				status.FORBIDDEN
+			);
+		}
 
 		// Remove writer status of the user
 		await paragraph.setRedacteur(null);
@@ -243,7 +253,8 @@ export const paragraphe = {
 
 		res.json({
 			status: true,
-			message: 'Modification canceled'
+			message: 'Modification canceled',
+			paragraph: paragraph
 		});
 	},
 	async deleteParagraph(req, res) {

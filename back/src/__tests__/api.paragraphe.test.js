@@ -188,9 +188,15 @@ describe('GET /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 		expect(response.body.paragraph.id).toBe(story.idParagrapheInitial);
 
 		// Verify it has a choice
-		expect(response.body.choiceRowArray[0].titreChoix).toBe('Le premier choix de clauzond');
-		expect(response.body.choiceRowArray[0].ParagrapheId).toBe(story.idParagrapheInitial);
-		expect(response.body.choiceRowArray[0].ChoixId).toBe(story.idParagrapheInitial);
+		expect(response.body.choiceRowArray[0].titreChoix).toBe(
+			'Le premier choix de clauzond'
+		);
+		expect(response.body.choiceRowArray[0].ParagrapheId).toBe(
+			story.idParagrapheInitial
+		);
+		expect(response.body.choiceRowArray[0].ChoixId).toBe(
+			story.idParagrapheInitial
+		);
 	});
 
 	test('Test of failed get paragraph (story does not exist)', async () => {
@@ -351,35 +357,6 @@ describe('DELETE /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 	});
 });
 
-describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/modified', () => {
-	test('Test of askToUpdateParagraph', async () => {
-		// TODO: test paragraphe.askToUpdateParagraph
-
-		let response;
-
-		const username = 'yojesuisunnouvelutilisateur';
-		const token = await getToken(username);
-		const story = await createStory('1. Test of askToUpdateParagraph', username);
-
-		// Modify story's initial paragraph
-		response = await request(app)
-			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}/modified`)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send();
-		expect(response.statusCode).toBe(status.OK);
-		expect(response.body.message).toBe('Paragraph modification allowed');
-		expect(response.body.paragraph.estVerrouille).toBe(true);
-		expect(response.body.paragraph.idRedacteur).not.toBe(null);
-	});
-});
-
-describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/cancel-modification', () => {
-	test('Test of valid utilisateur', async () => {
-		// TODO: test paragraphe.cancelModification
-	});
-});
-
 describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 	test('Test of updateParagraph', async () => {
 		let response;
@@ -389,17 +366,24 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 
 		// Modify story's initial paragraph
 		response = await request(app)
-			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					contenu: "C'est l'histoire de clauzond qui fait un rap battle"
+					contenu:
+						"C'est l'histoire de clauzond qui fait un rap battle"
 				})
 			);
 		expect(response.statusCode).toBe(status.OK);
-		expect(response.body.message).toBe('Paragraph has been successfully modified');
-		expect(response.body.paragraph.contenu).toBe("C'est l'histoire de clauzond qui fait un rap battle");
+		expect(response.body.message).toBe(
+			'Paragraph has been successfully modified'
+		);
+		expect(response.body.paragraph.contenu).toBe(
+			"C'est l'histoire de clauzond qui fait un rap battle"
+		);
 		expect(response.body.paragraph.estVerrouille).toBe(false);
 	});
 
@@ -410,29 +394,31 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 		const token = await getToken();
 
 		response = await request(app)
-			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					contenu: ""
-				})
-			);
-		console.log(response.body);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
-
-		response = await request(app)
-			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
+					contenu: ''
 				})
 			);
 		expect(response.statusCode).toBe(status.NOT_MODIFIED);
 
 		response = await request(app)
-			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(JSON.stringify({}));
+		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+
+		response = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
@@ -443,26 +429,251 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 		expect(response.statusCode).toBe(status.NOT_MODIFIED);
 
 		response = await request(app)
-			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					contenu: "Je teste que les contenus identiques renvoient NOT_MODIFIED"
+					contenu:
+						'Je teste que les contenus identiques renvoient NOT_MODIFIED'
 				})
 			);
 		expect(response.statusCode).toBe(status.OK);
-		expect(response.body.paragraph.contenu).toBe("Je teste que les contenus identiques renvoient NOT_MODIFIED")
+		expect(response.body.paragraph.contenu).toBe(
+			'Je teste que les contenus identiques renvoient NOT_MODIFIED'
+		);
 
 		response = await request(app)
-			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					contenu: "Je teste que les contenus identiques renvoient NOT_MODIFIED"
+					contenu:
+						'Je teste que les contenus identiques renvoient NOT_MODIFIED'
 				})
 			);
 		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+	});
+});
+
+describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/modified', () => {
+	test('Test of askToUpdateParagraph', async () => {
+		let response;
+
+		const username = 'yojesuisunnouvelutilisateur';
+		const token = await getToken(username);
+		const story = await createStory(
+			'1. Test of askToUpdateParagraph',
+			username
+		);
+
+		// Ask to update story's initial paragraph
+		response = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}/modified`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send();
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Paragraph modification allowed');
+		expect(response.body.paragraph.estVerrouille).toBe(true);
+		expect(response.body.paragraph.idRedacteur).not.toBe(null);
+	});
+
+	test('Test of failed askToUpdateParagraph (user is writing another paragraph)', async () => {
+		let response;
+
+		const username = 'yojesuisunnouvelutilisateur';
+		const token = await getToken(username);
+		const story = await createStory(
+			'2. Test of failed askToUpdateParagraph (user is writing another paragraph)',
+			username
+		);
+
+		// Ask to update story's initial paragraph
+		response = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}/modified`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send();
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe(
+			'You are currently writing another paragraph'
+		);
+	});
+
+	test('Test of failed askToUpdateParagraph (user is not the redactor)', async () => {
+		let response;
+
+		const story = await createStory(
+			'3. Test of failed askToUpdateParagraph (user is not the redactor)',
+			'HeyJeSuisUnique'
+		);
+
+		const token = await getToken('PasLeRedacteur');
+		// Ask to update story's initial paragraph
+		response = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}/modified`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send();
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe(
+			'This paragraph is already modified by another user'
+		);
+	});
+});
+
+describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/cancel-modification', () => {
+	test('Test of cancelModification', async () => {
+		let response;
+
+		const username = 'HeyMoiCestClauzond';
+		const token = await getToken(username);
+		const story = await createStory(
+			'1. Test of cancelModification',
+			username
+		);
+
+		// Create a paragraph (cant cancel modification of initial paragraph)
+		response = await request(app)
+			.post(`/api/histoire/${story.id}/paragraphe/`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					titreChoix: 'Le choix de clauzond',
+					idParagraphe: story.idParagrapheInitial,
+					idChoix: null,
+					estConclusion: true
+				})
+			);
+		expect(response.statusCode).toBe(status.CREATED);
+		let choice = response.body.choice;
+		expect(choice.idRedacteur).not.toBe(null);
+
+		// Finish modifying initial paragraph
+		response = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					contenu:
+						"C'est l'histoire de clauzond qui fait un rap battle"
+				})
+			);
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.paragraph.estVerrouille).toBe(false);
+
+		// Ask to update the choice created before
+		response = await request(app)
+			.put(`/api/histoire/${story.id}/paragraphe/${choice.id}/modified`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send();
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Paragraph modification allowed');
+		expect(response.body.paragraph.estVerrouille).toBe(true);
+		choice = response.body.paragraph;
+
+		// Cancel modification of this paragraph
+		response = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${choice.id}/cancel-modification`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send();
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Modification canceled');
+		expect(response.body.paragraph.estVerrouille).toBe(false);
+		expect(response.body.paragraph.idRedacteur).toBe(null);
+	});
+	test('Test of failed cancelModification (user is not writer of the paragraph)', async () => {
+		let response;
+
+		const username = 'HeyMoiCestClauzond';
+		const token = await getToken(username);
+		const story = await createStory(
+			'2. Test of failed cancelModification (user is not writer of the paragraph)',
+			username
+		);
+
+		// Create a paragraph (cant cancel modification of initial paragraph)
+		response = await request(app)
+			.post(`/api/histoire/${story.id}/paragraphe/`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					titreChoix: 'Le choix de clauzond',
+					idParagraphe: story.idParagrapheInitial,
+					idChoix: null,
+					estConclusion: true
+				})
+			);
+		expect(response.statusCode).toBe(status.CREATED);
+		let choice = response.body.choice;
+		expect(choice.idRedacteur).not.toBe(null);
+
+		// Cancel modification of this paragraph
+		response = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${choice.id}/cancel-modification`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', await getToken("PasLeRedacteur"))
+			.send();
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe('You are not allowed to write on this paragraph');
+	});
+	test('Test of failed cancelModification (on initial paragraph)', async () => {
+		let response;
+
+		const username = 'HeyMoiCestClauzond';
+		const token = await getToken(username);
+		const story = await createStory(
+			'3. Test of failed cancelModification (on initial paragraph)',
+			username
+		);
+
+		// Create a paragraph (cant cancel modification of initial paragraph)
+		response = await request(app)
+			.post(`/api/histoire/${story.id}/paragraphe/`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					titreChoix: 'Le choix de clauzond',
+					idParagraphe: story.idParagrapheInitial,
+					idChoix: null,
+					estConclusion: true
+				})
+			);
+		expect(response.statusCode).toBe(status.CREATED);
+
+		// Cancel modification of the initial paragraph
+		response = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}/cancel-modification`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send();
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe('You cannot abandon the initial paragraph');
 	});
 });
