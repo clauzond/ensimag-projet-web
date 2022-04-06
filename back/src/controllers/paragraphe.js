@@ -110,7 +110,7 @@ export const paragraphe = {
 			choice = await Paragraphe.create({
 				contenu: null,
 				estVerrouille: false,
-				estConclusion: false
+				estConclusion: has(req.body, 'estConclusion')? req.body.estConclusion : false
 			});
 		}
 
@@ -210,7 +210,8 @@ export const paragraphe = {
 
 		res.json({
 			status: true,
-			message: 'Paragraph has been successfully modified'
+			message: 'Paragraph has been successfully modified',
+			paragraph: paragraph
 		});
 	},
 	async cancelModification(req, res) {
