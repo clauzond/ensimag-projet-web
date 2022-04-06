@@ -59,7 +59,7 @@ export const paragraphe = {
 			);
 		}
 
-		// idParagraphe is the paragraphe which leads to the new choice being created 
+		// idParagraphe is the paragraphe which leads to the new choice being created
 		if (!has(req.body, 'idParagraphe')) {
 			throw new RequestError(
 				'You must specify idParagraphe param',
@@ -135,12 +135,16 @@ export const paragraphe = {
 	async getParagraph(req, res) {
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
+		const choiceRowArray = await ChoixTable.findAll({
+			where: { ParagrapheId: paragraph.id }
+		});
 
 		res.json({
 			status: true,
 			message: 'Returning paragraph',
 			story: story,
-			paragraph: paragraph
+			paragraph: paragraph,
+			choiceRowArray: choiceRowArray
 		});
 	},
 	async askToUpdateParagraph(req, res) {

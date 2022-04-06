@@ -157,6 +157,22 @@ describe('GET /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 		const story = await createStory('1. Test of get paragraph');
 		const token = await getToken();
 
+		// Post a new choice (already tested before)
+		response = await request(app)
+			.post(`/api/histoire/${story.id}/paragraphe/`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					titreChoix: 'Le premier choix de clauzond',
+					idParagraphe: story.idParagrapheInitial,
+					idChoix: story.idParagrapheInitial
+				})
+			);
+		expect(response.statusCode).toBe(status.CREATED);
+		expect(response.body.message).toBe('Paragraph created');
+
+		// Get the initial paragraph
 		response = await request(app)
 			.get(
 				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
@@ -167,6 +183,11 @@ describe('GET /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 		expect(response.body.message).toBe('Returning paragraph');
 		expect(response.body.story.id).toBe(story.id);
 		expect(response.body.paragraph.id).toBe(story.idParagrapheInitial);
+
+		// Verify it has a choice
+		expect(response.body.choiceRowArray[0].titreChoix).toBe('Le premier choix de clauzond');
+		expect(response.body.choiceRowArray[0].ParagrapheId).toBe(story.idParagrapheInitial);
+		expect(response.body.choiceRowArray[0].ChoixId).toBe(story.idParagrapheInitial);
 	});
 
 	test('Test of failed get paragraph (story does not exist)', async () => {
