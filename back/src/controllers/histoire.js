@@ -130,6 +130,9 @@ export const story = {
 			estConclusion: false
 		});
 
+		// Ajout de l'utilisateur en tant que rédacteur du paragraphe initial
+		await paragrapheInitial.setRedacteur(req.user);
+
 		// Ajout du paragraphe initial à l'histoire
 		await histoire.setParagrapheInitial(paragrapheInitial);
 
