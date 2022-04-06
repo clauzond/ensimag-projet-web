@@ -32,7 +32,7 @@ async function verifyUserIsFree(idUser) {
 
 async function checkIfUserIsWriter(user, paragraph) {
 	// Check if the current user is the writer of the paragraph
-	if (await paragraph.isRedacteur(user)) {
+	if (!(await paragraph.isRedacteur(user))) {
 		throw new RequestError(
 			'You are not allowed to write on this paragraph',
 			status.FORBIDDEN
