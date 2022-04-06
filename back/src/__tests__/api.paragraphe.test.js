@@ -291,7 +291,6 @@ describe('DELETE /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 	});
 
 	test('Test of failed delete paragraph (paragraph has choices)', async () => {
-		// TODO: test paragraphe.deleteParagraph
 		let response;
 
 		const story = await createStory(
@@ -355,14 +354,33 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/modified', () =
 	});
 });
 
-describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/modified', () => {
+describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/cancel-modification', () => {
 	test('Test of valid utilisateur', async () => {
 		// TODO: test paragraphe.cancelModification
 	});
 });
 
 describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
-	test('Test of valid utilisateur', async () => {
+	test('Test of updateParagraph', async () => {
 		// TODO: test paragraphe.updateParagraph
+		let response;
+
+		const story = await createStory('1. Test of updateParagraph');
+		const token = await getToken();
+
+		// Modify story's initial paragraph
+		response = await request(app)
+			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					contenu: "C'est l'histoire de clauzond qui fait un rap battle"
+				})
+			);
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Paragraph has been successfully modified');
+		expect(response.body.paragraph.contenu).toBe("C'est l'histoire de clauzond qui fait un rap battle");
+		expect(response.body.paragraph.estVerrouille).toBe(false);
 	});
 });
