@@ -37,7 +37,7 @@ async function getToken(username) {
 	return response.body.data;
 }
 
-async function createStory(title, estPublique, initFirstParagraph) {
+async function createStory(title, isPublic, firstParagraphContent) {
 	const token = await getToken();
 
 	const response = await request(app)
@@ -47,21 +47,34 @@ async function createStory(title, estPublique, initFirstParagraph) {
 		.send(
 			JSON.stringify({
 				titre: title,
-				estPublique: estPublique === undefined ? false : estPublique
+				estPublique: isPublic === undefined ? false : isPublic
 			})
 		);
 
-	if (initFirstParagraph !== undefined && initFirstParagraph === true) {
+	if (firstParagraphContent !== undefined) {
 		// Set the content of the init paragraph
 		await request(app)
 			.put(
-				`/api/histoire/${response.body.histoire.idParagrapheInitial}/paragraphe/`
+				`/api/histoire/${response.body.histoire.id}/paragraphe/${response.body.histoire.idParagrapheInitial}`
 			)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					contenu: 'Ceci est le paragraphe initial de clauzond'
+					contenu: firstParagraphContent
+				})
+			);
+
+		await request(app)
+			.post(`/api/histoire/${response.body.histoire.id}/paragraphe/`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					titreChoix: 'Le choix final de clauzond',
+					idParagraphe: response.body.histoire.idParagrapheInitial,
+					idChoix: null,
+					estConclusion: true
 				})
 			);
 	}
