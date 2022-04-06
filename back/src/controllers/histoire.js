@@ -40,7 +40,7 @@ export const story = {
 			where: { estPublique: true }
 		});
 
-		let stories = { stories: [] };
+		let stories = [];
 		// Check the initial paragraph of each story
 		for (let story of storiesFromDB) {
 			const initParagraph = await story.getParagrapheInitial();
@@ -49,7 +49,7 @@ export const story = {
 
 			// Verify that initial paragraph can lead to a conclusion
 			if (await initParagraph.leadToConclusion()) {
-				stories['stories'].push(story);
+				stories.push(story);
 			}
 		}
 
