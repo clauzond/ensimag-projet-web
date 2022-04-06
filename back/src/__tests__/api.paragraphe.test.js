@@ -19,12 +19,14 @@ describe('POST /api/histoire/:idHistoire/paragraphe/', () => {
 				JSON.stringify({
 					titreChoix: 'Le choix de clauzond',
 					idParagraphe: story.idParagrapheInitial,
-					idChoix: null
+					idChoix: null,
+					estConclusion: true
 				})
 			);
 		expect(response.statusCode).toBe(status.CREATED);
 		expect(response.body.message).toBe('Paragraph created');
 		expect(response.body.paragraph.id).toBe(story.idParagrapheInitial);
+		expect(response.body.choice.estConclusion).toBe(true);
 		const choice = await Paragraphe.findByPk(response.body.choice.id);
 		expect(choice).not.toBeNull();
 		const titreChoix = (
@@ -57,6 +59,7 @@ describe('POST /api/histoire/:idHistoire/paragraphe/', () => {
 		expect(response.statusCode).toBe(status.CREATED);
 		expect(response.body.message).toBe('Paragraph created');
 		expect(response.body.paragraph.id).toBe(story.idParagrapheInitial);
+		expect(response.body.choice.estConclusion).toBe(false);
 		const choice = await ChoixTable.findOne({
 			where: { ParagrapheId: story.idParagrapheInitial }
 		});
@@ -362,7 +365,6 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/cancel-modifica
 
 describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 	test('Test of updateParagraph', async () => {
-		// TODO: test paragraphe.updateParagraph
 		let response;
 
 		const story = await createStory('1. Test of updateParagraph');
@@ -382,5 +384,68 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 		expect(response.body.message).toBe('Paragraph has been successfully modified');
 		expect(response.body.paragraph.contenu).toBe("C'est l'histoire de clauzond qui fait un rap battle");
 		expect(response.body.paragraph.estVerrouille).toBe(false);
+	});
+
+	test('Test of failed updateParagraph (no content)', async () => {
+		let response;
+
+		const story = await createStory('1. Test of updateParagraph');
+		const token = await getToken();
+
+		response = await request(app)
+			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					contenu: ""
+				})
+			);
+		console.log(response.body);
+		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+
+		response = await request(app)
+			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+				})
+			);
+		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+
+		response = await request(app)
+			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					contenu: null
+				})
+			);
+		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+
+		response = await request(app)
+			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					contenu: "Je teste que les contenus identiques renvoient NOT_MODIFIED"
+				})
+			);
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.paragraph.contenu).toBe("Je teste que les contenus identiques renvoient NOT_MODIFIED")
+
+		response = await request(app)
+			.put(`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					contenu: "Je teste que les contenus identiques renvoient NOT_MODIFIED"
+				})
+			);
+		expect(response.statusCode).toBe(status.NOT_MODIFIED);
 	});
 });
