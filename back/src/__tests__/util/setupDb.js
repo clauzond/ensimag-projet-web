@@ -37,7 +37,7 @@ async function getToken(username) {
 	return response.body.data;
 }
 
-async function createStory(title, estPublique) {
+async function createStory(title, estPublique, initFirstParagraph) {
 	const token = await getToken();
 
 	const response = await request(app)
@@ -50,6 +50,21 @@ async function createStory(title, estPublique) {
 				estPublique: estPublique === undefined ? false : estPublique
 			})
 		);
+
+	if (initFirstParagraph !== undefined && initFirstParagraph === true) {
+		// Set the content of the init paragraph
+		await request(app)
+			.put(
+				`/api/histoire/${response.body.histoire.idParagrapheInitial}/paragraphe/`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					contenu: 'Ceci est le paragraphe initial de clauzond'
+				})
+			);
+	}
 
 	return response.body.histoire;
 }
