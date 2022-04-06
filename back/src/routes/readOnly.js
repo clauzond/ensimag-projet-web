@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/api/readOnly/histoire', story.getPublicStories);
 router.get(
-	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
+	'/api/readOnly/histoire/:idHistoire/paragraphe/:idParagraphe',
 	paragraphe.getParagraph
 );
 
