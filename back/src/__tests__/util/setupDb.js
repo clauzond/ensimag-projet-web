@@ -37,7 +37,13 @@ async function getToken(username) {
 	return response.body.data;
 }
 
-async function createStory(title, username, isPublic, firstParagraphContent) {
+async function createStory(
+	title,
+	username,
+	isPublic,
+	firstParagraphContent,
+	leadToConlusion
+) {
 	const token =
 		username === undefined ? await getToken() : await getToken(username);
 
@@ -66,18 +72,21 @@ async function createStory(title, username, isPublic, firstParagraphContent) {
 				})
 			);
 
-		await request(app)
-			.post(`/api/histoire/${response.body.histoire.id}/paragraphe/`)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
-					titreChoix: 'Le choix final de clauzond',
-					idParagraphe: response.body.histoire.idParagrapheInitial,
-					idChoix: null,
-					estConclusion: true
-				})
-			);
+		if (leadToConlusion !== undefined && leadToConlusion === true) {
+			await request(app)
+				.post(`/api/histoire/${response.body.histoire.id}/paragraphe/`)
+				.set('Content-Type', 'application/json')
+				.set('x-access-token', token)
+				.send(
+					JSON.stringify({
+						titreChoix: 'Le choix final de clauzond',
+						idParagraphe:
+							response.body.histoire.idParagrapheInitial,
+						idChoix: null,
+						estConclusion: true
+					})
+				);
+		}
 	}
 
 	return response.body.histoire;
