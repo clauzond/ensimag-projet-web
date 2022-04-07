@@ -15,7 +15,7 @@ import {
 } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function Welcome() {
+export function Welcome({ navigation }) {
 	return (
 		<View>
 			<Flex h="100%" justify="space-between" align="center" py={4}>
@@ -35,9 +35,11 @@ export function Welcome() {
 					</Heading>
 				</Flex>
 				<Box p="2" w="90%" py="8" colorScheme="secondary">
-					<Button mt="2">Inscription</Button>
+					<Button mt="2" onPress={() => navigation.navigate('Home')}>
+						Inscription
+					</Button>
 					<Button mt="2" colorScheme="secondary">
-						Connexion
+						Se connecter
 					</Button>
 					<Text mt={2} textAlign="center">
 						Continuer en tant qu'invité
