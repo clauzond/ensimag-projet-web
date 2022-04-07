@@ -1,18 +1,5 @@
 import React from 'react';
-import {
-	Flex,
-	Heading,
-	View,
-	Text,
-	Center,
-	Icon,
-	Box,
-	Button,
-	VStack,
-	FormControl,
-	Input,
-	ScrollView,
-} from 'native-base';
+import { Flex, Heading, View, Text, Icon, Box, Button } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export function Welcome({ navigation }) {
@@ -27,7 +14,7 @@ export function Welcome({ navigation }) {
 						color="coolGray.800"
 						size="2xl"
 						_dark={{
-							color: 'warmGray.50',
+							color: 'warmGray.50'
 						}}
 					/>
 					<Heading fontSize="4xl" color="primary.400">
@@ -35,7 +22,10 @@ export function Welcome({ navigation }) {
 					</Heading>
 				</Flex>
 				<Box p="2" w="90%" py="8" colorScheme="secondary">
-					<Button mt="2" onPress={() => navigation.navigate('Home')}>
+					<Button
+						mt="2"
+						onPress={() => navigation.navigate('Register')}
+					>
 						Inscription
 					</Button>
 					<Button mt="2" colorScheme="secondary">

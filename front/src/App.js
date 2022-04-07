@@ -39,13 +39,16 @@ import React from 'react';
 
 import { Text, View, Button, StyleSheet } from 'react-native';
 import { AddIcon, NativeBaseProvider, Box } from 'native-base';
-import { Welcome } from './views/Welcome';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Welcome } from './views/Welcome';
+import { Register } from './views/Register';
 
 function HomeScreen() {
 	return (
-		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+		<View
+			style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+		>
 			<Text>Home Screen</Text>
 		</View>
 	);
@@ -63,6 +66,11 @@ export default function App() {
 					<Stack.Screen
 						name="Welcome"
 						component={Welcome}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="Register"
+						component={Register}
 						options={{ headerShown: false }}
 					/>
 					<Stack.Screen name="Home" component={HomeScreen} />

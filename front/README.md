@@ -1,3 +1,9 @@
+# Documentation
+
+Les composants: [NativeBase](https://docs.nativebase.io/?utm_source=HomePage&utm_medium=header&utm_campaign=NativeBase_3)
+
+Navigation entre les pages: [React-Navigation](https://reactnavigation.org/docs/getting-started)
+
 # Installation
 
 Mettre en place le react native: [suivre le tp react native](https://chamilo.grenoble-inp.fr/courses/ENSIMAG4MMCAWE6/document/tp/projet.html) jusqu'a "Premiere Page". 
