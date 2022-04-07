@@ -3,7 +3,7 @@ import status from 'http-status';
 import { Op } from 'sequelize';
 import { RequestError } from '../util/requestError.js';
 import { Paragraphe, ChoixTable } from '../models/index.js';
-import { checkStoryId } from './histoire.js';
+import { checkIsPrivateStory, checkStoryId } from './histoire.js';
 
 async function checkParagraphId(req) {
 	if (!has(req.params, 'idParagraphe')) {
@@ -149,6 +149,36 @@ export const paragraphe = {
 	async getParagraph(req, res) {
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
+		const choiceRowArray = await ChoixTable.findAll({
+			where: { ParagrapheId: paragraph.id }
+		});
+
+		res.json({
+			status: true,
+			message: 'Returning paragraph',
+			story: story,
+			paragraph: paragraph,
+			choiceRowArray: choiceRowArray
+		});
+	},
+	async getPublicParagraph(req, res) {
+		const story = await checkStoryId(req);
+
+		await checkIsPrivateStory(story);
+
+		const paragraph = await checkParagraphId(req);
+		console.log(paragraph);
+
+		if (
+			paragraph.estVerrouille === true ||
+			paragraph.getRedacteur() === null
+		) {
+			throw new RequestError(
+				'This paragraph is locked',
+				status.FORBIDDEN
+			);
+		}
+
 		const choiceRowArray = await ChoixTable.findAll({
 			where: { ParagrapheId: paragraph.id }
 		});

@@ -22,6 +22,20 @@ async function checkStoryId(req) {
 	return story;
 }
 
+async function checkIsPrivateStory(story) {
+	// Check if the reader is allowed to get the story
+	const initParagraph = await story.getParagrapheInitial();
+	const isParagraphCorrect =
+		initParagraph.estVerrouille === false &&
+		initParagraph.contenu !== null &&
+		initParagraph.contenu.length !== 0 &&
+		(await initParagraph.leadToConclusion());
+
+	if (story.estPublique === false || !isParagraphCorrect) {
+		throw new RequestError('This story is private', status.FORBIDDEN);
+	}
+}
+
 export const story = {
 	async getPublicStories(req, res) {
 		const storiesFromDB = await Histoire.findAll({
@@ -186,7 +200,13 @@ export const story = {
 		// Get story object
 		const story = await checkStoryId(req);
 		res.json({ status: true, message: 'Returning story', story: story });
+	},
+	async getPublicStory(req, res) {
+		// Get story object
+		const story = await checkStoryId(req);
+		await checkIsPrivateStory(story);
+		res.json({ status: true, message: 'Returning story', story: story });
 	}
 };
 
-export { checkStoryId };
+export { checkStoryId, checkIsPrivateStory };

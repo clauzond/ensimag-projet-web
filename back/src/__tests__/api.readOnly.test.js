@@ -1,7 +1,7 @@
 import { app } from '../app.js';
 import request from 'supertest';
 import status from 'http-status';
-import { createStory } from './util/setupDb.js';
+import { createStory, getToken } from './util/setupDb.js';
 
 describe('GET /api/readOnly/histoire', () => {
 	test('Test of get a public story', async () => {
@@ -116,3 +116,86 @@ describe('GET /api/readOnly/histoire', () => {
 		expect(publicStory.ParagrapheInitial.idRedacteur).not.toBe(username);
 	});
 });
+
+describe('GET /api/readOnly/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
+	test('Test of get a paragraph from a private story', async () => {
+		const story = await createStory(
+			'1. Test of get a paragraph from private story'
+		);
+		const token = await getToken();
+
+		// Get the initial paragraph
+		const response = await request(app)
+			.get(
+				`/api/readOnly/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe('This story is private');
+	});
+
+	test('Test of get a locked paragraph from a public story', async () => {
+		const user = 'userWithLockedParagraph';
+		const story = await createStory(
+			'2. Test of get a paragraph from private story',
+			user,
+			true,
+			'Contenu du paragraphe initial',
+			true
+		);
+		const token = await getToken(user);
+
+		// Set final paragraph locked
+		const lockedParagraph = await request(app)
+			.put(
+				`/api/histoire/${story.id}/paragraphe/${
+					story.idParagrapheInitial + 1
+				}/modified`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		console.log(lockedParagraph.body.paragraph);
+
+		// Get the final paragraph
+		const response = await request(app)
+			.get(
+				`/api/readOnly/histoire/${story.id}/paragraphe/${
+					story.idParagrapheInitial + 1
+				}`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe('This paragraph is locked');
+	});
+
+	test('Test of get a paragraph from a public story', async () => {
+		const firstParagraphContent = 'Contenu du paragraphe public';
+		const story = await createStory(
+			'3. Test of get a paragraph from private story',
+			undefined,
+			true,
+			firstParagraphContent,
+			true
+		);
+		const token = await getToken();
+
+		// Get the initial paragraph
+		const response = await request(app)
+			.get(
+				`/api/readOnly/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+			)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Returning paragraph');
+		expect(response.body.story.id).toBe(story.id);
+		expect(response.body.paragraph.id).toBe(story.idParagrapheInitial);
+	});
+});
+
+// TODO
+// describe('GET /api/readOnly/histoire/:idHistoire', () => {
+// });
