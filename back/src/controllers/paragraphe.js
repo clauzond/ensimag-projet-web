@@ -228,7 +228,14 @@ export const paragraphe = {
 		await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
-		// TODO: verify estVerrouille==true ?
+		// Check if the paragraph is already locked w
+		// which means that the user ask before edit it
+		if (paragraph.estVerrouille !== true) {
+			throw new RequestError(
+				'The paragraph is not locked, you are not allowed to edit it',
+				status.FORBIDDEN
+			);
+		}
 
 		// Check if the content of the paragraph is present
 		if (
