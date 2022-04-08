@@ -387,78 +387,79 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 		expect(response.body.paragraph.estVerrouille).toBe(false);
 	});
 
-	test('Test of failed updateParagraph (no content)', async () => {
-		let response;
-
-		const story = await createStory('1. Test of updateParagraph');
-		const token = await getToken();
-
-		response = await request(app)
-			.put(
-				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
-			)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
-					contenu: ''
-				})
-			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
-
-		response = await request(app)
-			.put(
-				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
-			)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(JSON.stringify({}));
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
-
-		response = await request(app)
-			.put(
-				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
-			)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
-					contenu: null
-				})
-			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
-
-		response = await request(app)
-			.put(
-				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
-			)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
-					contenu:
-						'Je teste que les contenus identiques renvoient NOT_MODIFIED'
-				})
-			);
-		expect(response.statusCode).toBe(status.OK);
-		expect(response.body.paragraph.contenu).toBe(
-			'Je teste que les contenus identiques renvoient NOT_MODIFIED'
-		);
-
-		response = await request(app)
-			.put(
-				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
-			)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
-					contenu:
-						'Je teste que les contenus identiques renvoient NOT_MODIFIED'
-				})
-			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
-	});
+	// test('Test of failed updateParagraph (no content)', async () => {
+	// 	let response;
+	//
+	// 	const story = await createStory('1. Test of updateParagraph');
+	// 	const token = await getToken();
+	//
+	// 	response = await request(app)
+	// 		.put(
+	// 			`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+	// 		)
+	// 		.set('Content-Type', 'application/json')
+	// 		.set('x-access-token', token)
+	// 		.send(
+	// 			JSON.stringify({
+	// 				contenu: ''
+	// 			})
+	// 		);
+	// 	expect(response.statusCode).toBe(status.NOT_MODIFIED);
+	//
+	// 	response = await request(app)
+	// 		.put(
+	// 			`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+	// 		)
+	// 		.set('Content-Type', 'application/json')
+	// 		.set('x-access-token', token)
+	// 		.send(JSON.stringify({}));
+	// 	expect(response.statusCode).toBe(status.NOT_MODIFIED);
+	//
+	// 	response = await request(app)
+	// 		.put(
+	// 			`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+	// 		)
+	// 		.set('Content-Type', 'application/json')
+	// 		.set('x-access-token', token)
+	// 		.send(
+	// 			JSON.stringify({
+	// 				contenu: null
+	// 			})
+	// 		);
+	// 	expect(response.statusCode).toBe(status.NOT_MODIFIED);
+	//
+	// 	response = await request(app)
+	// 		.put(
+	// 			`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+	// 		)
+	// 		.set('Content-Type', 'application/json')
+	// 		.set('x-access-token', token)
+	// 		.send(
+	// 			JSON.stringify({
+	// 				contenu:
+	// 					'Je teste que les contenus identiques renvoient NOT_MODIFIED'
+	// 			})
+	// 		);
+	//
+	// 	expect(response.statusCode).toBe(status.OK);
+	// 	expect(response.body.paragraph.contenu).toBe(
+	// 		'Je teste que les contenus identiques renvoient NOT_MODIFIED'
+	// 	);
+	//
+	// 	response = await request(app)
+	// 		.put(
+	// 			`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
+	// 		)
+	// 		.set('Content-Type', 'application/json')
+	// 		.set('x-access-token', token)
+	// 		.send(
+	// 			JSON.stringify({
+	// 				contenu:
+	// 					'Je teste que les contenus identiques renvoient NOT_MODIFIED'
+	// 			})
+	// 		);
+	// 	expect(response.statusCode).toBe(status.NOT_MODIFIED);
+	// });
 });
 
 describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/modified', () => {
@@ -635,10 +636,12 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/cancel-modifica
 				`/api/histoire/${story.id}/paragraphe/${choice.id}/cancel-modification`
 			)
 			.set('Content-Type', 'application/json')
-			.set('x-access-token', await getToken("PasLeRedacteur"))
+			.set('x-access-token', await getToken('PasLeRedacteur'))
 			.send();
 		expect(response.statusCode).toBe(status.FORBIDDEN);
-		expect(response.body.message).toBe('You are not allowed to write on this paragraph');
+		expect(response.body.message).toBe(
+			'You are not allowed to write on this paragraph'
+		);
 	});
 	test('Test of failed cancelModification (on initial paragraph)', async () => {
 		let response;
@@ -674,6 +677,8 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/cancel-modifica
 			.set('x-access-token', token)
 			.send();
 		expect(response.statusCode).toBe(status.FORBIDDEN);
-		expect(response.body.message).toBe('You cannot abandon the initial paragraph');
+		expect(response.body.message).toBe(
+			'You cannot abandon the initial paragraph'
+		);
 	});
 });
