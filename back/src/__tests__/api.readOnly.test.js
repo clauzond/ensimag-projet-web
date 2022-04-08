@@ -285,7 +285,3 @@ describe('GET /api/readOnly/histoire/:idHistoire/paragraphe/:idParagraphe', () =
 		expect(response.body.paragraph.id).toBe(story.idParagrapheInitial);
 	});
 });
-
-// TODO
-// describe('GET /api/readOnly/histoire/:idHistoire', () => {
-// });
