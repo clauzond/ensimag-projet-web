@@ -340,3 +340,5 @@ export const paragraphe = {
 		});
 	}
 };
+
+export { checkParagraphId };
