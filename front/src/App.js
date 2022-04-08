@@ -3,6 +3,7 @@ import { NativeBaseProvider, Text, View } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 import { useAppStateContext, AppStateProvider } from './contexts/AppState';
 import { Welcome } from './views/Welcome';
@@ -12,6 +13,11 @@ import { Login } from './views/Login';
 function HomeScreen() {
 	const { token } = useAppStateContext();
 	console.log(token);
+
+	const load = async () => {
+		const response = await axios.get();
+	};
+	useEffect();
 
 	return (
 		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -42,6 +48,7 @@ export default function App() {
 				<NavigationContainer>
 					{/* react-router navigation */}
 					<Stack.Navigator initialRouteName={token === '' ? 'Welcome' : 'Home'}>
+						{/* skip the initial welcome screen if a token is already on the device */}
 						<Stack.Screen
 							name="Welcome"
 							component={Welcome}

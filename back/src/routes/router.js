@@ -28,7 +28,7 @@ router.use(readOnly);
 
 // Authentification required
 router.use(auth);
-router.post('/api/whoami', utilisateur.whoami);
+router.get('/api/whoami', utilisateur.whoami);
 router.use(story);
 router.use(paragraphe);
 

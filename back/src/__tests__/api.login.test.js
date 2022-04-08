@@ -112,15 +112,10 @@ describe('POST /api/login', () => {
 		const token = response.body.data;
 
 		response = await request(app)
-			.post('/api/whoami')
+			.get('/api/whoami')
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
-					username: username,
-					password: password
-				})
-			);
+			.send();
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.data).toBe(username);
 	});
