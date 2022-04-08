@@ -115,5 +115,21 @@ export const utilisateur = {
 			$data:'eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNsYXV6b25kIn0.t0N93YTKjGXiDwTNlviLhyZyk0aIpGlVS1tdGGKYPbM'}
 		} */
 		res.json({ status: true, message: 'Returning token', data: signature });
+	},
+
+	async whoami(req, res) {
+		// #swagger.tags = ['Authentification']
+		// #swagger.summary = 'Check who is the current user'
+
+		/* #swagger.responses[200] = {
+			description: 'Returning username',
+			schema: { $status:true, $message: 'Returning username',
+			$data: 'clauzond'}
+		} */
+		res.json({
+			status: true,
+			message: 'Returning username',
+			data: req.user.id
+		});
 	}
 };

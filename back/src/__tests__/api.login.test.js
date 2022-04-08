@@ -96,7 +96,8 @@ describe('POST /api/register', () => {
 
 describe('POST /api/login', () => {
 	test('Test of valid utilisateur', async () => {
-		const response = await request(app)
+		let response;
+		response = await request(app)
 			.post('/api/login')
 			.set('Content-Type', 'application/json')
 			.send(
@@ -107,6 +108,21 @@ describe('POST /api/login', () => {
 			);
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.message).toBe('Returning token');
+
+		const token = response.body.data;
+
+		response = await request(app)
+			.post('/api/whoami')
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					username: username,
+					password: password
+				})
+			);
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.data).toBe(username);
 	});
 
 	test('Test of unvalid utilisateur', async () => {

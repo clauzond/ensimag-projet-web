@@ -8,6 +8,7 @@ import { auth } from '../util/middleware.js';
 import status from 'http-status';
 import { RequestError } from '../util/requestError.js';
 import readOnly from './readOnly.js';
+import { utilisateur } from '../controllers/utilisateur.js';
 
 const router = express.Router();
 
@@ -17,7 +18,6 @@ router.get('/', setup(swaggerFile));
 
 // This middleware adds the json header to every response
 router.use('/', (req, res, next) => {
-	console.log('using all routes middleware');
 	res.type('json');
 	next();
 });
@@ -28,6 +28,7 @@ router.use(readOnly);
 
 // Authentification required
 router.use(auth);
+router.post('/api/whoami', utilisateur.whoami);
 router.use(story);
 router.use(paragraphe);
 
