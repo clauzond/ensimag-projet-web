@@ -9,22 +9,7 @@ import { useAppStateContext, AppStateProvider } from './contexts/AppState';
 import { Welcome } from './views/Welcome';
 import { Register } from './views/Register';
 import { Login } from './views/Login';
-
-function HomeScreen() {
-	const { token } = useAppStateContext();
-	console.log(token);
-
-	const load = async () => {
-		const response = await axios.get();
-	};
-	useEffect();
-
-	return (
-		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-			<Text>got token: {token}</Text>
-		</View>
-	);
-}
+import { Home } from './views/Home';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,7 +19,7 @@ export default function App() {
 	const load = async () => {
 		const tokenFromStorage = await AsyncStorage.getItem('@token');
 		if (tokenFromStorage !== '') {
-			setToken(tokenFromStorage);
+			setToken('');
 		}
 	};
 	React.useEffect(() => {
@@ -64,7 +49,7 @@ export default function App() {
 							component={Login}
 							options={{ headerShown: false }}
 						/>
-						<Stack.Screen name="Home" component={HomeScreen} />
+						<Stack.Screen name="Home" component={Home} />
 					</Stack.Navigator>
 				</NavigationContainer>
 			</NativeBaseProvider>

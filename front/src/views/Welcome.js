@@ -1,8 +1,16 @@
 import React from 'react';
 import { Flex, Heading, View, Text, Icon, Box, Button } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useAppStateContext } from '../contexts/AppState';
 
 export function Welcome({ navigation }) {
+	const { setToken } = useAppStateContext();
+
+	const asGuest = () => {
+		setToken('');
+		navigation.navigate('Home');
+	};
+
 	return (
 		<View>
 			<Flex h="100%" justify="space-between" align="center" py={4}>
@@ -32,7 +40,13 @@ export function Welcome({ navigation }) {
 					>
 						Se connecter
 					</Button>
-					<Text mt={2} textAlign="center">
+					<Text
+						underline
+						mt={2}
+						textAlign="center"
+						color="info.600"
+						onPress={asGuest}
+					>
 						Continuer en tant qu'invité
 					</Text>
 				</Box>
