@@ -90,7 +90,7 @@ describe('POST /api/register', () => {
 					password: password
 				})
 			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
 	});
 });
 

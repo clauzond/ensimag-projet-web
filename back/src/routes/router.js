@@ -16,8 +16,9 @@ router.use('/', serve);
 router.get('/', setup(swaggerFile));
 
 // This middleware adds the json header to every response
-router.use('*', (req, res, next) => {
-	res.setHeader('Content-Type', 'application/json');
+router.use('/', (req, res, next) => {
+	console.log('using all routes middleware');
+	res.type('json');
 	next();
 });
 

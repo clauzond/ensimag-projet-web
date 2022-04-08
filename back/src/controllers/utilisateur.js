@@ -67,7 +67,7 @@ export const utilisateur = {
 			} */
 			throw new RequestError(
 				`User ${username} is already registered`,
-				status.NOT_MODIFIED
+				status.BAD_REQUEST
 			);
 		}
 

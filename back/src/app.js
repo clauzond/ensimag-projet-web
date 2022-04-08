@@ -4,6 +4,8 @@ import { router } from './routes/router.js';
 
 const app = express();
 
+app.set('etag', false); // turn off
+
 // Configure Express App Instance
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
