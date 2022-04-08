@@ -1,55 +1,21 @@
-// import React, { useState } from 'react';
-// import { Text, View, Button, StyleSheet } from 'react-native';
-// import LoginForm from './components/LoginForm';
-//
-// const BACKEND = 'http://10.0.2.2:3000';
-//
-// const App = () => {
-// 	const [compteur, setCompteur] = useState(0);
-// 	const [token, setToken] = useState('');
-//
-// 	async function connect(username, password) {
-// 		fetch(`${BACKEND}/api/login`, {
-// 			method: 'POST',
-// 			headers: { 'Content-Type': 'application/json' },
-// 			body: `${JSON.stringify({ username, password })}`
-// 		})
-// 			.then(response => {
-// 				console.log(response);
-// 				return response.json();
-// 			})
-// 			.then(data => {
-// 				console.log(data);
-// 				console.log(data.data);
-// 				setToken(data.data);
-// 			})
-// 			.catch(error => console.log(error));
-// 	}
-//
-// 	return (
-// 		<>
-// 			<Text>Token is: {token}</Text>
-// 			<LoginForm onConnect={connect} />
-// 		</>
-// 	);
-// };
-// export default App;
-
 import React from 'react';
-
-import { Text, View, Button, StyleSheet } from 'react-native';
-import { AddIcon, NativeBaseProvider, Box } from 'native-base';
+import { NativeBaseProvider, Text, View } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { useAppStateContext, AppStateProvider } from './contexts/AppState';
 import { Welcome } from './views/Welcome';
 import { Register } from './views/Register';
+import { Login } from './views/Login';
 
 function HomeScreen() {
+	const { token } = useAppStateContext();
+	console.log(token);
+
 	return (
-		<View
-			style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-		>
-			<Text>Home Screen</Text>
+		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+			<Text>got token: {token}</Text>
 		</View>
 	);
 }
@@ -57,25 +23,44 @@ function HomeScreen() {
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+	const [token, setToken] = React.useState('');
+
+	const load = async () => {
+		const tokenFromStorage = await AsyncStorage.getItem('@token');
+		if (tokenFromStorage !== '') {
+			setToken(tokenFromStorage);
+		}
+	};
+	React.useEffect(() => {
+		load();
+	}, []);
+
 	return (
-		<NativeBaseProvider>
-			{/* needed by native-base for styling */}
-			<NavigationContainer>
-				{/* react-router navigation */}
-				<Stack.Navigator initialRouteName="Welcome">
-					<Stack.Screen
-						name="Welcome"
-						component={Welcome}
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name="Register"
-						component={Register}
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen name="Home" component={HomeScreen} />
-				</Stack.Navigator>
-			</NavigationContainer>
-		</NativeBaseProvider>
+		<AppStateProvider value={{ token, setToken }}>
+			<NativeBaseProvider>
+				{/* needed by native-base for styling */}
+				<NavigationContainer>
+					{/* react-router navigation */}
+					<Stack.Navigator initialRouteName={token === '' ? 'Welcome' : 'Home'}>
+						<Stack.Screen
+							name="Welcome"
+							component={Welcome}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name="Register"
+							component={Register}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name="Login"
+							component={Login}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen name="Home" component={HomeScreen} />
+					</Stack.Navigator>
+				</NavigationContainer>
+			</NativeBaseProvider>
+		</AppStateProvider>
 	);
 }

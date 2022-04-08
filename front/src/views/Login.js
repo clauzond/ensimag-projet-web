@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BACKEND } from '../globals';
 import { useAppStateContext } from '../contexts/AppState';
 
-export function Register({ navigation }) {
+export function Login({ navigation }) {
 	const { setToken } = useAppStateContext();
 	const [formData, setData] = React.useState({});
 	const [errors, setErrors] = React.useState({});
@@ -67,30 +67,15 @@ export function Register({ navigation }) {
 			return false;
 		}
 
-		// Validate pasword verification
-		if (formData.password !== formData.passwordVerify) {
-			setErrors({
-				...errors,
-				passwordVerify: 'Les deux mots de passe sont différents',
-			});
-			return false;
-		}
-
 		setErrors({});
 		return true;
 	};
 
 	// Connect to the actual backend
-	async function register(username, password) {
+	async function login(username, password) {
 		try {
 			setLoading(true);
-			await axios.post(`${BACKEND}/api/register`, {
-				username,
-				password,
-			});
-
-			// since we've just registered the user, we might as well log them in
-			const response = await axios.post(`${BACKEND}/api/login`, {
+			let response = await axios.post(`${BACKEND}/api/login`, {
 				username,
 				password,
 			});
@@ -117,7 +102,7 @@ export function Register({ navigation }) {
 		if (!validate()) {
 			return;
 		}
-		await register(formData.username, formData.password);
+		await login(formData.username, formData.password);
 	};
 
 	return (
@@ -167,7 +152,6 @@ export function Register({ navigation }) {
 									<Box alignItems="center">
 										<Input
 											type={show ? 'text' : 'password'}
-											placeholder="Mot de passe"
 											onChangeText={value =>
 												setData({
 													...formData,
@@ -199,6 +183,7 @@ export function Register({ navigation }) {
 													)}
 												</Button>
 											}
+											placeholder="Password"
 										/>
 									</Box>
 									{'password' in errors ? (
@@ -215,28 +200,6 @@ export function Register({ navigation }) {
 										>
 											Le mot de passe doit faire au moins 6 charactères.
 										</FormControl.HelperText>
-									)}
-								</FormControl>
-								<FormControl isRequired isInvalid={'passwordVerify' in errors}>
-									<FormControl.Label>
-										Confirmer le mot de passe
-									</FormControl.Label>
-									<Input
-										type="password"
-										placeholder="Mot de passe"
-										onChangeText={value =>
-											setData({
-												...formData,
-												passwordVerify: value,
-											})
-										}
-									/>
-									{'passwordVerify' in errors && (
-										<FormControl.ErrorMessage
-											leftIcon={<WarningOutlineIcon size="xs" />}
-										>
-											{errors.passwordVerify}
-										</FormControl.ErrorMessage>
 									)}
 								</FormControl>
 								{loading && (
@@ -263,7 +226,7 @@ export function Register({ navigation }) {
 					Retour
 				</Button>
 				<Button colorScheme="primary" onPress={onSubmit}>
-					S'inscrire
+					Se connecter
 				</Button>
 			</Flex>
 		</Flex>
