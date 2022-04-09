@@ -299,6 +299,14 @@ export const story = {
 			);
 		}
 
+		// The author cannot remove himself from collaborators
+		if (req.user.id === req.body.idCollaborateur) {
+			throw new RequestError(
+				'You cannot remove yourself from collaborators',
+				status.FORBIDDEN
+			);
+		}
+
 		// Verify that collaborator exists in database
 		const collaborator = await Utilisateur.findByPk(
 			req.body.idCollaborateur
