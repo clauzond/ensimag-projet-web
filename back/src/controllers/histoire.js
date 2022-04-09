@@ -259,7 +259,7 @@ export const story = {
 		if (collaborator === null) {
 			throw new RequestError(
 				'User specified in idCollaborateur was not found',
-				status.BAD_REQUEST
+				status.NOT_FOUND
 			);
 		}
 
@@ -314,7 +314,7 @@ export const story = {
 		if (collaborator === null) {
 			throw new RequestError(
 				'User specified in idCollaborateur was not found',
-				status.BAD_REQUEST
+				status.NOT_FOUND
 			);
 		}
 

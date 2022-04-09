@@ -242,16 +242,466 @@ describe('GET /api/histoire/:idHistoire/collaborateur', () => {
 		expect(collaborators.length).toBe(1);
 		expect(collaborators[0].id).not.toBe(randomUser);
 	});
+
+	test('Test of get collaborators for an unknown story', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const token = await getToken(user);
+		await createStory("L'histoire de clauzond", user);
+
+		const response = await request(app)
+			.get(`/api/histoire/unknownId/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.NOT_FOUND);
+		expect(response.body.message).toBe("The story doesn't exist");
+	});
 });
 
 describe('POST /api/histoire/:idHistoire/collaborateur', () => {
 	test('Test of add collaborator to a story', async () => {
-		// TODO
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		// Create collaborator profile
+		const collaboratorName = 'leCollabo';
+		await getToken(collaboratorName);
+
+		const response = await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe(
+			'User added as collaborator of the story'
+		);
+		expect(response.body.story.id).toBe(newStory.id);
+		expect(response.body.collaborator.id).toBe(collaboratorName);
+	});
+
+	test('Test of add  twice collaborator to a story', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const token = await getToken(user);
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		// Create collaborator profile
+		const collaboratorName = 'leCollabo';
+		await getToken(collaboratorName);
+
+		await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		// Add again the user as collaborator
+		const response = await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+	});
+
+	test('Test of add collaborator without specify parameter', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		// Create collaborator profile
+		const collaboratorName = 'leCollabo';
+		await getToken(collaboratorName);
+
+		const response = await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
+		expect(response.body.message).toBe(
+			'You must specify idCollaborateur param'
+		);
+	});
+
+	test('Test of add collaborator with bad parameter', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		// Create collaborator profile
+		const collaboratorName = 'leCollabo';
+		await getToken(collaboratorName);
+
+		const response = await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					collaborator: collaboratorName
+				})
+			);
+
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
+		expect(response.body.message).toBe(
+			'You must specify idCollaborateur param'
+		);
+	});
+
+	test('Test of add collaborator by user who is not the author', async () => {
+		let response;
+
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const token = getToken(user);
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		// Create a random user profile
+		const collaboratorName = 'leCollabo';
+		const tokenCollabo = await getToken(collaboratorName);
+
+		// Try to add a collaborator with a random user profile
+		response = await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', tokenCollabo)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe(
+			'Only the author of the story can add or remove collaborators'
+		);
+
+		// Add the random user as a collaborator with author profile
+		await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		// Create another random user profile
+		const randomUser = 'leCollaboRandom';
+		await getToken(randomUser);
+
+		// Try to add a collaborator with a collaborator profile
+		response = await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', tokenCollabo)
+			.send(
+				JSON.stringify({
+					idCollaborateur: randomUser
+				})
+			);
+
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe(
+			'Only the author of the story can add or remove collaborators'
+		);
+	});
+
+	test('Test of add collaborator for an unknown story', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		const response = await request(app)
+			.post(`/api/histoire/unknownId/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.NOT_FOUND);
+		expect(response.body.message).toBe("The story doesn't exist");
+	});
+
+	test('Test of add collaborator with an unknown user', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const token = await getToken(user);
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const response = await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: 'unknownUser'
+				})
+			);
+
+		expect(response.statusCode).toBe(status.NOT_FOUND);
+		expect(response.body.message).toBe(
+			'User specified in idCollaborateur was not found'
+		);
 	});
 });
 
 describe('DELETE /api/histoire/:idHistoire/collaborateur', () => {
 	test('Test of remove collaborator to a story', async () => {
-		// TODO
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		// Create collaborator profile
+		const collaboratorName = 'leCollabo';
+		await getToken(collaboratorName);
+
+		// Add collaborator
+		await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		// Delete the user added as collaborator
+		const response = await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe(
+			'Successfully removed collaborator from story'
+		);
+		expect(response.body.story.id).toBe(newStory.id);
+	});
+
+	test('Test of remove a user who was not a collaborator', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		// Fake collaborator profile
+		const collaboratorName = 'leCollabo';
+
+		// Delete the user
+		const response = await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+	});
+
+	test('Test of remove the author to a story', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		// Delete the author from collaborators
+		const response = await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: user
+				})
+			);
+
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe(
+			'You cannot remove yourself from collaborators'
+		);
+	});
+
+	test('Test of delete collaborator without specify parameter', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		// Create collaborator profile
+		const collaboratorName = 'leCollabo';
+		await getToken(collaboratorName);
+
+		const response = await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
+		expect(response.body.message).toBe(
+			'You must specify idCollaborateur param'
+		);
+	});
+
+	test('Test of delete collaborator with bad parameter', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		// Create collaborator profile
+		const collaboratorName = 'leCollabo';
+		await getToken(collaboratorName);
+
+		const response = await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					collaborator: collaboratorName
+				})
+			);
+
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
+		expect(response.body.message).toBe(
+			'You must specify idCollaborateur param'
+		);
+	});
+
+	test('Test of delete collaborator by user who is not the author', async () => {
+		let response;
+
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const token = getToken(user);
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		// Create a random user profile
+		const collaboratorName = 'leCollabo';
+		const tokenCollabo = await getToken(collaboratorName);
+
+		// Try to add a collaborator with a random user profile
+		response = await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', tokenCollabo)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe(
+			'Only the author of the story can add or remove collaborators'
+		);
+
+		// Add the random user as a collaborator with author profile
+		await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		// Create another random user profile
+		const randomUser = 'leCollaboRandom';
+		await getToken(randomUser);
+
+		// Try to add a collaborator with a collaborator profile
+		response = await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', tokenCollabo)
+			.send(
+				JSON.stringify({
+					idCollaborateur: randomUser
+				})
+			);
+
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe(
+			'Only the author of the story can add or remove collaborators'
+		);
+	});
+
+	test('Test of delete collaborator for an unknown story', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const token = await getToken(user);
+		await createStory("L'histoire de clauzond", user);
+
+		const response = await request(app)
+			.delete(`/api/histoire/unknownId/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.NOT_FOUND);
+		expect(response.body.message).toBe("The story doesn't exist");
+	});
+
+	test('Test of delete collaborator with an unknown user', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const token = await getToken(user);
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const response = await request(app)
+			.delete(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: 'unknownUser'
+				})
+			);
+
+		expect(response.statusCode).toBe(status.NOT_FOUND);
+		expect(response.body.message).toBe(
+			'User specified in idCollaborateur was not found'
+		);
 	});
 });
