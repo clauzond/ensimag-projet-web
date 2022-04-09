@@ -207,6 +207,19 @@ export const story = {
 		await checkIsPrivateStory(story);
 		res.json({ status: true, message: 'Returning story', story: story });
 	},
+	async getCollaborators(req, res) {
+		// Get story object
+		const story = await checkStoryId(req);
+
+		// Get collaborators
+		const collaborators = await story.getCollaborateur();
+
+		res.json({
+			status: true,
+			message: 'Returning collaborators',
+			collaborators: collaborators
+		});
+	},
 	async addCollaborator(req, res) {
 		// Get story object
 		const story = await checkStoryId(req);
@@ -219,7 +232,7 @@ export const story = {
 			);
 		}
 
-		if (!has(req.body, "idCollaborateur")) {
+		if (!has(req.body, 'idCollaborateur')) {
 			throw new RequestError(
 				'You must specify idCollaborateur param',
 				status.BAD_REQUEST
@@ -227,7 +240,9 @@ export const story = {
 		}
 
 		// Verify that collaborator exists in database
-		const collaborator = await Utilisateur.findByPk(req.body.idCollaborateur);
+		const collaborator = await Utilisateur.findByPk(
+			req.body.idCollaborateur
+		);
 		if (collaborator === null) {
 			throw new RequestError(
 				'User specified in idCollaborateur was not found',
@@ -245,7 +260,12 @@ export const story = {
 
 		await story.addCollaborateur(collaborator);
 
-		res.json({ status: true, message: 'User added as collaborator of the story', story: story, collaborator: collaborator });
+		res.json({
+			status: true,
+			message: 'User added as collaborator of the story',
+			story: story,
+			collaborator: collaborator
+		});
 	},
 	async removeCollaborator(req, res) {
 		// Get story object
@@ -259,7 +279,7 @@ export const story = {
 			);
 		}
 
-		if (!has(req.body, "idCollaborateur")) {
+		if (!has(req.body, 'idCollaborateur')) {
 			throw new RequestError(
 				'You must specify idCollaborateur param',
 				status.BAD_REQUEST
@@ -267,7 +287,9 @@ export const story = {
 		}
 
 		// Verify that collaborator exists in database
-		const collaborator = await Utilisateur.findByPk(req.body.idCollaborateur);
+		const collaborator = await Utilisateur.findByPk(
+			req.body.idCollaborateur
+		);
 		if (collaborator === null) {
 			throw new RequestError(
 				'User specified in idCollaborateur was not found',
@@ -283,9 +305,13 @@ export const story = {
 			);
 		}
 
-		await story.removeCollaborator(collaborator);
+		await story.removeCollaborateur(collaborator);
 
-		res.json({ status: true, message: 'Successfully removed collaborator from story', story: story });
+		res.json({
+			status: true,
+			message: 'Successfully removed collaborator from story',
+			story: story
+		});
 	}
 };
 
