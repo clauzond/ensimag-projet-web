@@ -15,11 +15,21 @@ export const history = {
 			);
 		}
 
-		await req.user.setHistorique(story, req.body.arrayParagraphe);
+		const history = await req.user.setHistorique(
+			story,
+			req.body.arrayParagraphe
+		);
+		if (history === null) {
+			throw new RequestError(
+				'Invalid arrayParagraphe param: one or more id are invalid',
+				status.BAD_REQUEST
+			);
+		}
 
 		res.json({
 			status: true,
-			message: 'History saved'
+			message: 'History saved',
+			history: history
 		});
 	},
 	async getHistory(req, res) {
@@ -37,21 +47,29 @@ export const history = {
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
-		await req.user.removeHistorique(story, paragraph);
+		const history = await req.user.removeHistorique(story, paragraph);
+		if (history === null) {
+			throw new RequestError(
+				'Paragraph is not in history',
+				status.BAD_REQUEST
+			);
+		}
 
 		res.json({
 			status: true,
-			message: 'History removed'
+			message: 'History removed',
+			history: history
 		});
 	},
 	async clearHistory(req, res) {
 		const story = await checkStoryId(req);
 
-		await req.user.clearHistorique(story);
+		const history = await req.user.clearHistorique(story);
 
 		res.json({
 			status: true,
-			message: 'History cleared'
+			message: 'History cleared',
+			history: history
 		});
 	}
 };
