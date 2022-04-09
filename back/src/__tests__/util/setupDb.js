@@ -92,4 +92,35 @@ async function createStory(
 	return response.body.histoire;
 }
 
-export { getToken, createStory };
+async function createParagraph(
+	story,
+	title,
+	username,
+	idParagraphe,
+	idChoix,
+	estConclusion
+) {
+	title = title == undefined ? '' : title;
+	const token =
+		username == undefined ? await getToken() : await getToken(username);
+	estConclusion = estConclusion == undefined ? false : estConclusion;
+	idParagraphe =
+		idParagraphe == undefined ? story.idParagrapheInitial : idParagraphe;
+	idChoix = idChoix == undefined ? null : idChoix;
+
+	const response = await request(app)
+		.post(`/api/histoire/${story.id}/paragraphe/`)
+		.set('Content-Type', 'application/json')
+		.set('x-access-token', token)
+		.send(
+			JSON.stringify({
+				titreChoix: title,
+				idParagraphe: idParagraphe,
+				idChoix: idChoix,
+				estConclusion: estConclusion
+			})
+		);
+	return response.body.choice;
+}
+
+export { getToken, createStory, createParagraph };

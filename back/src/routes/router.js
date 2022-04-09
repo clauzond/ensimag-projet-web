@@ -1,6 +1,7 @@
 import express from 'express';
 import login from './utilisateur.js';
 import story from './histoire.js';
+import historique from './historique.js';
 import paragraphe from './paragraphe.js';
 import { serve, setup } from 'swagger-ui-express';
 import swaggerFile from '../../swagger_output.json';
@@ -31,6 +32,7 @@ router.use(auth);
 router.get('/api/whoami', utilisateur.whoami);
 router.use(story);
 router.use(paragraphe);
+router.use(historique);
 
 // Default 404 page
 router.use('*', () => {

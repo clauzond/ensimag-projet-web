@@ -109,7 +109,7 @@ describe('PUT /api/histoire/:idHistoire', () => {
 			.set('x-access-token', token);
 		expect(response.statusCode).toBe(status.FORBIDDEN);
 		expect(response.body.message).toBe(
-			'You are not allowed to modified this story'
+			'You are not allowed to modify this story'
 		);
 	});
 
@@ -127,7 +127,7 @@ describe('PUT /api/histoire/:idHistoire', () => {
 			);
 		expect(response.statusCode).toBe(status.BAD_REQUEST);
 		expect(response.body.message).toBe(
-			'You must specified estPublique or estOuverte params'
+			'You must specify estPublique or estOuverte params'
 		);
 	});
 
