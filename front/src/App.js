@@ -19,7 +19,7 @@ export default function App() {
 	const load = async () => {
 		const tokenFromStorage = await AsyncStorage.getItem('@token');
 		if (tokenFromStorage !== '') {
-			setToken('');
+			setToken(tokenFromStorage);
 		}
 	};
 	React.useEffect(() => {
