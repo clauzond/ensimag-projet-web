@@ -1,7 +1,7 @@
 import { app } from '../app.js';
 import request from 'supertest';
 import status from 'http-status';
-import { getToken } from './util/setupDb.js';
+import { createStory, getToken } from './util/setupDb.js';
 let idStory;
 
 describe('POST /api/histoire', () => {
@@ -174,5 +174,84 @@ describe('PUT /api/histoire/:idHistoire', () => {
 			);
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.message).toBe('Story modified');
+	});
+});
+
+describe('GET /api/histoire/:idHistoire/collaborateur', () => {
+	test('Test of get collaborators by the author', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken(user);
+
+		const response = await request(app)
+			.get(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Returning collaborators');
+		expect(response.body.collaborators).not.toBe(undefined);
+
+		// Check if the author is added as a collaborator
+		const collaborators = response.body.collaborators;
+		expect(collaborators.length).toBe(1);
+		expect(collaborators[0].id).toBe(user);
+	});
+
+	test('Test of get collaborators by a random user', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+
+		const token = await getToken('randomUser');
+
+		const response = await request(app)
+			.get(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.FORBIDDEN);
+		expect(response.body.message).toBe(
+			'Only the author can see collaborators list'
+		);
+	});
+
+	test('Test if a random user is not a collaborator by default', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const newStory = await createStory("L'histoire de clauzond", user);
+		const token = await getToken(user);
+
+		// Create randomUser
+		const randomUser = 'randomUser';
+		await getToken(randomUser);
+
+		const response = await request(app)
+			.get(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.OK);
+		expect(response.body.message).toBe('Returning collaborators');
+		expect(response.body.collaborators).not.toBe(undefined);
+
+		// Check if the author is added as a collaborator
+		const collaborators = response.body.collaborators;
+		expect(collaborators.length).toBe(1);
+		expect(collaborators[0].id).not.toBe(randomUser);
+	});
+});
+
+describe('POST /api/histoire/:idHistoire/collaborateur', () => {
+	test('Test of add collaborator to a story', async () => {
+		// TODO
+	});
+});
+
+describe('DELETE /api/histoire/:idHistoire/collaborateur', () => {
+	test('Test of remove collaborator to a story', async () => {
+		// TODO
 	});
 });

@@ -211,8 +211,21 @@ export const story = {
 		// Get story object
 		const story = await checkStoryId(req);
 
+		// Only the author of the story can see all collaborators
+		if (!(await story.isAuthor(req.user))) {
+			throw new RequestError(
+				'Only the author can see collaborators list',
+				status.FORBIDDEN
+			);
+		}
+
 		// Get collaborators
 		const collaborators = await story.getCollaborateur();
+
+		// Remove password from results
+		for (const collaborator of collaborators) {
+			collaborator.pwd = undefined;
+		}
 
 		res.json({
 			status: true,
