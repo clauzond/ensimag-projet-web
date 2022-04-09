@@ -108,7 +108,8 @@ export function Register({ navigation }) {
 			setErrors({
 				...errors,
 				backend:
-					e.response?.data?.message ?? 'Erreur inconnue. Veuillez réessayer.',
+					e.response?.data?.message ??
+					e.toString() + ` ${BACKEND}/api/register`,
 			});
 		}
 	}

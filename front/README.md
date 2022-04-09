@@ -21,3 +21,14 @@ et dans un deuxième terminal:
 ```
 npx react-native run-android
 ```
+
+# Générer l'APK
+
+[Guide React-Native](https://reactnative.dev/docs/signed-apk-android)
+
+```shell
+npm run build-android
+npx react-native run-android --variant=release
+```
+
+Si ca marcbe pas, désinstallez l'application dans l'émulateur.
