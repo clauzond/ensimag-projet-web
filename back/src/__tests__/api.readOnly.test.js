@@ -246,8 +246,6 @@ describe('GET /api/readOnly/histoire/:idHistoire/paragraphe/:idParagraphe', () =
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token);
 
-		console.log(lockedParagraph.body.paragraph);
-
 		// Get the final paragraph
 		const response = await request(app)
 			.get(

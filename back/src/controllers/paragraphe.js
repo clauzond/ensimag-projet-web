@@ -167,7 +167,6 @@ export const paragraphe = {
 		await checkIsPrivateStory(story);
 
 		const paragraph = await checkParagraphId(req);
-		console.log(paragraph);
 
 		if (
 			paragraph.estVerrouille === true ||
