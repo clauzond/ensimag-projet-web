@@ -14,6 +14,10 @@ eslint:
     - npm ci
     # Verify JavaScript code quality
     - npx eslint --format gitlab ./back/src/**/*.js
+    - cd front
+    # Install dependencies for frontend eslint
+    - npm i prettier @react-native-community/eslint-config
+    - npx eslint --format gitlab ./src/**/*.js
   artifacts:
     reports:
       codequality: codequality.json
@@ -60,3 +64,19 @@ heroku:
     - gem install dpl --pre
     - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
 
+# CD: make apk
+# https://haseebmajid.dev/blog/build-android-apk-with-gitlab-ci-for-react-native
+#android-app:
+#  # Need java and nodejs (node for bundle build, java for gradle -> generate android app)
+#  # https://hub.docker.com/r/timbru31/java-node
+#  image: timbru31/java-node
+#  script:
+#    - cd front/
+#    - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
+#    # npm install will generate necessary files including react.gradle
+#    # https://stackoverflow.com/questions/44437554/react-native-react-gradle-does-not-exist
+#    - npm install
+#    - npm run build-android
+#  artifacts:
+#    paths:
+#      - ./android/app/build/outputs/
