@@ -71,6 +71,7 @@ android-app:
   # https://hub.docker.com/r/timbru31/java-node
   image: timbru31/java-node
   script:
+    - cd front/
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
     - npm run build-android
   artifacts:
