@@ -80,6 +80,22 @@ describe('POST /api/register', () => {
 		expect(response.body.message).toBe(`User ${username} was registered`);
 	});
 
+	test('Test of valid registration with number password', async () => {
+		const response = await request(app)
+			.post('/api/register')
+			.set('Content-Type', 'application/json')
+			.send(
+				JSON.stringify({
+					username: 'numberPasswordUser',
+					password: 123456
+				})
+			);
+		expect(response.statusCode).toBe(status.CREATED);
+		expect(response.body.message).toBe(
+			`User numberPasswordUser was registered`
+		);
+	});
+
 	test('Test of double registration', async () => {
 		const response = await request(app)
 			.post('/api/register')

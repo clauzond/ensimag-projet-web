@@ -25,7 +25,9 @@ function checkLoginFormat(req) {
 		);
 	}
 
-	const { username, password } = req.body;
+	let { username, password } = req.body;
+	username = username.toString();
+	password = password.toString();
 
 	if (username === '' || password === '') {
 		throw new RequestError(
@@ -58,7 +60,10 @@ export const utilisateur = {
 			schema: { $status:false, $message: 'You must specify the username and password'}
 		} */
 		checkLoginFormat(req);
-		const { username, password } = req.body;
+		let { username, password } = req.body;
+		username = username.toString();
+		password = password.toString();
+
 		const userAlreadyExists = await Utilisateur.findByPk(username);
 		if (userAlreadyExists) {
 			/* #swagger.responses[304] = {
@@ -86,7 +91,11 @@ export const utilisateur = {
 		// #swagger.summary = 'Login with an existing user'
 		// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $username: 'clauzond', $password: 'clauzonmdp' }}
 		checkLoginFormat(req);
-		const { username, password } = req.body;
+
+		let { username, password } = req.body;
+		username = username.toString();
+		password = password.toString();
+
 		const user = await Utilisateur.findByPk(username);
 		if (!user) {
 			throw new RequestError(
@@ -95,6 +104,7 @@ export const utilisateur = {
 			);
 		}
 
+		console.log('pass:', password);
 		const match = await bcrypt.compare(password, user.pwd);
 		if (!match) {
 			throw new RequestError(
