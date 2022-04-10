@@ -17,7 +17,7 @@ eslint:
     - cd front
     # Install dependencies for frontend eslint
     - npm i prettier @react-native-community/eslint-config
-    - npx eslint --format gitlab ./front/src/**/*.js
+    - npx eslint --format gitlab ./src/**/*.js
   artifacts:
     reports:
       codequality: codequality.json
