@@ -14,6 +14,9 @@ eslint:
     - npm ci
     # Verify JavaScript code quality
     - npx eslint --format gitlab ./back/src/**/*.js
+    - cd front
+    # Install dependencies for frontend eslint
+    - npm i prettier @react-native-community/eslint-config
     - npx eslint --format gitlab ./front/src/**/*.js
   artifacts:
     reports:
@@ -67,8 +70,10 @@ android-app:
   image: reactnativecommunity/react-native-android
   script:
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
-    - npm install
-    - npm run build-android
+    - yarn install
+    - yarn generate-gradle-properties
+    - yarn bundle
+    - yarn android-package --no-daemon
   artifacts:
     paths:
       - ./android/app/build/outputs/
