@@ -26,7 +26,7 @@ export function Welcome({ navigation }) {
             }}
           />
           <Heading fontSize="4xl" color="primary.400">
-            Mon App
+            My App
           </Heading>
         </Flex>
         <Box p="2" w="90%" py="8" colorScheme="secondary">

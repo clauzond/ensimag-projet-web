@@ -86,14 +86,14 @@ export function Register({ navigation }) {
                   fontWeight="semibold"
                 />
                 <Heading fontSize="4xl" color="primary.400">
-                  Mon App
+                  My App
                 </Heading>
               </HStack>
               <Center w="100%">
                 <Box safeArea p="2" w="90%" maxW="290" py="8">
                   <VStack space={3} mt="5">
                     <FormControl isRequired isInvalid={touched.username && errors.username}>
-                      <FormControl.Label>Identifiant</FormControl.Label>
+                      <FormControl.Label>Username</FormControl.Label>
                       <Input
                         placeholder="clauzond"
                         onChangeText={handleChange('username')}
@@ -107,11 +107,11 @@ export function Register({ navigation }) {
                       )}
                     </FormControl>
                     <FormControl isRequired isInvalid={touched.password && errors.password}>
-                      <FormControl.Label>Mot de passe</FormControl.Label>
-                      <Box alignItems="center">
+                      <FormControl.Label>Password</FormControl.Label>
+                      <Box>
                         <Input
                           type={show ? 'text' : 'password'}
-                          placeholder="Mot de passe"
+                          placeholder="Password"
                           onChangeText={handleChange('password')}
                           onBlur={handleBlur('password')}
                           value={values.password}
@@ -146,7 +146,7 @@ export function Register({ navigation }) {
                             fontSize: 'xs',
                           }}
                         >
-                          Le mot de passe doit faire au moins 6 charactères.
+                          Password must be at least 6 characters.
                         </FormControl.HelperText>
                       )}
                     </FormControl>
@@ -154,10 +154,10 @@ export function Register({ navigation }) {
                       isRequired
                       isInvalid={touched.passwordVerify && errors.passwordVerify}
                     >
-                      <FormControl.Label>Confirmer le mot de passe</FormControl.Label>
+                      <FormControl.Label>Confirm password</FormControl.Label>
                       <Input
                         type="password"
-                        placeholder="Mot de passe"
+                        placeholder="Password"
                         onChangeText={handleChange('passwordVerify')}
                         onBlur={handleBlur('passwordVerify')}
                         value={values.passwordVerify}
@@ -184,10 +184,10 @@ export function Register({ navigation }) {
           </ScrollView>
           <Flex pb={4} px={4} pt={1} direction="row" justify="space-between" mt={5}>
             <Button colorScheme="secondary" onPress={() => navigation.navigate('Welcome')}>
-              Retour
+              Back
             </Button>
             <Button colorScheme="primary" onPress={handleSubmit}>
-              S'inscrire
+              Register
             </Button>
           </Flex>
         </Flex>

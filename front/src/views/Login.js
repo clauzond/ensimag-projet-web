@@ -85,14 +85,14 @@ export function Login({ navigation }) {
                   fontWeight="semibold"
                 />
                 <Heading fontSize="4xl" color="primary.400">
-                  Mon App
+                  My App
                 </Heading>
               </HStack>
               <Center w="100%">
                 <Box safeArea p="2" w="90%" maxW="290" py="8">
                   <VStack space={3} mt="5">
                     <FormControl isRequired isInvalid={touched.username && errors.username}>
-                      <FormControl.Label>Identifiant</FormControl.Label>
+                      <FormControl.Label>Username</FormControl.Label>
                       <Input
                         placeholder="clauzond"
                         onChangeText={handleChange('username')}
@@ -106,11 +106,11 @@ export function Login({ navigation }) {
                       )}
                     </FormControl>
                     <FormControl isRequired isInvalid={touched.password && errors.password}>
-                      <FormControl.Label>Mot de passe</FormControl.Label>
+                      <FormControl.Label>Password</FormControl.Label>
                       <Box alignItems="center">
                         <Input
                           type={show ? 'text' : 'password'}
-                          placeholder="Mot de passe"
+                          placeholder="Password"
                           onChangeText={handleChange('password')}
                           onBlur={handleBlur('password')}
                           value={values.password}
@@ -145,7 +145,7 @@ export function Login({ navigation }) {
                             fontSize: 'xs',
                           }}
                         >
-                          Le mot de passe doit faire au moins 6 charactères.
+                          Password must be at least 6 characters.
                         </FormControl.HelperText>
                       )}
                     </FormControl>
@@ -165,10 +165,10 @@ export function Login({ navigation }) {
           </ScrollView>
           <Flex pb={4} px={4} pt={1} direction="row" justify="space-between" mt={5}>
             <Button colorScheme="secondary" onPress={() => navigation.navigate('Welcome')}>
-              Retour
+              Back
             </Button>
             <Button colorScheme="primary" onPress={handleSubmit}>
-              Se connecter
+              Login
             </Button>
           </Flex>
         </Flex>
