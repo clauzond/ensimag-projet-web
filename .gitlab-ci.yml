@@ -61,3 +61,17 @@ heroku:
     - gem install dpl --pre
     - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
 
+# CD: make apk
+# https://haseebmajid.dev/blog/build-android-apk-with-gitlab-ci-for-react-native
+android-app:
+  image: reactnativecommunity/react-native-android
+  script:
+    - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
+    - yarn install
+    - base64 -d $ANDROID_KEYSTORE > android/app/my-key.keystore
+    - yarn generate-gradle-properties
+    - yarn bundle
+    - yarn android-package --no-daemon
+  artifacts:
+    paths:
+      - ./android/app/build/outputs/
