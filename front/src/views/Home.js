@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Text, Center } from 'native-base';
 import React from 'react';
 import { BACKEND } from '../globals';
+import { users } from '../services/users';
 
 export function Home() {
   const { token } = useAppStateContext();
@@ -10,14 +11,8 @@ export function Home() {
   console.log(token);
 
   const load = async () => {
-    try {
-      const response = await axios.get(`${BACKEND}/api/whoami`, {
-        headers: { 'x-access-token': token },
-      });
-      setUsername(response.data.data);
-    } catch (e) {
-      // ignore error, not connected
-    }
+    const usernameFromApi = await users.whoami(token);
+    setUsername(usernameFromApi);
   };
   React.useEffect(() => {
     load();

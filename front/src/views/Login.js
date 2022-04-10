@@ -94,6 +94,7 @@ export function Login({ navigation }) {
                     <FormControl isRequired isInvalid={touched.username && errors.username}>
                       <FormControl.Label>Username</FormControl.Label>
                       <Input
+                        testID="username"
                         placeholder="clauzond"
                         onChangeText={handleChange('username')}
                         onBlur={handleBlur('username')}
@@ -109,6 +110,7 @@ export function Login({ navigation }) {
                       <FormControl.Label>Password</FormControl.Label>
                       <Box alignItems="center">
                         <Input
+                          testID="password"
                           type={show ? 'text' : 'password'}
                           placeholder="Password"
                           onChangeText={handleChange('password')}

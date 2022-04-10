@@ -4,8 +4,6 @@ import { BACKEND } from '../globals';
 export const users = {
   /**
    * Register and login to the backend, or throws
-   * @param username
-   * @param password
    * @returns token The token of the successful login
    */
   async register(username, password) {
@@ -29,8 +27,6 @@ export const users = {
 
   /**
    * Login to the backend, or throws
-   * @param username
-   * @param password
    * @returns token The token of the successful login
    */
   async login(username, password) {
@@ -45,5 +41,15 @@ export const users = {
     } catch (e) {
       throw e.response?.data?.message ?? e;
     }
+  },
+
+  /**
+   * Get the user associated with the given token
+   */
+  async whoami(token) {
+    const response = await axios.get(`${BACKEND}/api/whoami`, {
+      headers: { 'x-access-token': token },
+    });
+    return response.data.data;
   },
 };

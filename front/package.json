@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "build-android": "cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release",
+    "build-android": "cd android && RN_SRC_EXT=e2e.js ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "react-scripts start",

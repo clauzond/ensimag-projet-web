@@ -95,6 +95,7 @@ export function Register({ navigation }) {
                     <FormControl isRequired isInvalid={touched.username && errors.username}>
                       <FormControl.Label>Username</FormControl.Label>
                       <Input
+                        testID="username"
                         placeholder="clauzond"
                         onChangeText={handleChange('username')}
                         onBlur={handleBlur('username')}
@@ -110,6 +111,7 @@ export function Register({ navigation }) {
                       <FormControl.Label>Password</FormControl.Label>
                       <Box>
                         <Input
+                          testID="password"
                           type={show ? 'text' : 'password'}
                           placeholder="Password"
                           onChangeText={handleChange('password')}
@@ -156,6 +158,7 @@ export function Register({ navigation }) {
                     >
                       <FormControl.Label>Confirm password</FormControl.Label>
                       <Input
+                        testID="passwordVerify"
                         type="password"
                         placeholder="Password"
                         onChangeText={handleChange('passwordVerify')}
