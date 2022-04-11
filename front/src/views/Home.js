@@ -13,13 +13,14 @@ export function Home() {
   const load = async () => {
     const usernameFromApi = await users.whoami(token);
     setUsername(usernameFromApi);
-    // const storiesFromApi = await history.getPublicAuthentifiedStories(token);
-    // setStories(storiesFromApi);
+    const storiesFromApi = await history.getPublicAuthentifiedStories(token);
+    setStories(storiesFromApi);
+    console.log("stories: "+ stories);
   };
 
   React.useEffect(() => {
     load();
-  });
+  }, []);
 
   // console.log(stories);
 
@@ -27,6 +28,7 @@ export function Home() {
     <Center>
       {username === '' ? <Text bold>Not connected</Text> : <Text>Connected as {username}</Text>}
       <Text>got token: {token}</Text>
+      <Text>stories: {stories.length}</Text>
     </Center>
   );
 }
