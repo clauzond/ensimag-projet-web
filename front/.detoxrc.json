@@ -24,6 +24,12 @@
       "type": "android.emulator",
       "device": {
         "avdName": "pixel3A"
+      }
+    },
+    "emulator.headless": {
+      "type": "android.emulator",
+      "device": {
+        "avdName": "pixel3A"
       },
       "headless": true
     }
@@ -35,6 +41,10 @@
     },
     "android": {
       "device": "emulator",
+      "app": "android"
+    },
+    "android.headless": {
+      "device": "emulator.headless",
       "app": "android"
     }
   }
