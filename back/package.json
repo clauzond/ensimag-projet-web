@@ -26,6 +26,7 @@
     "start-dev": "nodemon --es-module-specifier-resolution=node src/server.js",
     "doc": "node src/util/swagger.js",
     "test": "DB=sqlite.db npm run create-db && DB=sqlite.db NODE_OPTIONS=\"--experimental-vm-modules --es-module-specifier-resolution=node\" jest api.*  && DB=sqlite.db NODE_OPTIONS=\"--experimental-vm-modules --es-module-specifier-resolution=node\" jest model.*",
+    "test-windows": "jest api.* $env:DB=sqlite.db $env:NODE_OPTIONS=\"--experimental-vm-modules --es-module-specifier-resolution=node\"; jest model.*  $env:DB=sqlite.db $env:NODE_OPTIONS=\"--experimental-vm-modules --es-module-specifier-resolution=node\"",
     "deploy": "git subtree push --prefix back heroku master"
   },
   "type": "module"
