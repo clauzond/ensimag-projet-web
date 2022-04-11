@@ -109,7 +109,7 @@ export const story = {
 
 		res.json({
 			status: true,
-			message: 'Returning public stories',
+			message: 'Returning stories',
 			stories: stories
 		});
 	},
