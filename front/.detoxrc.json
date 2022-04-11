@@ -24,7 +24,8 @@
       "type": "android.emulator",
       "device": {
         "avdName": "pixel3A"
-      }
+      },
+      "headless": true
     }
   },
   "configurations": {
