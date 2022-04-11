@@ -46,16 +46,6 @@ describe('POST /api/histoire', () => {
 });
 
 describe('GET /api/histoire/:idHistoire', () => {
-	test('Test of get story without specify id', async () => {
-		const token = await getToken();
-
-		const response = await request(app)
-			.get('/api/histoire')
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token);
-		expect(response.statusCode).toBe(status.NOT_FOUND);
-	});
-
 	test('Test of get unknown story', async () => {
 		const token = await getToken();
 

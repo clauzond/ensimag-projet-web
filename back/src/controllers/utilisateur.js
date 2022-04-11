@@ -104,7 +104,6 @@ export const utilisateur = {
 			);
 		}
 
-		console.log('pass:', password);
 		const match = await bcrypt.compare(password, user.pwd);
 		if (!match) {
 			throw new RequestError(
