@@ -77,7 +77,7 @@ testing_frontend:
     # https://stackoverflow.com/questions/44437554/react-native-react-gradle-does-not-exist
     - npm install
     - npm run build-test
-    - npm run test
+    - npx detox test --configuration android.headless
   artifacts:
     paths:
       - ./front/android/app/build/outputs/
