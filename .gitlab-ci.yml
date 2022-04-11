@@ -64,20 +64,20 @@ heroku:
     - gem install dpl --pre
     - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
 
-# CD: make apk
+# CD: test frondend
 # https://haseebmajid.dev/blog/build-android-apk-with-gitlab-ci-for-react-native
-android-app:
+testing_frontend:
   tags:
     - webmobile
     - shell
   script:
     - source /matieres/4MM1CAW/bashrc2web
     - cd front/
-    - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
     # npm install will generate necessary files including react.gradle
     # https://stackoverflow.com/questions/44437554/react-native-react-gradle-does-not-exist
     - npm install
-    - npm run build-android
+    - npm run build-test
+    - npm run test
   artifacts:
     paths:
       - ./front/android/app/build/outputs/
