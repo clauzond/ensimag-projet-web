@@ -47,9 +47,11 @@ badging:
     - pip install anybadge
     # if there are no warnings, green badge ; else, yellow badge with the number of warnings
     - if [[ $(grep -o "fingerprint" ./codequality.json | wc -l) -eq 0 ]] ; then ~/.local/bin/anybadge --label=eslint --value=passing --file=eslint.svg -c green ; else ~/.local/bin/anybadge --label=eslint --value=warnings:$(grep -o "fingerprint" ./codequality.json | wc -l) --file=eslint.svg -c yellow;fi
+    - ~/.local/bin/anybadge --label=apk --value=download --file=download-apk.svg
   artifacts:
     paths:
       - eslint.svg
+      - download-apk.svg
     when: always
 
 # CD: deploy to heroku
