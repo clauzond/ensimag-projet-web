@@ -18,8 +18,7 @@ export const users = {
         username,
         password,
       });
-      const token = response.data.data;
-      return token;
+      return response.data.data;
     } catch (e) {
       throw e.response?.data?.message ?? e;
     }
@@ -36,8 +35,7 @@ export const users = {
         username,
         password,
       });
-      const token = response.data.data;
-      return token;
+      return response.data.data;
     } catch (e) {
       throw e.response?.data?.message ?? e;
     }
