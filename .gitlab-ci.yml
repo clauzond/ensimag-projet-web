@@ -69,8 +69,9 @@ heroku:
 android-app:
   tags:
     - webmobile
-  image: reactnativecommunity/react-native-android
+    - shell
   script:
+    - source /matieres/4MM1CAW/bashrc2web
     - cd front/
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
     # npm install will generate necessary files including react.gradle
