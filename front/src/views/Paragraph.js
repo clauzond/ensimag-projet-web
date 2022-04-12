@@ -4,17 +4,19 @@ import React, { useState, useRef } from 'react';
 import { paragraphService } from '../services/paragraph';
 import { StyleSheet } from 'react-native';
 import { ParagraphComponent } from '../components/paragraph';
+import { BackHandler } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 export function Paragraph({ navigation, route }) {
-  const { token } = useAppStateContext();
+  const { token, history, setHistory } = useAppStateContext();
   const { story, paragraph, choiceRowArray } = route.params;
 
   const load = () => {
     navigation.setOptions({ title: story.titre });
+    setHistory([...history, paragraph.id]);
   };
 
   const onPressChoice = async choiceId => {
-    // TODO: gérer l'historique (avec le bouton retour également !)
     const util = await paragraphService.getParagraph(token, story.id, choiceId);
     navigation.push('Paragraph', {
       story: story,
@@ -26,6 +28,19 @@ export function Paragraph({ navigation, route }) {
   React.useEffect(() => {
     load();
   }, []);
+
+  // Removes the event listener when exiting the view
+  // see: https://reactnavigation.org/docs/custom-android-back-button-handling/
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        setHistory(history);
+        return false;
+      };
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
 
   const styles = StyleSheet.create({
     container: {
@@ -43,7 +58,7 @@ export function Paragraph({ navigation, route }) {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onTouchStart={() => console.log(history)}>
       <ScrollView style={styles.scrollView}>
         <ParagraphComponent
           token={token}

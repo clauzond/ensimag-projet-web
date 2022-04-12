@@ -9,7 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Popup from 'react-native-easypopup';
 
 export function Home({ navigation }) {
-  const { token } = useAppStateContext();
+  const { token, setHistory } = useAppStateContext();
   const [stories, setStories] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [selectedId, setSelectedId] = React.useState(null);
@@ -73,6 +73,8 @@ export function Home({ navigation }) {
   const onPressStory = async item => {
     setSelectedId(item.id);
     const util = await paragraphService.getParagraph(token, item.id, item.ParagrapheInitial.id);
+    // TODO: la lecture doit reprendre à partir de l'historique
+    setHistory([]);
     navigation.navigate('Paragraph', {
       story: item,
       paragraph: util.paragraph,
