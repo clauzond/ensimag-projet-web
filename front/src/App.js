@@ -15,46 +15,39 @@ import { Paragraph } from './views/Paragraph';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-	const [token, setToken] = React.useState('');
+  const [token, setToken] = React.useState('');
+  const [history, setHistory] = React.useState([]);
 
-	const load = async () => {
-		const tokenFromStorage = await AsyncStorage.getItem('@token');
-		if (tokenFromStorage !== '') {
-			setToken(tokenFromStorage);
-		}
-	};
-	React.useEffect(() => {
-		load();
-	}, []);
+  const load = async () => {
+    const tokenFromStorage = await AsyncStorage.getItem('@token');
+    if (tokenFromStorage !== '') {
+      setToken(tokenFromStorage);
+    }
+  };
+  React.useEffect(() => {
+    load();
+  }, []);
 
-	return (
-		<AppStateProvider value={{ token, setToken }}>
-			<NativeBaseProvider>
-				{/* needed by native-base for styling */}
-				<NavigationContainer>
-					{/* react-router navigation */}
-					<Stack.Navigator initialRouteName={token === '' ? 'Welcome' : 'Home'}>
-						{/* skip the initial welcome screen if a token is already on the device */}
-						<Stack.Screen
-							name="Welcome"
-							component={Welcome}
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen
-							name="Register"
-							component={Register}
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen
-							name="Login"
-							component={Login}
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen name="Home" component={Home} />
-						<Stack.Screen name="Paragraph" component={Paragraph} />
-					</Stack.Navigator>
-				</NavigationContainer>
-			</NativeBaseProvider>
-		</AppStateProvider>
-	);
+  return (
+    <AppStateProvider value={{ token, setToken, history, setHistory }}>
+      <NativeBaseProvider>
+        {/* needed by native-base for styling */}
+        <NavigationContainer>
+          {/* react-router navigation */}
+          <Stack.Navigator initialRouteName={token === '' ? 'Welcome' : 'Home'}>
+            {/* skip the initial welcome screen if a token is already on the device */}
+            <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen
+              name="Paragraph"
+              component={Paragraph}
+              options={{ headerBackVisible: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </AppStateProvider>
+  );
 }
