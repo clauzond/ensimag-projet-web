@@ -3,6 +3,7 @@ import { Text, StatusBar, IconButton } from 'native-base';
 import React, { useState } from 'react';
 import { users } from '../services/users';
 import { storyService } from '../services/story';
+import { paragraphService } from '../services/paragraph';
 import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Dialog from 'react-native-popup-dialog/dist/components/Dialog';
@@ -73,11 +74,10 @@ export function Home({ navigation }) {
     header();
   }, []);
 
-  React.useLayoutEffect(() => {});
-
-  const onPressStory = item => {
+  const onPressStory = async (item) => {
     setSelectedId(item.id);
-    navigation.navigate('Paragraph', { item: item });
+    const util = await paragraphService.getParagraph(token, item.id, item.ParagrapheInitial.id);
+    navigation.navigate('Paragraph', { story: item, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray });
   };
 
   // List style
