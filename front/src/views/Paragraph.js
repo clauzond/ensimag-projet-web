@@ -10,15 +10,17 @@ import { useFocusEffect } from '@react-navigation/native';
 export function Paragraph({ navigation, route }) {
   const { token, history, setHistory } = useAppStateContext();
   const { story, paragraph, choiceRowArray } = route.params;
+  const scrollRef = useRef();
 
   const load = () => {
     navigation.setOptions({ title: story.titre });
-    setHistory([...history, paragraph.id]);
   };
 
   const onPressChoice = async choiceId => {
     const util = await paragraphService.getParagraph(token, story.id, choiceId);
-    navigation.push('Paragraph', {
+    setHistory([...history, util.paragraph.id]);
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
+    navigation.navigate('Paragraph', {
       story: story,
       paragraph: util.paragraph,
       choiceRowArray: util.choiceRowArray,
@@ -34,7 +36,6 @@ export function Paragraph({ navigation, route }) {
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        setHistory(history);
         return false;
       };
       BackHandler.addEventListener('hardwareBackPress', onBackPress);
@@ -59,7 +60,7 @@ export function Paragraph({ navigation, route }) {
 
   return (
     <View style={styles.container} onTouchStart={() => console.log(history)}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} ref={scrollRef}>
         <ParagraphComponent
           token={token}
           story={story}

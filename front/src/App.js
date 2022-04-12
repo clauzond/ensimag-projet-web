@@ -43,7 +43,6 @@ export default function App() {
             <Stack.Screen
               name="Paragraph"
               component={Paragraph}
-              options={{ headerBackVisible: false }}
             />
           </Stack.Navigator>
         </NavigationContainer>

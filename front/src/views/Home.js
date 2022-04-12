@@ -74,7 +74,7 @@ export function Home({ navigation }) {
     setSelectedId(item.id);
     const util = await paragraphService.getParagraph(token, item.id, item.ParagrapheInitial.id);
     // TODO: la lecture doit reprendre à partir de l'historique
-    setHistory([]);
+    setHistory([util.paragraph.id]);
     navigation.navigate('Paragraph', {
       story: item,
       paragraph: util.paragraph,
