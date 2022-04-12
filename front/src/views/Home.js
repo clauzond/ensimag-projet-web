@@ -1,26 +1,31 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { Text, Center, StatusBar, IconButton } from 'native-base';
+import { Text, StatusBar, IconButton } from 'native-base';
 import React, { useState } from 'react';
 import { users } from '../services/users';
 import { storyService } from '../services/story';
 import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Dialog from 'react-native-popup-dialog/dist/components/Dialog';
+import { SlideAnimation } from 'react-native-popup-dialog';
+import DialogTitle from 'react-native-popup-dialog/dist/components/DialogTitle';
+import DialogFooter from 'react-native-popup-dialog/dist/components/DialogFooter';
+import DialogButton from 'react-native-popup-dialog/dist/components/DialogButton';
 
 export function Home({ navigation }) {
   const { token } = useAppStateContext();
-  const [username, setUsername] = React.useState('');
   const [stories, setStories] = React.useState('');
+  const [username, setUsername] = React.useState('');
   const [selectedId, setSelectedId] = useState(null);
+  const [state, setState] = useState({ visible: false });
 
   const load = async () => {
     if (token !== '') {
       // Authentified user case
-      const usernameFromApi = await users.whoami(token);
-      setUsername(usernameFromApi);
       const storiesFromApi = await storyService.getPublicAuthentifiedStories(token);
       setStories(storiesFromApi);
 
-      navigation.setOptions({ title: `Home - ${usernameFromApi}` });
+      const usernameFromApi = await users.whoami(token);
+      setUsername(usernameFromApi);
     } else {
       // Guest user case
       const storiesFromApi = await storyService.getPublicStories();
@@ -28,9 +33,47 @@ export function Home({ navigation }) {
     }
   };
 
+  const header = () => {
+    if (token !== '') {
+      // Set header buttons
+      navigation.setOptions({
+        title: `Home - ${username}`,
+        headerRight: () => (
+          <TouchableOpacity>
+            <IconButton
+              size={'lg'}
+              _icon={{
+                as: MaterialIcons,
+                name: 'more-vert',
+              }}
+              onPress={() => setState(true)}
+            />
+          </TouchableOpacity>
+        ),
+        headerLeft: () => (
+          <TouchableOpacity>
+            <IconButton
+              size={'lg'}
+              _icon={{
+                as: MaterialIcons,
+                name: 'menu',
+              }}
+              onPress={() => {
+                //TODO
+              }}
+            />
+          </TouchableOpacity>
+        ),
+      });
+    }
+  };
+
   React.useEffect(() => {
     load();
+    header();
   }, []);
+
+  React.useLayoutEffect(() => {});
 
   const onPressStory = item => {
     setSelectedId(item.id);
@@ -65,7 +108,7 @@ export function Home({ navigation }) {
   );
 
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff';
+    const backgroundColor = '#f9c2ff';
     const color = item.id === selectedId ? 'white' : 'black';
 
     return (
@@ -99,6 +142,37 @@ export function Home({ navigation }) {
           }}
         />
       )}
+
+      {/* Disconnect popup */}
+      <Dialog
+        visible={state.visible}
+        dialogTitle={<DialogTitle title="Do you want to disconnect ?" />}
+        dialogAnimation={
+          new SlideAnimation({
+            slideFrom: 'bottom',
+          })
+        }
+        footer={
+          <DialogFooter>
+            <DialogButton
+              text="No"
+              onPress={() => {
+                //TODO
+              }}
+            />
+            <DialogButton
+              text="Yes"
+              textStyle={{ color: 'red' }}
+              onPress={() => {
+                //TODO
+              }}
+            />
+          </DialogFooter>
+        }
+        onTouchOutside={() => {
+          setState({ visible: false });
+        }}
+      />
     </SafeAreaView>
   );
 }
