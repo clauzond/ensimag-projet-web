@@ -50,7 +50,7 @@ export function Login({ navigation }) {
       setLoading(false);
 
       setToken(token);
-      AsyncStorage.setItem('@token', token);
+      await AsyncStorage.setItem('@token', token);
       navigation.navigate('Home');
     } catch (e) {
       setLoading(false);

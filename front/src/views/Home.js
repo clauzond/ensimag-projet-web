@@ -11,7 +11,6 @@ import Popup from 'react-native-easypopup';
 export function Home({ navigation }) {
   const { token, setHistory } = useAppStateContext();
   const [stories, setStories] = React.useState('');
-  const [username, setUsername] = React.useState('');
   const [selectedId, setSelectedId] = React.useState(null);
 
   const [state, setState] = React.useState(false);
@@ -21,9 +20,6 @@ export function Home({ navigation }) {
       // Authentified user case
       const storiesFromApi = await storyService.getPublicAuthentifiedStories(token);
       setStories(storiesFromApi);
-
-      const usernameFromApi = await users.whoami(token);
-      setUsername(usernameFromApi);
     } else {
       // Guest user case
       const storiesFromApi = await storyService.getPublicStories();
@@ -31,7 +27,9 @@ export function Home({ navigation }) {
     }
   };
 
-  const header = () => {
+  const header = async () => {
+    const username = await users.whoami(token);
+
     if (token !== '') {
       // Set header buttons
       navigation.setOptions({
