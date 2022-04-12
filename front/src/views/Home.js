@@ -1,5 +1,5 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { Text, StatusBar, IconButton, Modal, View, Button } from 'native-base';
+import { Text, StatusBar, IconButton } from 'native-base';
 import React from 'react';
 import { users } from '../services/users';
 import { storyService } from '../services/story';
@@ -7,6 +7,7 @@ import { paragraphService } from '../services/paragraph';
 import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Popup from 'react-native-easypopup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Home({ navigation }) {
   const { token, setHistory } = useAppStateContext();
@@ -122,6 +123,7 @@ export function Home({ navigation }) {
   };
 
   return (
+    //  Main home view
     <SafeAreaView style={styles.container}>
       <FlatList
         data={stories}
@@ -154,7 +156,8 @@ export function Home({ navigation }) {
         acceptbuttontitle={'OK'}
         cancelbuttontitle={'Cancel'}
         confirmaction={() => {
-          // TODO: disconnect
+          setHistory(null);
+          AsyncStorage.setItem('@token', token).then(_ => navigation.navigate('Welcome'));
         }}
         cancelaction={() => {
           setState(false);
