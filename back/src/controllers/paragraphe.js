@@ -194,7 +194,9 @@ export const paragraphe = {
 			}
 			const choice = await Paragraphe.findByPk(ele.ChoixId);
 			if (!choice.estVerrouille && choice.idRedacteur !== null) {
-				choiceRowArray.push(ele);
+				if (await choice.leadToConclusion()) {
+					choiceRowArray.push(ele);
+				}
 			}
 		}
 
