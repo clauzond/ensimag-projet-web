@@ -29,6 +29,8 @@ npm run build-test
 npm run test
 ```
 
+Si ca marche pas, vérifiez que vous avec l'émulateur du `pixel3A` ca s'installe de android studio.
+
 # Générer l'APK
 
 [Guide React-Native](https://reactnative.dev/docs/signed-apk-android)
