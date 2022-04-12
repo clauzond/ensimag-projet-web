@@ -15,8 +15,9 @@ export function Paragraph({ navigation, route }) {
   };
 
   const onPressChoice = async choiceId => {
+    // TODO: gérer l'historique (avec le bouton retour également !)
     const util = await paragraphService.getParagraph(token, story.id, choiceId);
-    navigation.navigate('Paragraph', {
+    navigation.push('Paragraph', {
       story: story,
       paragraph: util.paragraph,
       choiceRowArray: util.choiceRowArray,
