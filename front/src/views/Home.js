@@ -1,23 +1,20 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { Text, StatusBar, IconButton } from 'native-base';
-import React, { useState } from 'react';
+import { Text, StatusBar, IconButton, Modal, View, Button } from 'native-base';
+import React from 'react';
 import { users } from '../services/users';
 import { storyService } from '../services/story';
 import { paragraphService } from '../services/paragraph';
 import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Dialog from 'react-native-popup-dialog/dist/components/Dialog';
-import { SlideAnimation } from 'react-native-popup-dialog';
-import DialogTitle from 'react-native-popup-dialog/dist/components/DialogTitle';
-import DialogFooter from 'react-native-popup-dialog/dist/components/DialogFooter';
-import DialogButton from 'react-native-popup-dialog/dist/components/DialogButton';
+import Popup from 'react-native-easypopup';
 
 export function Home({ navigation }) {
   const { token } = useAppStateContext();
   const [stories, setStories] = React.useState('');
   const [username, setUsername] = React.useState('');
-  const [selectedId, setSelectedId] = useState(null);
-  const [state, setState] = useState({ visible: false });
+  const [selectedId, setSelectedId] = React.useState(null);
+
+  const [state, setState] = React.useState(false);
 
   const load = async () => {
     if (token !== '') {
@@ -60,7 +57,7 @@ export function Home({ navigation }) {
                 name: 'menu',
               }}
               onPress={() => {
-                //TODO
+                //TODO: display lateral menu
               }}
             />
           </TouchableOpacity>
@@ -70,14 +67,17 @@ export function Home({ navigation }) {
   };
 
   React.useEffect(() => {
-    load();
-    header();
+    load().then(_ => header());
   }, []);
 
-  const onPressStory = async (item) => {
+  const onPressStory = async item => {
     setSelectedId(item.id);
     const util = await paragraphService.getParagraph(token, item.id, item.ParagrapheInitial.id);
-    navigation.navigate('Paragraph', { story: item, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray });
+    navigation.navigate('Paragraph', {
+      story: item,
+      paragraph: util.paragraph,
+      choiceRowArray: util.choiceRowArray,
+    });
   };
 
   // List style
@@ -143,34 +143,21 @@ export function Home({ navigation }) {
         />
       )}
 
-      {/* Disconnect popup */}
-      <Dialog
-        visible={state.visible}
-        dialogTitle={<DialogTitle title="Do you want to disconnect ?" />}
-        dialogAnimation={
-          new SlideAnimation({
-            slideFrom: 'bottom',
-          })
-        }
-        footer={
-          <DialogFooter>
-            <DialogButton
-              text="No"
-              onPress={() => {
-                //TODO
-              }}
-            />
-            <DialogButton
-              text="Yes"
-              textStyle={{ color: 'red' }}
-              onPress={() => {
-                //TODO
-              }}
-            />
-          </DialogFooter>
-        }
-        onTouchOutside={() => {
-          setState({ visible: false });
+      {/*Disconnect popup*/}
+      <Popup
+        showpopup={state}
+        type="alert"
+        semitransparent={false}
+        animation={'fade'}
+        onPress={() => setState({ showpopup: !state })}
+        contenttext={'Do you wan to disconnect ?'}
+        acceptbuttontitle={'OK'}
+        cancelbuttontitle={'Cancel'}
+        confirmaction={() => {
+          // TODO: disconnect
+        }}
+        cancelaction={() => {
+          setState(false);
         }}
       />
     </SafeAreaView>
