@@ -8,7 +8,7 @@ export class Histoire extends Model {
 	}
 
 	async isCollaborator(user) {
-		return await this.hasCollaborateur(user);
+		return (await this.hasCollaborateur(user));
 	}
 }
 

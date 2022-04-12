@@ -22,7 +22,7 @@ async function checkStoryId(req) {
 	return story;
 }
 
-async function checkIsPrivateStory(story) {
+async function checkIsPrivateStory(story, user) {
 	// Check if the reader is allowed to get the story
 	const initParagraph = await story.getParagrapheInitial();
 	const isParagraphCorrect =
@@ -30,8 +30,10 @@ async function checkIsPrivateStory(story) {
 		initParagraph.contenu !== null &&
 		initParagraph.contenu.length !== 0 &&
 		(await initParagraph.leadToConclusion());
-
-	if (story.estPublique === false || !isParagraphCorrect) {
+	const userCanAccess =
+		story.estPublique ||
+		(user !== undefined && (await story.hasCollaborateur(user)));
+	if (!userCanAccess || !isParagraphCorrect) {
 		throw new RequestError('This story is private', status.FORBIDDEN);
 	}
 }
@@ -94,7 +96,7 @@ export const story = {
 		// Check the initial paragraph of each story
 		for (const story of storiesFromDB) {
 			// Verify that user has access to the story
-			if (!story.estPublique && !story.hasCollaborateur(req.user))
+			if (!story.estPublique && !(await story.hasCollaborateur(req.user)))
 				continue;
 
 			const initParagraph = await story.getParagrapheInitial();
@@ -204,7 +206,7 @@ export const story = {
 	async getPublicStory(req, res) {
 		// Get story object
 		const story = await checkStoryId(req);
-		await checkIsPrivateStory(story);
+		await checkIsPrivateStory(story, req.user);
 		res.json({ status: true, message: 'Returning story', story: story });
 	},
 	async getCollaborators(req, res) {
