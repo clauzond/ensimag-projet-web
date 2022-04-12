@@ -123,4 +123,27 @@ async function createParagraph(
 	return response.body.choice;
 }
 
-export { getToken, createStory, createParagraph };
+async function updateParagraph(story, idParagraphe, contenu, username) {
+	const token =
+		username == undefined ? await getToken() : await getToken(username);
+
+	// Ask to update paragraph
+	await request(app)
+		.put(`/api/histoire/${story.id}/paragraphe/${idParagraphe}/modified`)
+		.set('Content-Type', 'application/json')
+		.set('x-access-token', token)
+		.send();
+
+	// Modify paragraph content
+	const response = await request(app)
+		.put(`/api/histoire/${story.id}/paragraphe/${idParagraphe}`)
+		.set('Content-Type', 'application/json')
+		.set('x-access-token', token)
+		.send(
+			JSON.stringify({
+				contenu: contenu
+			})
+		);
+}
+
+export { getToken, createStory, createParagraph, updateParagraph };

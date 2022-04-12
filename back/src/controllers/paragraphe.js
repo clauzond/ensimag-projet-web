@@ -171,7 +171,7 @@ export const paragraphe = {
 
 		if (
 			paragraph.estVerrouille === true ||
-			paragraph.getRedacteur() === null
+			paragraph.idRedacteur === null
 		) {
 			throw new RequestError(
 				'This paragraph is locked',
@@ -179,13 +179,24 @@ export const paragraphe = {
 			);
 		}
 
-		const history = req.user !== undefined ? await user.getHistorique(story) : [];
+		const history =
+			req.user !== undefined ? await user.getHistorique(story) : [];
 
-		const choiceRowArray = (
-			await ChoixTable.findAll({
-				where: { ParagrapheId: paragraph.id }
-			})
-		).filter(ele => ele.condition === null || history.includes(ele.condition));
+		// Filter choices: only valid paragraph && with choice condition respected
+		const choiceRowArray = [];
+		const arr = await ChoixTable.findAll({
+			where: { ParagrapheId: paragraph.id }
+		});
+
+		for (const ele of arr) {
+			if (ele.condition !== null && !history.includes(ele.condition)) {
+				continue;
+			}
+			const choice = await Paragraphe.findByPk(ele.ChoixId);
+			if (!choice.estVerrouille && choice.idRedacteur !== null) {
+				choiceRowArray.push(ele);
+			}
+		}
 
 		res.json({
 			status: true,
@@ -205,7 +216,7 @@ export const paragraphe = {
 		// Check if the paragraph is not already written by another user
 		if (
 			paragraph.estVerrouille &&
-			paragraph.idRedacteur != null &&
+			paragraph.idRedacteur !== null &&
 			paragraph.idRedacteur !== req.user.id
 		) {
 			throw new RequestError(
