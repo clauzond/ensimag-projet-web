@@ -25,11 +25,19 @@ npx react-native run-android
 # Lancer les tests
 
 ```
-npm run build-test
-npm run test
+npm run build-test # compile l'appli test
+npm run android-test # lance react native en mode test
+npm run test # installe l'appli et lance le test detox
 ```
 
-Si ca marche pas, vérifiez que vous avec l'émulateur du `pixel3A` ca s'installe de android studio.
+Si ca marche pas, vérifiez que vous avec l'émulateur du `pixel3A` ca s'installe de android studio. 
+Il faudra le renommer dans avd manager en "pixel3A".
+
+Pour relancer un test rapidement:
+
+```
+npm run test-reuse
+```
 
 # Générer l'APK
 

@@ -42,7 +42,6 @@ describe('User login signup test', () => {
     await element(by.id('password')).tapReturnKey();
 
     await element(by.text('Register')).tap();
-    //await expect(element(by.text('Connected as testuser'))).toBeVisible();
 
     // Register done, go back and login
     await device.pressBack();
@@ -55,7 +54,6 @@ describe('User login signup test', () => {
     await element(by.id('password')).typeText('123456');
     await element(by.id('password')).tapReturnKey();
     await element(by.text('Login')).tap();
-    //await expect(element(by.text('Connected as testuser'))).toBeVisible();
 
     // Go back
     await device.pressBack();
@@ -63,6 +61,5 @@ describe('User login signup test', () => {
 
     // Continue as guest (should have no user)
     await element(by.text('Continue as guest')).tap();
-    //await expect(element(by.text('Not connected'))).toBeVisible();
   });
 });

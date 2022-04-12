@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "build-android": "cd android && RN_SRC_EXT=e2e.js ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release",
+    "android-test": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "react-scripts start",
-    "build-test": "detox build --configuration android",
-    "test": "detox test --configuration android",
+    "build-test": "detox build --configuration android.debug",
+    "test": "detox test --configuration android.debug",
+    "test-reuse": "detox test --configuration android.debug --reuse",
+    "build-test-release": "detox build --configuration android.release",
+    "test-release": "detox test --configuration android.release",
     "lint": "eslint ."
   },
   "dependencies": {
