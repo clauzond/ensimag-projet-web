@@ -1,6 +1,6 @@
 import { useAppStateContext } from '../contexts/AppState';
 import { Flex, View, Text, Icon, Box, Button, ScrollView, StatusBar } from 'native-base';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { paragraphService } from '../services/paragraph';
 import { StyleSheet } from 'react-native';
 import { ParagraphComponent } from '../components/paragraph';
@@ -8,9 +8,20 @@ import { ParagraphComponent } from '../components/paragraph';
 export function Paragraph({ navigation, route }) {
   const { token } = useAppStateContext();
   const { story, paragraph, choiceRowArray } = route.params;
+  const scrollRef = useRef();
 
-  const load = async () => {
+  const load = () => {
     navigation.setOptions({ title: story.titre });
+  };
+
+  const onPressChoice = async choiceId => {
+    const util = await paragraphService.getParagraph(token, story.id, choiceId);
+    navigation.navigate('Paragraph', {
+      story: story,
+      paragraph: util.paragraph,
+      choiceRowArray: util.choiceRowArray,
+    });
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
   };
 
   React.useEffect(() => {
@@ -34,8 +45,14 @@ export function Paragraph({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <ParagraphComponent story={story} paragraph={paragraph} choiceRowArray={choiceRowArray} />
+      <ScrollView style={styles.scrollView} ref={scrollRef}>
+        <ParagraphComponent
+          token={token}
+          story={story}
+          paragraph={paragraph}
+          choiceRowArray={choiceRowArray}
+          onPressChoice={onPressChoice}
+        />
       </ScrollView>
     </View>
   );
