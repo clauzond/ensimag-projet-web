@@ -67,7 +67,7 @@ export function Home({ navigation }) {
 
   React.useEffect(() => {
     load().then(_ => header());
-  }, []);
+  });
 
   const onPressStory = async item => {
     setSelectedId(item.id);

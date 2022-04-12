@@ -1,6 +1,6 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { Flex, View, Text, Icon, Box, Button, ScrollView, StatusBar } from 'native-base';
-import React, { useState, useRef } from 'react';
+import { View, ScrollView, StatusBar } from 'native-base';
+import React, { useRef } from 'react';
 import { paragraphService } from '../services/paragraph';
 import { StyleSheet } from 'react-native';
 import { ParagraphComponent } from '../components/paragraph';
@@ -29,7 +29,7 @@ export function Paragraph({ navigation, route }) {
 
   React.useEffect(() => {
     load();
-  }, []);
+  });
 
   // Removes the event listener when exiting the view
   // see: https://reactnavigation.org/docs/custom-android-back-button-handling/
