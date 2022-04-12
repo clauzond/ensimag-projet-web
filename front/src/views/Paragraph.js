@@ -8,7 +8,6 @@ import { ParagraphComponent } from '../components/paragraph';
 export function Paragraph({ navigation, route }) {
   const { token } = useAppStateContext();
   const { story, paragraph, choiceRowArray } = route.params;
-  const scrollRef = useRef();
 
   const load = () => {
     navigation.setOptions({ title: story.titre });
@@ -22,7 +21,6 @@ export function Paragraph({ navigation, route }) {
       paragraph: util.paragraph,
       choiceRowArray: util.choiceRowArray,
     });
-    scrollRef.current?.scrollTo({ y: 0, animated: false });
   };
 
   React.useEffect(() => {
@@ -46,7 +44,7 @@ export function Paragraph({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} ref={scrollRef}>
+      <ScrollView style={styles.scrollView}>
         <ParagraphComponent
           token={token}
           story={story}
