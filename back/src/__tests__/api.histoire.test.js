@@ -8,7 +8,7 @@ describe('GET /api/histoire', () => {
 	test('Test of get a public story', async () => {
 		// Init a public story with a valid paragraph (with content and that lead to conclusion)
 		const username = 'clauzond';
-		const token = getToken(username);
+		const token = await getToken(username);
 		const storyTitle = "L'histoire publique de clauzond";
 		const firstParagraphContent = 'Ceci est le paragraphe de clauzond';
 		await createStory(
@@ -19,15 +19,10 @@ describe('GET /api/histoire', () => {
 			true
 		);
 
-		console.log(token);
-
 		const response = await request(app)
 			.get(`/api/histoire`)
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token);
-
-		// TODO: error 500 ??
-		console.log(response.body.message);
 
 		expect(response.statusCode).toBe(status.OK);
 		const publicStoriesNb = response.body.stories.length;
@@ -44,9 +39,31 @@ describe('GET /api/histoire', () => {
 		expect(publicStory.ParagrapheInitial.idRedacteur).toBe(username);
 	});
 
+	test('Test of get a public story without authentification', async () => {
+		// Init a public story with a valid paragraph (with content and that lead to conclusion)
+		const username = 'clauzond';
+		const storyTitle = "L'histoire publique de clauzond";
+		const firstParagraphContent = 'Ceci est le paragraphe de clauzond';
+		await createStory(
+			storyTitle,
+			username,
+			true,
+			firstParagraphContent,
+			true
+		);
+
+		const response = await request(app).get(`/api/histoire`);
+
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
+		expect(response.body.message).toBe(
+			"You must specify your access token in the 'x-access-token' header"
+		);
+	});
+
 	test('Test of get a private story', async () => {
 		// Init a public story with a valid paragraph (with content and that lead to conclusion)
 		const username = 'clauzond_private';
+		const token = await getToken(username);
 		const storyTitle = "L'histoire privée de clauzond";
 		const firstParagraphContent =
 			'Ceci est le paragraphe de clauzond privé';
@@ -58,23 +75,27 @@ describe('GET /api/histoire', () => {
 			true
 		);
 
-		const response = await request(app).get('/api/histoire');
+		const response = await request(app)
+			.get('/api/histoire')
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
 		expect(response.statusCode).toBe(status.OK);
 		const publicStoriesNb = response.body.stories.length;
 
-		// Get and check the private story is not in the public stories list
+		// Get and check the private story is in the stories list
 		const privateStory = response.body.stories[publicStoriesNb - 1];
-		expect(privateStory.titre).not.toBe(storyTitle);
-		expect(privateStory.idAuteur).not.toBe(username);
-		expect(privateStory.ParagrapheInitial.contenu).not.toBe(
+		expect(privateStory.titre).toBe(storyTitle);
+		expect(privateStory.idAuteur).toBe(username);
+		expect(privateStory.ParagrapheInitial.contenu).toBe(
 			firstParagraphContent
 		);
-		expect(privateStory.ParagrapheInitial.idRedacteur).not.toBe(username);
+		expect(privateStory.ParagrapheInitial.idRedacteur).toBe(username);
 	});
 
 	test('Test of get a public story that not lead to a conclusion', async () => {
 		// Init a public story with a valid paragraph (with content and that lead to conclusion)
 		const username = 'clauzond_sans_conclusion';
+		const token = await getToken(username);
 		const storyTitle = "L'histoire publique de clauzond sans conclusion";
 		const firstParagraphContent =
 			'Ceci est le paragraphe de clauzond sans conclusion';
@@ -86,7 +107,10 @@ describe('GET /api/histoire', () => {
 			false
 		);
 
-		const response = await request(app).get('/api/histoire');
+		const response = await request(app)
+			.get('/api/histoire')
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
 		expect(response.statusCode).toBe(status.OK);
 		const publicStoriesNb = response.body.stories.length;
 
@@ -103,6 +127,7 @@ describe('GET /api/histoire', () => {
 	test('Test of get a public story where the init paragraph is null', async () => {
 		// Init a public story with a valid paragraph (with content and that lead to conclusion)
 		const username = 'clauzond_sans_paragraphe';
+		const token = await getToken(username);
 		const storyTitle = "L'histoire publique de clauzond sans paragraphe";
 		const firstParagraphContent = null;
 		await createStory(
@@ -113,7 +138,11 @@ describe('GET /api/histoire', () => {
 			true
 		);
 
-		const response = await request(app).get('/api/histoire');
+		const response = await request(app)
+			.get('/api/histoire')
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
 		expect(response.statusCode).toBe(status.OK);
 		const publicStoriesNb = response.body.stories.length;
 
