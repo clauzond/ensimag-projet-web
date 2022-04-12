@@ -1,9 +1,10 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { Text, Center, StatusBar } from 'native-base';
+import { Text, Center, StatusBar, IconButton } from 'native-base';
 import React, { useState } from 'react';
 import { users } from '../services/users';
 import { story } from '../services/story';
 import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export function Home({ navigation }) {
   const { token } = useAppStateContext();
@@ -18,6 +19,8 @@ export function Home({ navigation }) {
       setUsername(usernameFromApi);
       const storiesFromApi = await story.getPublicAuthentifiedStories(token);
       setStories(storiesFromApi);
+
+      navigation.setOptions({ title: `Home - ${usernameFromApi}` });
     } else {
       // Guest user case
       const storiesFromApi = await story.getPublicStories();
@@ -29,9 +32,9 @@ export function Home({ navigation }) {
     load();
   }, []);
 
-  const onPressStory = (item) => {
-      setSelectedId(item.id);
-      navigation.navigate('Paragraph', { item: item });
+  const onPressStory = item => {
+    setSelectedId(item.id);
+    navigation.navigate('Paragraph', { item: item });
   };
 
   // List style
@@ -44,6 +47,14 @@ export function Home({ navigation }) {
       padding: 20,
       marginVertical: 8,
       marginHorizontal: 16,
+    },
+    add_button: {
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 50,
     },
   });
 
@@ -75,6 +86,19 @@ export function Home({ navigation }) {
         keyExtractor={item => item.id}
         extraData={selectedId}
       />
+      {token !== '' && (
+        <IconButton
+          style={styles.add_button}
+          hide
+          size={'lg'}
+          variant="solid"
+          colorScheme="primary"
+          _icon={{
+            as: MaterialIcons,
+            name: 'add',
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 }
