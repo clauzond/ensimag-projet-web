@@ -43,6 +43,10 @@ export class Paragraphe extends Model {
 	 * @returns boolean
 	 */
 	async leadToConclusion() {
+		if (this.estConclusion) {
+			return true;
+		}
+
 		const toVisit = await this.getChoix();
 		const alreadySeen = [];
 
