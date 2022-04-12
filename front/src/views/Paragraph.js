@@ -7,17 +7,10 @@ import { ParagraphComponent } from '../components/paragraph';
 
 export function Paragraph({ navigation, route }) {
   const { token } = useAppStateContext();
-  const { paragraph, setParagraph } = useState();
-  const { choiceRowArray, setChoiceRowArray } = useState();
-  const { item } = route.params;
-  const story = item;
+  const { story, paragraph, choiceRowArray } = route.params;
 
   const load = async () => {
     navigation.setOptions({ title: story.titre });
-    const util = await paragraphService.getParagraph(token, story.id, story.ParagrapheInitial.id);
-
-    // setParagraph(util.paragraph);
-    // setChoiceRowArray(util.choiceRowArray);
   };
 
   React.useEffect(() => {
@@ -42,11 +35,7 @@ export function Paragraph({ navigation, route }) {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <ParagraphComponent
-          getStory={() => story}
-          getParagraph={() => paragraph}
-          getChoiceRowArray={() => choiceRowArray}
-        />
+        <ParagraphComponent story={story} paragraph={paragraph} choiceRowArray={choiceRowArray} />
       </ScrollView>
     </View>
   );

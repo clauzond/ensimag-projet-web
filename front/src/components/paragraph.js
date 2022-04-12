@@ -22,14 +22,14 @@ export class ParagraphComponent extends React.Component {
     return (
       <Box p="2" w="90%" py="8" colorScheme="secondary">
         <Text style={styles.baseText}>
-            {this.props.getStory().ParagrapheInitial.contenu}
+            {this.props.paragraph.contenu}
         </Text>
-        <Button mt="2">
-          B1
-        </Button>
-        <Button mt="2">
-          B2
-        </Button>
+        {this.props.choiceRowArray.map((value, index) => {
+          return (
+            <Button key={value.ChoixId}>{value.titreChoix}</Button>
+          );
+        })
+        }
       </Box>
     );
   }
