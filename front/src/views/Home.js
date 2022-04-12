@@ -2,10 +2,10 @@ import { useAppStateContext } from '../contexts/AppState';
 import { Text, Center, StatusBar } from 'native-base';
 import React, { useState } from 'react';
 import { users } from '../services/users';
-import { history } from '../services/history';
+import { story } from '../services/story';
 import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 
-export function Home() {
+export function Home({ navigation }) {
   const { token } = useAppStateContext();
   const [username, setUsername] = React.useState('');
   const [stories, setStories] = React.useState('');
@@ -16,11 +16,11 @@ export function Home() {
       // Authentified user case
       const usernameFromApi = await users.whoami(token);
       setUsername(usernameFromApi);
-      const storiesFromApi = await history.getPublicAuthentifiedStories(token);
+      const storiesFromApi = await story.getPublicAuthentifiedStories(token);
       setStories(storiesFromApi);
     } else {
       // Guest user case
-      const storiesFromApi = await history.getPublicStories();
+      const storiesFromApi = await story.getPublicStories();
       setStories(storiesFromApi);
     }
   };
@@ -28,6 +28,11 @@ export function Home() {
   React.useEffect(() => {
     load();
   }, []);
+
+  const onPressStory = (item) => {
+      setSelectedId(item.id);
+      navigation.navigate('Paragraph', { item: item });
+  };
 
   // List style
   const styles = StyleSheet.create({
@@ -55,7 +60,7 @@ export function Home() {
     return (
       <Item
         item={item}
-        onPress={() => setSelectedId(item.titre)}
+        onPress={() => onPressStory(item)}
         backgroundColor={{ backgroundColor }}
         textColor={{ color }}
       />
