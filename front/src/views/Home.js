@@ -2,7 +2,7 @@ import { useAppStateContext } from '../contexts/AppState';
 import { Text, Center, StatusBar, IconButton } from 'native-base';
 import React, { useState } from 'react';
 import { users } from '../services/users';
-import { story } from '../services/story';
+import { storyService } from '../services/story';
 import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -17,13 +17,13 @@ export function Home({ navigation }) {
       // Authentified user case
       const usernameFromApi = await users.whoami(token);
       setUsername(usernameFromApi);
-      const storiesFromApi = await story.getPublicAuthentifiedStories(token);
+      const storiesFromApi = await storyService.getPublicAuthentifiedStories(token);
       setStories(storiesFromApi);
 
       navigation.setOptions({ title: `Home - ${usernameFromApi}` });
     } else {
       // Guest user case
-      const storiesFromApi = await story.getPublicStories();
+      const storiesFromApi = await storyService.getPublicStories();
       setStories(storiesFromApi);
     }
   };
