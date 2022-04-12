@@ -161,10 +161,11 @@ export const paragraphe = {
 			choiceRowArray: choiceRowArray
 		});
 	},
+	// Read-only for authentified & unauthentified users
 	async getPublicParagraph(req, res) {
 		const story = await checkStoryId(req);
 
-		await checkIsPrivateStory(story);
+		await checkIsPrivateStory(story, req.user);
 
 		const paragraph = await checkParagraphId(req);
 
@@ -178,13 +179,17 @@ export const paragraphe = {
 			);
 		}
 
-		const choiceRowArray = await ChoixTable.findAll({
-			where: { ParagrapheId: paragraph.id }
-		});
+		const history = req.user !== undefined ? await user.getHistorique(story) : [];
+
+		const choiceRowArray = (
+			await ChoixTable.findAll({
+				where: { ParagrapheId: paragraph.id }
+			})
+		).filter(ele => ele.condition === null || history.includes(ele.condition));
 
 		res.json({
 			status: true,
-			message: 'Returning paragraph',
+			message: 'Returning paragraph and available choiceRowArray',
 			story: story,
 			paragraph: paragraph,
 			choiceRowArray: choiceRowArray
