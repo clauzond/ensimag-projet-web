@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BACKEND } from '../globals';
 
-export const story = {
+export const storyService = {
   async getPublicAuthentifiedStories(token) {
     try {
       const response = await axios.get(`${BACKEND}/api/histoire`, {
