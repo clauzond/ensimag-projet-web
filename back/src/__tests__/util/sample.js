@@ -9,6 +9,7 @@ async function generateSample() {
     await updateParagraph(story, choix1.id, `[Choix 1] ${lorem}`, username);
     const choix2 = await createParagraph(story, "Mon deuxième choix non final :D", username, story.idParagrapheInitial, null, false);
     await updateParagraph(story, choix2.id, `[Choix 2] ${lorem}`, username);
+    const choix3 = await createParagraph(story, "Mon troisième choix QUI N'EST PAS REDIGE ET NE DEVRAIT PAS APPARAITRE !", username, story.idParagrapheInitial, null, true);
     const choix1_1 = await createParagraph(story, "Mon premier_premier choix final :)", username, choix1.id, null, true);
     await updateParagraph(story, choix1_1.id, `[Choix 1.1] ${lorem}`, username);
     const choix1_2 = await createParagraph(story, "Mon premier_deuxième choix non final :)", username, choix1.id, null, false);
@@ -16,7 +17,7 @@ async function generateSample() {
     const choix1_3 = await createParagraph(story, "Mon premier_troisième choix QUI N'EST PAS REDIGE ET NE DEVRAIT PAS APPARAITRE !", username, choix1.id, null, true);
     const choix2_1 = await createParagraph(story, "Mon deuxième_premier choix final :3", username, choix2.id, null, true);
     await updateParagraph(story, choix2_1.id, `[Choix 2.1] ${lorem}`, username);
-    const choix2_2 = await createParagraph(story, "Mon deuxième_deuxième non final :3", username, choix1.id, null, false);
+    const choix2_2 = await createParagraph(story, "Mon deuxième_deuxième non final :3", username, choix2.id, null, false);
     await updateParagraph(story, choix2_2.id, `[Choix 2.2] ${lorem}`, username);
 }
 
