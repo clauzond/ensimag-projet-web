@@ -29,9 +29,8 @@ export function Home({ navigation }) {
   };
 
   const header = async () => {
-    const username = await users.whoami(token);
-
     if (token !== '') {
+      const username = await users.whoami(token);
       // Set header buttons
       navigation.setOptions({
         title: `Home - ${username}`,
@@ -152,7 +151,7 @@ export function Home({ navigation }) {
         semitransparent={false}
         animation={'fade'}
         onPress={() => setState({ showpopup: !state })}
-        contenttext={'Do you wan to disconnect ?'}
+        contenttext={'Do you want to disconnect ?'}
         acceptbuttontitle={'OK'}
         cancelbuttontitle={'Cancel'}
         confirmaction={() => {
