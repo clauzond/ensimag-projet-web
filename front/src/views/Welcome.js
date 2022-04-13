@@ -1,7 +1,12 @@
 import React from 'react';
-import { Flex, Heading, View, Text, Icon, Box, Button } from 'native-base';
+import { Flex, Heading, View, Text, Icon, Box, Button, IconButton } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppStateContext } from '../contexts/AppState';
+import { storyService } from '../services/story';
+import { users } from '../services/users';
+import { TouchableOpacity } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Welcome({ navigation }) {
   const { setToken } = useAppStateContext();
@@ -10,6 +15,19 @@ export function Welcome({ navigation }) {
     setToken('');
     navigation.navigate('Home');
   };
+
+  const load = async () => {
+    const token = await AsyncStorage.getItem('@token');
+    if (token !== null) {
+      // If the token is already present in storage, connect automatically the user
+      setToken(token);
+      navigation.navigate('Home');
+    }
+  };
+
+  React.useEffect(() => {
+    load();
+  }, []);
 
   return (
     <View>
@@ -39,7 +57,13 @@ export function Welcome({ navigation }) {
           <Text underline mt={2} textAlign="center" color="info.600" onPress={asGuest}>
             Continue as guest
           </Text>
-          <Text underline mt={2} textAlign="center" color="info.600" onPress={() => navigation.navigate('Creation')}>
+          <Text
+            underline
+            mt={2}
+            textAlign="center"
+            color="info.600"
+            onPress={() => navigation.navigate('Creation')}
+          >
             Debugging creation
           </Text>
         </Box>
