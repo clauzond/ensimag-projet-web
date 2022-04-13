@@ -8,7 +8,7 @@ import Popup from 'react-native-easypopup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 
-export function Creation({ navigation }) {
+export function StoryCreation({ navigation }) {
   const { token, setHistory } = useAppStateContext();
   const [stories, setStories] = React.useState('');
   const [selectedId, setSelectedId] = React.useState(null);

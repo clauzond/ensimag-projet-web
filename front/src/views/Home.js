@@ -121,7 +121,7 @@ export function Home({ navigation }) {
       {token !== '' && (
         <IconButton
           style={styles.add_button}
-          hide
+          onPress={() => navigation.navigate('StoryCreation')}
           size={'lg'}
           variant="solid"
           colorScheme="primary"

@@ -62,7 +62,7 @@ export function Welcome({ navigation }) {
             mt={2}
             textAlign="center"
             color="info.600"
-            onPress={() => navigation.navigate('Creation')}
+            onPress={() => navigation.navigate('StoryCreation')}
           >
             Debugging creation
           </Text>
