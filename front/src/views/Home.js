@@ -6,7 +6,7 @@ import { storyService } from '../services/story';
 import { paragraphService } from '../services/paragraph';
 import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Popup from 'react-native-easypopup';
+import { PopupComponent } from '../components/popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Home({ navigation }) {
@@ -14,7 +14,7 @@ export function Home({ navigation }) {
   const [stories, setStories] = React.useState('');
   const [selectedId, setSelectedId] = React.useState(null);
 
-  const [state, setState] = React.useState(false);
+  const [popupOpened, setPopupOpened] = React.useState(false);
 
   const load = async () => {
     if (token !== '') {
@@ -42,7 +42,7 @@ export function Home({ navigation }) {
                 as: MaterialIcons,
                 name: 'more-vert',
               }}
-              onPress={() => setState(true)}
+              onPress={() => setPopupOpened(true)}
             />
           </TouchableOpacity>
         ),
@@ -86,6 +86,15 @@ export function Home({ navigation }) {
       justifyContent: 'center',
       borderRadius: 50,
     },
+    popup: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    item_popup: {
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
   });
 
   const Item = ({ item, onPress, backgroundColor }) => (
@@ -105,6 +114,39 @@ export function Home({ navigation }) {
         backgroundColor={{ backgroundColor }}
         textColor={{ color }}
       />
+    );
+  };
+
+  const renderPopupContent = () => {
+    return (
+      <TouchableOpacity style={styles.popup}>
+        <Text
+          onPress={() => {
+            // TODO: display user stories
+            // navigation.navigate('MyStories');
+          }}
+          style={styles.item_popup}
+        >
+          My stories
+        </Text>
+        <Text
+          onPress={() => {
+            setHistory(null);
+            AsyncStorage.setItem('@token', token).then(_ => navigation.navigate('Welcome'));
+          }}
+          style={[
+            styles.item_popup,
+            {
+              borderTopColor: 'black',
+              borderTopWidth: 1,
+              paddingTop: 15,
+              marginTop: 15,
+            },
+          ]}
+        >
+          Disconnect me
+        </Text>
+      </TouchableOpacity>
     );
   };
 
@@ -132,22 +174,10 @@ export function Home({ navigation }) {
       )}
 
       {/*Disconnect popup*/}
-      <Popup
-        showpopup={state}
-        type="alert"
-        semitransparent={false}
-        animation={'fade'}
-        onPress={() => setState({ showpopup: !state })}
-        contenttext={'Do you want to disconnect ?'}
-        acceptbuttontitle={'OK'}
-        cancelbuttontitle={'Cancel'}
-        confirmaction={() => {
-          setHistory(null);
-          AsyncStorage.setItem('@token', token).then(_ => navigation.navigate('Welcome'));
-        }}
-        cancelaction={() => {
-          setState(false);
-        }}
+      <PopupComponent
+        visible={popupOpened}
+        onClose={() => setPopupOpened(false)}
+        children={renderPopupContent}
       />
     </SafeAreaView>
   );
