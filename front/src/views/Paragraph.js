@@ -16,14 +16,25 @@ export function Paragraph({ navigation, route }) {
     navigation.setOptions({ title: story.titre });
   };
 
-  const onPressChoice = async choiceId => {
+  const onPressChoice = async (choiceId, choiceTitle) => {
     const util = await paragraphService.getParagraph(token, story.id, choiceId);
-    setHistory([...history, util.paragraph.id]);
+    setHistory([
+      ...history,
+      { title: choiceTitle, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },
+    ]);
     scrollRef.current?.scrollTo({ y: 0, animated: false });
-    navigation.navigate('Paragraph', {
-      story: story,
+    navigation.setParams({
       paragraph: util.paragraph,
       choiceRowArray: util.choiceRowArray,
+    });
+  };
+
+  const onPressHistory = async historyIndex => {
+    setHistory(history.slice(0, historyIndex + 1));
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
+    navigation.setParams({
+      paragraph: history[historyIndex].paragraph,
+      choiceRowArray: history[historyIndex].choiceRowArray,
     });
   };
 
@@ -59,14 +70,16 @@ export function Paragraph({ navigation, route }) {
   });
 
   return (
-    <View style={styles.container} onTouchStart={() => console.log(history)}>
+    <View style={styles.container} onTouchStart={() => {}}>
       <ScrollView style={styles.scrollView} ref={scrollRef}>
         <ParagraphComponent
           token={token}
           story={story}
           paragraph={paragraph}
           choiceRowArray={choiceRowArray}
+          history={history}
           onPressChoice={onPressChoice}
+          onPressHistory={onPressHistory}
         />
       </ScrollView>
     </View>
