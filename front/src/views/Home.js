@@ -8,11 +8,11 @@ import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet, Button, View } fr
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { PopupComponent } from '../components/popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StoriesComponent } from '../components/stories';
 
 export function Home({ navigation }) {
   const { token, setHistory } = useAppStateContext();
   const [stories, setStories] = React.useState('');
-  const [selectedId, setSelectedId] = React.useState(null);
 
   const [popupOpened, setPopupOpened] = React.useState(false);
 
@@ -56,8 +56,7 @@ export function Home({ navigation }) {
   }, []);
 
   const onPressStory = async item => {
-    setSelectedId(item.id);
-    const util = await paragraphService.getParagraph(token, item.id, item.ParagrapheInitial.id);
+    const util = await paragraphService.getParagraph(token, item.id, item.idParagrapheInitial);
     // TODO: la lecture doit reprendre à partir de l'historique
     setHistory([
       { title: util.story.titre, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },
@@ -69,16 +68,11 @@ export function Home({ navigation }) {
     });
   };
 
-  // List style
+  // Style
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       marginTop: StatusBar.currentHeight || 0,
-    },
-    item: {
-      padding: 20,
-      marginVertical: 8,
-      marginHorizontal: 16,
     },
     add_button: {
       position: 'absolute',
@@ -93,40 +87,21 @@ export function Home({ navigation }) {
     },
   });
 
-  const Item = ({ item, onPress, backgroundColor }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
-      <Text>{item.titre}</Text>
-    </TouchableOpacity>
-  );
-
-  const renderItem = ({ item }) => {
-    const backgroundColor = '#f9c2ff';
-    const color = item.id === selectedId ? 'white' : 'black';
-
-    return (
-      <Item
-        item={item}
-        onPress={() => onPressStory(item)}
-        backgroundColor={{ backgroundColor }}
-        textColor={{ color }}
-      />
-    );
-  };
-
   const renderPopupContent = () => {
     return (
       <View>
         <Button
           title={'My stories'}
           onPress={() => {
-            // TODO: display user stories
-            // navigation.navigate('MyStories');
+            setPopupOpened(false);
+            navigation.navigate('UserStories');
           }}
         />
         <View style={styles.separator} />
         <Button
           title={'Disconnect me'}
           onPress={() => {
+            setPopupOpened(false);
             setHistory(null);
             AsyncStorage.setItem('@token', token).then(_ => navigation.navigate('Welcome'));
           }}
@@ -138,12 +113,7 @@ export function Home({ navigation }) {
   return (
     //  Main home view
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={stories}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        extraData={selectedId}
-      />
+      <StoriesComponent onPressStory={onPressStory} stories={stories} />
       {token !== '' && (
         <IconButton
           style={styles.add_button}

@@ -20,4 +20,14 @@ export const storyService = {
       throw e.response?.data?.message ?? e;
     }
   },
+  async getUserStories(token) {
+    try {
+      const response = await axios.get(`${BACKEND}/api/histoire/own`, {
+        headers: { 'x-access-token': token },
+      });
+      return response.data.stories;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
 };
