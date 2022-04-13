@@ -116,6 +116,16 @@ export const story = {
 		});
 	},
 
+	async getUserStories(req, res) {
+		const stories = await req.user.getHistoire();
+
+		res.json({
+			status: true,
+			message: 'Returning stories',
+			stories: stories
+		});
+	},
+
 	async createStory(req, res) {
 		if (!has(req.body, 'titre')) {
 			throw new RequestError('Title not found', status.BAD_REQUEST);

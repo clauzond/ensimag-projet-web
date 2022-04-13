@@ -157,6 +157,182 @@ describe('GET /api/histoire', () => {
 	});
 });
 
+describe('GET /api/histoire/own', () => {
+	test('Test of get a public story', async () => {
+		// Init a public story with a valid paragraph (with content and that lead to conclusion)
+		const username = 'clauzond';
+		const token = await getToken(username);
+		const storyTitle = "L'histoire publique de clauzond";
+		const firstParagraphContent = 'Ceci est le paragraphe de clauzond';
+		await createStory(
+			storyTitle,
+			username,
+			true,
+			firstParagraphContent,
+			true
+		);
+
+		const response = await request(app)
+			.get(`/api/histoire/own`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.OK);
+		const publicStoriesNb = response.body.stories.length;
+		expect(publicStoriesNb).not.toBe(0);
+
+		// Get and check the public story just being import
+		const publicStory = response.body.stories[publicStoriesNb - 1];
+		expect(publicStory.titre).toBe(storyTitle);
+		expect(publicStory.idAuteur).toBe(username);
+		expect(publicStory.estPublique).toBe(true);
+	});
+
+	test('Test of get a public story without authentification', async () => {
+		// Init a public story with a valid paragraph (with content and that lead to conclusion)
+		const username = 'clauzond';
+		const storyTitle = "L'histoire publique de clauzond";
+		const firstParagraphContent = 'Ceci est le paragraphe de clauzond';
+		await createStory(
+			storyTitle,
+			username,
+			true,
+			firstParagraphContent,
+			true
+		);
+
+		const response = await request(app).get(`/api/histoire/own`);
+
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
+		expect(response.body.message).toBe(
+			"You must specify your access token in the 'x-access-token' header"
+		);
+	});
+
+	test('Test of get a private story', async () => {
+		// Init a public story with a valid paragraph (with content and that lead to conclusion)
+		const username = 'clauzond_private';
+		const token = await getToken(username);
+		const storyTitle = "L'histoire privée de clauzond";
+		const firstParagraphContent =
+			'Ceci est le paragraphe de clauzond privé';
+		await createStory(
+			storyTitle,
+			username,
+			false,
+			firstParagraphContent,
+			true
+		);
+
+		const response = await request(app)
+			.get('/api/histoire/own')
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+		expect(response.statusCode).toBe(status.OK);
+		const publicStoriesNb = response.body.stories.length;
+
+		// Get and check the private story is in the stories list
+		const privateStory = response.body.stories[publicStoriesNb - 1];
+		expect(privateStory.titre).toBe(storyTitle);
+		expect(privateStory.idAuteur).toBe(username);
+	});
+
+	test('Test of get a public story that not lead to a conclusion', async () => {
+		// Init a public story with a valid paragraph (with content and that lead to conclusion)
+		const username = 'clauzond_sans_conclusion';
+		const token = await getToken(username);
+		const storyTitle = "L'histoire publique de clauzond sans conclusion";
+		const firstParagraphContent =
+			'Ceci est le paragraphe de clauzond sans conclusion';
+		await createStory(
+			storyTitle,
+			username,
+			true,
+			firstParagraphContent,
+			false
+		);
+
+		const response = await request(app)
+			.get('/api/histoire/own')
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+		expect(response.statusCode).toBe(status.OK);
+		const publicStoriesNb = response.body.stories.length;
+
+		// Get and check the story is in the public stories list
+		const publicStory = response.body.stories[publicStoriesNb - 1];
+		expect(publicStory.titre).toBe(storyTitle);
+		expect(publicStory.idAuteur).toBe(username);
+	});
+
+	test('Test of get a public story where the init paragraph is null', async () => {
+		// Init a public story with a valid paragraph (with content and that lead to conclusion)
+		const username = 'clauzond_sans_paragraphe';
+		const token = await getToken(username);
+		const storyTitle = "L'histoire publique de clauzond sans paragraphe";
+		const firstParagraphContent = null;
+		await createStory(
+			storyTitle,
+			username,
+			true,
+			firstParagraphContent,
+			true
+		);
+
+		const response = await request(app)
+			.get('/api/histoire/own')
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token);
+
+		expect(response.statusCode).toBe(status.OK);
+		const publicStoriesNb = response.body.stories.length;
+
+		// Get and check the story is in the public stories list
+		const publicStory = response.body.stories[publicStoriesNb - 1];
+		expect(publicStory.titre).toBe(storyTitle);
+		expect(publicStory.idAuteur).toBe(username);
+	});
+
+	test('Test of get a story where the user is a collaborator', async () => {
+		// Create a basic story
+		const user = 'clauzondLeCollabo';
+		const token = await getToken(user);
+		const newStory = await createStory(
+			"L'histoire de clauzond le collabo",
+			user
+		);
+
+		// Create collaborator profile
+		const collaboratorName = 'leCollabo';
+		const tokenCollabo = await getToken(collaboratorName);
+
+		// Add the user a collaborator
+		await request(app)
+			.post(`/api/histoire/${newStory.id}/collaborateur`)
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', token)
+			.send(
+				JSON.stringify({
+					idCollaborateur: collaboratorName
+				})
+			);
+
+		const response = await request(app)
+			.get('/api/histoire/own')
+			.set('Content-Type', 'application/json')
+			.set('x-access-token', tokenCollabo);
+
+		expect(response.statusCode).toBe(status.OK);
+		const publicStoriesNb = response.body.stories.length;
+
+		// Get and check the story is in the stories list
+		const publicStory = response.body.stories[publicStoriesNb - 1];
+		expect(publicStory.id).toBe(newStory.id);
+		expect(publicStory.titre).toBe(newStory.titre);
+		expect(publicStory.idAuteur).toBe(user);
+	});
+});
+
 describe('POST /api/histoire', () => {
 	test('Test of failed story creation', async () => {
 		const token = await getToken();
