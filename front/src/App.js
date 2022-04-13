@@ -1,11 +1,10 @@
 import React from 'react';
-import { NativeBaseProvider, Text, View } from 'native-base';
+import { NativeBaseProvider } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 
-import { useAppStateContext, AppStateProvider } from './contexts/AppState';
+import { AppStateProvider } from './contexts/AppState';
 import { Welcome } from './views/Welcome';
 import { Register } from './views/Register';
 import { Login } from './views/Login';
@@ -42,10 +41,7 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Creation" component={Creation} />
-            <Stack.Screen
-              name="Paragraph"
-              component={Paragraph}
-            />
+            <Stack.Screen name="Paragraph" component={Paragraph} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

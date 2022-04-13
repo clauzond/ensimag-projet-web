@@ -54,6 +54,28 @@ async function checkIfUserIsWriter(user, paragraph) {
 	return true;
 }
 
+async function getValidChoiceArray(idParagraph, history) {
+	// Filter choices: only valid paragraph && with choice condition respected
+	const choiceRowArray = [];
+	const arr = await ChoixTable.findAll({
+		where: { ParagrapheId: idParagraph }
+	});
+
+	for (const ele of arr) {
+		if (ele.condition !== null && !history.includes(ele.condition)) {
+			continue;
+		}
+		const choice = await Paragraphe.findByPk(ele.ChoixId);
+		if (!choice.estVerrouille && choice.idRedacteur !== null) {
+			if (await choice.leadToConclusion()) {
+				choiceRowArray.push(ele);
+			}
+		}
+	}
+
+	return choiceRowArray;
+}
+
 export const paragraphe = {
 	// Create paragraph as a choice
 	async createParagraph(req, res) {
@@ -162,6 +184,7 @@ export const paragraphe = {
 		});
 	},
 	// Read-only for authentified & unauthentified users
+	// If there is only one choice, append the next paragraph
 	async getPublicParagraph(req, res) {
 		const story = await checkStoryId(req);
 
@@ -180,24 +203,17 @@ export const paragraphe = {
 		}
 
 		const history =
-			req.user !== undefined ? await user.getHistorique(story) : [];
+			req.user !== undefined ? await req.user.getHistorique(story) : [];
 
-		// Filter choices: only valid paragraph && with choice condition respected
-		const choiceRowArray = [];
-		const arr = await ChoixTable.findAll({
-			where: { ParagrapheId: paragraph.id }
-		});
+		let choiceRowArray = await getValidChoiceArray(paragraph.id, history);
 
-		for (const ele of arr) {
-			if (ele.condition !== null && !history.includes(ele.condition)) {
-				continue;
-			}
-			const choice = await Paragraphe.findByPk(ele.ChoixId);
-			if (!choice.estVerrouille && choice.idRedacteur !== null) {
-				if (await choice.leadToConclusion()) {
-					choiceRowArray.push(ele);
-				}
-			}
+		while (choiceRowArray.length === 1) {
+			const nextParagraph = await Paragraphe.findByPk(choiceRowArray[0].ChoixId);
+			paragraph.contenu += '\n';
+			paragraph.contenu += choiceRowArray[0].titreChoix;
+			paragraph.contenu += '\n';
+			paragraph.contenu += nextParagraph.contenu;
+			choiceRowArray = await getValidChoiceArray(nextParagraph.id, history);
 		}
 
 		res.json({
