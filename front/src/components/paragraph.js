@@ -16,6 +16,9 @@ const styles = StyleSheet.create({
   hidden: {
     display: 'none',
   },
+  choice: {
+    marginTop: 15,
+  },
 });
 
 export class ParagraphComponent extends React.Component {
@@ -32,8 +35,9 @@ export class ParagraphComponent extends React.Component {
         {this.props.choiceRowArray.map(value => {
           return (
             <Button
+              style={styles.choice}
               key={value.ChoixId}
-              onPress={() => this.props.onPressChoice(value.ChoixId, value.titreChoix)}
+              onPress={() => this.props.onPressChoice(value.ChoixId, value.titrechoix)}
             >
               {value.titreChoix}
             </Button>
