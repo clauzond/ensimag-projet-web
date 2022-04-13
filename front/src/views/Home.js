@@ -46,20 +46,7 @@ export function Home({ navigation }) {
             />
           </TouchableOpacity>
         ),
-        headerLeft: () => (
-          <TouchableOpacity>
-            <IconButton
-              size={'lg'}
-              _icon={{
-                as: MaterialIcons,
-                name: 'menu',
-              }}
-              onPress={() => {
-                //TODO: display lateral menu
-              }}
-            />
-          </TouchableOpacity>
-        ),
+        headerBackVisible: false,
       });
     }
   };

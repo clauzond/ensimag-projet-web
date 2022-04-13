@@ -11,6 +11,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 18,
   },
+  choice: {
+    marginTop: 15,
+  },
 });
 
 export class ParagraphComponent extends React.Component {
@@ -23,7 +26,11 @@ export class ParagraphComponent extends React.Component {
         <Text style={styles.baseText}>{this.props.paragraph.contenu}</Text>
         {this.props.choiceRowArray.map(value => {
           return (
-            <Button key={value.ChoixId} onPress={() => this.props.onPressChoice(value.ChoixId)}>
+            <Button
+              style={styles.choice}
+              key={value.ChoixId}
+              onPress={() => this.props.onPressChoice(value.ChoixId)}
+            >
               {value.titreChoix}
             </Button>
           );
