@@ -4,7 +4,7 @@ import React from 'react';
 import { users } from '../services/users';
 import { storyService } from '../services/story';
 import { paragraphService } from '../services/paragraph';
-import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet, Button, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { PopupComponent } from '../components/popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -59,7 +59,9 @@ export function Home({ navigation }) {
     setSelectedId(item.id);
     const util = await paragraphService.getParagraph(token, item.id, item.ParagrapheInitial.id);
     // TODO: la lecture doit reprendre à partir de l'historique
-    setHistory([{ title: util.story.titre, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray }]);
+    setHistory([
+      { title: util.story.titre, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },
+    ]);
     navigation.navigate('Paragraph', {
       story: item,
       paragraph: util.paragraph,
@@ -86,14 +88,8 @@ export function Home({ navigation }) {
       justifyContent: 'center',
       borderRadius: 50,
     },
-    popup: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    item_popup: {
-      fontSize: 20,
-      fontWeight: 'bold',
+    separator: {
+      marginVertical: 8,
     },
   });
 
@@ -119,34 +115,23 @@ export function Home({ navigation }) {
 
   const renderPopupContent = () => {
     return (
-      <TouchableOpacity style={styles.popup}>
-        <Text
+      <View>
+        <Button
+          title={'My stories'}
           onPress={() => {
             // TODO: display user stories
             // navigation.navigate('MyStories');
           }}
-          style={styles.item_popup}
-        >
-          My stories
-        </Text>
-        <Text
+        />
+        <View style={styles.separator} />
+        <Button
+          title={'Disconnect me'}
           onPress={() => {
             setHistory(null);
             AsyncStorage.setItem('@token', token).then(_ => navigation.navigate('Welcome'));
           }}
-          style={[
-            styles.item_popup,
-            {
-              borderTopColor: 'black',
-              borderTopWidth: 1,
-              paddingTop: 15,
-              marginTop: 15,
-            },
-          ]}
-        >
-          Disconnect me
-        </Text>
-      </TouchableOpacity>
+        />
+      </View>
     );
   };
 
