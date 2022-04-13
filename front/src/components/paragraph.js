@@ -2,7 +2,6 @@ import { Text, Box, Button, StatusBar } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useState } from 'react';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,9 +23,6 @@ const styles = StyleSheet.create({
 export class ParagraphComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedValue: this.props.history[this.props.history.length - 1].paragraph.id,
-    };
   }
   render() {
     return (
@@ -37,16 +33,15 @@ export class ParagraphComponent extends React.Component {
             <Button
               style={styles.choice}
               key={value.ChoixId}
-              onPress={() => this.props.onPressChoice(value.ChoixId, value.titrechoix)}
+              onPress={() => this.props.onPressChoice(value.ChoixId, value.titreChoix)}
             >
               {value.titreChoix}
             </Button>
           );
         })}
         <Picker
-          selectedValue={this.state.selectedValue}
+          selectedValue={this.props.history[this.props.history.length - 1].paragraph.id}
           onValueChange={(itemValue, itemIndex) => {
-            this.setState({ selectedValue: itemValue });
             this.props.onPressHistory(itemIndex);
           }}
         >

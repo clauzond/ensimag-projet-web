@@ -18,21 +18,21 @@ export function Paragraph({ navigation, route }) {
 
   const onPressChoice = async (choiceId, choiceTitle) => {
     const util = await paragraphService.getParagraph(token, story.id, choiceId);
-    setHistory([...history, { title: choiceTitle, paragraph: paragraph, choiceRowArray: util.choiceRowArray }]);
+    setHistory([
+      ...history,
+      { title: choiceTitle, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },
+    ]);
     scrollRef.current?.scrollTo({ y: 0, animated: false });
-    navigation.navigate('Paragraph', {
-      story: story,
+    navigation.setParams({
       paragraph: util.paragraph,
       choiceRowArray: util.choiceRowArray,
     });
   };
 
   const onPressHistory = async historyIndex => {
-    console.log(historyIndex);
     setHistory(history.slice(0, historyIndex + 1));
     scrollRef.current?.scrollTo({ y: 0, animated: false });
-    navigation.navigate('Paragraph', {
-      story: story,
+    navigation.setParams({
       paragraph: history[historyIndex].paragraph,
       choiceRowArray: history[historyIndex].choiceRowArray,
     });
