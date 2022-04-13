@@ -29,7 +29,7 @@ export function Paragraph({ navigation, route }) {
 
   React.useEffect(() => {
     load();
-  });
+  }, []);
 
   // Removes the event listener when exiting the view
   // see: https://reactnavigation.org/docs/custom-android-back-button-handling/
