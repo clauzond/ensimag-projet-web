@@ -14,25 +14,18 @@ export function UserStories({ navigation }) {
   const load = async () => {
     const storiesFromApi = await storyService.getUserStories(token);
     setStories(storiesFromApi);
-  };
-
-  const header = async () => {
-    if (token !== '') {
-      const username = await users.whoami(token);
-      // Set header buttons
-      navigation.setOptions({
-        title: `Your stories - ${username}`,
-      });
-    }
+    navigation.setOptions({
+      title: 'Custom your stories',
+    });
   };
 
   React.useEffect(() => {
-    load().then(_ => header());
+    load();
   }, []);
 
   const onPressStory = async item => {
+    // TODO: permettre la modification de l'histoire
     const util = await paragraphService.getParagraph(token, item.id, item.idParagrapheInitial);
-    // TODO: la lecture doit reprendre à partir de l'historique
     setHistory([
       { title: util.story.titre, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },
     ]);

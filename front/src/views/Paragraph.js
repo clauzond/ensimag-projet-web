@@ -17,7 +17,7 @@ export function Paragraph({ navigation, route }) {
   };
 
   const onPressChoice = async (choiceId, choiceTitle) => {
-    const util = await paragraphService.getParagraph(token, story.id, choiceId);
+    const util = await paragraphService.getPublicParagraph(token, story.id, choiceId);
     setHistory([
       ...history,
       { title: choiceTitle, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },

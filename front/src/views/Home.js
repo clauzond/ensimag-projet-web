@@ -56,7 +56,11 @@ export function Home({ navigation }) {
   }, []);
 
   const onPressStory = async item => {
-    const util = await paragraphService.getParagraph(token, item.id, item.idParagrapheInitial);
+    const util = await paragraphService.getPublicParagraph(
+      token,
+      item.id,
+      item.idParagrapheInitial
+    );
     // TODO: la lecture doit reprendre à partir de l'historique
     setHistory([
       { title: util.story.titre, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },

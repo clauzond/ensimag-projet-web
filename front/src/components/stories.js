@@ -1,6 +1,6 @@
 import React from 'react';
-import { FlatList, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
-import { StatusBar, Text } from 'native-base';
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text } from 'native-base';
 
 export class StoriesComponent extends React.Component {
   constructor(props) {
