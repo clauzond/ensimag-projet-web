@@ -9,6 +9,7 @@ import { Welcome } from './views/Welcome';
 import { Register } from './views/Register';
 import { Login } from './views/Login';
 import { Home } from './views/Home';
+import { Creation } from './views/Story_creation';
 import { Paragraph } from './views/Paragraph';
 
 const Stack = createNativeStackNavigator();
@@ -39,6 +40,7 @@ export default function App() {
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Creation" component={Creation} />
             <Stack.Screen name="Paragraph" component={Paragraph} />
           </Stack.Navigator>
         </NavigationContainer>
