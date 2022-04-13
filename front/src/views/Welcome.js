@@ -39,6 +39,9 @@ export function Welcome({ navigation }) {
           <Text underline mt={2} textAlign="center" color="info.600" onPress={asGuest}>
             Continue as guest
           </Text>
+          <Text underline mt={2} textAlign="center" color="info.600" onPress={() => navigation.navigate('Creation')}>
+            Debugging creation
+          </Text>
         </Box>
       </Flex>
     </View>
