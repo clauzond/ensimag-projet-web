@@ -72,7 +72,7 @@ export function Home({ navigation }) {
     setSelectedId(item.id);
     const util = await paragraphService.getParagraph(token, item.id, item.ParagrapheInitial.id);
     // TODO: la lecture doit reprendre à partir de l'historique
-    setHistory([util.paragraph.id]);
+    setHistory([{ title: util.story.titre, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray }]);
     navigation.navigate('Paragraph', {
       story: item,
       paragraph: util.paragraph,
