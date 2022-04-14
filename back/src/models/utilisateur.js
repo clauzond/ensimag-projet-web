@@ -40,7 +40,7 @@ export class Utilisateur extends Model {
 
 		let newArray;
 		if (historique === null) {
-			newArray = [{ id: idParagraphe, titre: titreParagraphe }];
+			newArray = [{ id: idParagraphe, title: titreParagraphe }];
 			await Historique.create({
 				idUtilisateur: this.id,
 				idHistoire: histoire.get('id'),
@@ -48,7 +48,7 @@ export class Utilisateur extends Model {
 			});
 		} else {
 			newArray = historique.arrayParagraphe.slice();
-			newArray.push({ id: idParagraphe, titre: titreParagraphe });
+			newArray.push({ id: idParagraphe, title: titreParagraphe });
 			await historique.update({
 				arrayParagraphe: newArray
 			});

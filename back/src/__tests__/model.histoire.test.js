@@ -24,8 +24,8 @@ describe('Test fonctions histoire', () => {
 		});
 
 		let u = await u1.setHistorique(h1, [
-			{ id: p5.id, titre: 'p5' },
-			{ id: p3.id, titre: 'p3' }
+			{ id: p5.id, title: 'p5' },
+			{ id: p3.id, title: 'p3' }
 		]);
 		let h = await u1.getHistorique(h1);
 		expect(h.length).toBe(2);

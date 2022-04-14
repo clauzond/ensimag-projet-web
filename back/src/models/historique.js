@@ -27,7 +27,7 @@ Historique.init(
 			}
 		},
 		arrayParagraphe: {
-			// [..., {id: int, titre: String}]
+			// [..., {id: int, title: String}]
 			type: DataTypes.JSON,
 			allowNull: false
 		},
