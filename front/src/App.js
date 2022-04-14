@@ -12,12 +12,14 @@ import { Home } from './views/Home';
 import { StoryCreation } from './views/StoryCreation';
 import { Paragraph } from './views/Paragraph';
 import { UserStories } from './views/UserStories';
+import { SetCollaborators } from './views/SetCollaborators';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [token, setToken] = React.useState('');
   const [history, setHistory] = React.useState([]);
+  const [username, setUsername] = React.useState('');
 
   const load = async () => {
     const tokenFromStorage = await AsyncStorage.getItem('@token');
@@ -30,7 +32,7 @@ export default function App() {
   }, []);
 
   return (
-    <AppStateProvider value={{ token, setToken, history, setHistory }}>
+    <AppStateProvider value={{ token, setToken, history, setHistory, username, setUsername }}>
       <NativeBaseProvider>
         {/* needed by native-base for styling */}
         <NavigationContainer>
@@ -44,6 +46,7 @@ export default function App() {
             <Stack.Screen name="StoryCreation" component={StoryCreation} />
             <Stack.Screen name="Paragraph" component={Paragraph} />
             <Stack.Screen name="UserStories" component={UserStories} />
+            <Stack.Screen name="SetCollaborators" component={SetCollaborators} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

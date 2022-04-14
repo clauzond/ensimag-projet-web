@@ -1,17 +1,18 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { Text, StatusBar, IconButton } from 'native-base';
+import { Button, IconButton, StatusBar } from 'native-base';
 import React from 'react';
 import { users } from '../services/users';
 import { storyService } from '../services/story';
 import { paragraphService } from '../services/paragraph';
-import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet, Button, View } from 'react-native';
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { PopupComponent } from '../components/popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StoriesComponent } from '../components/stories';
+import { historyService } from '../services/history';
 
 export function Home({ navigation }) {
-  const { token, setHistory } = useAppStateContext();
+  const { token, setHistory, setUsername } = useAppStateContext();
   const [stories, setStories] = React.useState('');
 
   const [popupOpened, setPopupOpened] = React.useState(false);
@@ -31,6 +32,7 @@ export function Home({ navigation }) {
   const header = async () => {
     if (token !== '') {
       const username = await users.whoami(token);
+      setUsername(username);
       // Set header buttons
       navigation.setOptions({
         title: `Home - ${username}`,
@@ -56,19 +58,38 @@ export function Home({ navigation }) {
   }, []);
 
   const onPressStory = async item => {
-    const util = await paragraphService.getPublicParagraph(
-      token,
-      item.id,
-      item.idParagrapheInitial
-    );
-    // TODO: la lecture doit reprendre à partir de l'historique
-    setHistory([
-      { title: util.story.titre, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },
-    ]);
+    // Set up history
+    const savedHistory = token !== '' ? await historyService.getHistory(token, item.id) : null;
+    const toSetHistory = [];
+    if (savedHistory === null || savedHistory.length === 0) {
+      const util = await paragraphService.getPublicParagraph(
+        token,
+        item.id,
+        item.idParagrapheInitial
+      );
+      toSetHistory.push({
+        title: util.story.titre,
+        paragraph: util.paragraph,
+        choiceRowArray: util.choiceRowArray,
+      });
+    } else {
+      for (const obj of savedHistory) {
+        const util = await paragraphService.getPublicParagraph(token, item.id, obj.id);
+        toSetHistory.push({
+          title: obj.title,
+          paragraph: util.paragraph,
+          choiceRowArray: util.choiceRowArray,
+        });
+      }
+    }
+
+    setHistory(toSetHistory);
+
+    // Resume lecture to the last item of history
     navigation.navigate('Paragraph', {
       story: item,
-      paragraph: util.paragraph,
-      choiceRowArray: util.choiceRowArray,
+      paragraph: toSetHistory[toSetHistory.length - 1].paragraph,
+      choiceRowArray: toSetHistory[toSetHistory.length - 1].choiceRowArray,
     });
   };
 
@@ -95,21 +116,24 @@ export function Home({ navigation }) {
     return (
       <View>
         <Button
-          title={'My stories'}
           onPress={() => {
             setPopupOpened(false);
             navigation.navigate('UserStories');
           }}
-        />
+        >
+          My stories
+        </Button>
         <View style={styles.separator} />
         <Button
-          title={'Disconnect me'}
+          colorScheme={'secondary'}
           onPress={() => {
             setPopupOpened(false);
             setHistory(null);
             AsyncStorage.removeItem('@token').then(_ => navigation.navigate('Welcome'));
           }}
-        />
+        >
+          Disconnect me
+        </Button>
       </View>
     );
   };
