@@ -6,15 +6,12 @@ import { StyleSheet } from 'react-native';
 import { ParagraphComponent } from '../components/paragraph';
 import { BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { historyService } from '../services/history';
 
 export function Paragraph({ navigation, route }) {
   const { token, history, setHistory } = useAppStateContext();
   const { story, paragraph, choiceRowArray } = route.params;
   const scrollRef = useRef();
-
-  const load = () => {
-    navigation.setOptions({ title: story.titre });
-  };
 
   const onPressChoice = async (choiceId, choiceTitle) => {
     const util = await paragraphService.getPublicParagraph(token, story.id, choiceId);
@@ -38,9 +35,20 @@ export function Paragraph({ navigation, route }) {
     });
   };
 
+  const onPressSave = async () => {
+    const arrayParagraph = history.map(obj => {
+      return { id: obj.paragraph.id, title: obj.title };
+    });
+
+    const res = await historyService.saveHistory(token, story.id, arrayParagraph);
+  };
+
   React.useEffect(() => {
+    const load = () => {
+      navigation.setOptions({ title: story.titre });
+    };
     load();
-  }, []);
+  }, [navigation, story.titre]);
 
   // Removes the event listener when exiting the view
   // see: https://reactnavigation.org/docs/custom-android-back-button-handling/
@@ -80,6 +88,7 @@ export function Paragraph({ navigation, route }) {
           history={history}
           onPressChoice={onPressChoice}
           onPressHistory={onPressHistory}
+          onPressSave={onPressSave}
         />
       </ScrollView>
     </View>
