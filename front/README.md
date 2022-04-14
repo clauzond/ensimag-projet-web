@@ -62,3 +62,5 @@ Si ca marche pas, désinstallez l'application dans l'émulateur.
 Les composants: [NativeBase](https://docs.nativebase.io/?utm_source=HomePage&utm_medium=header&utm_campaign=NativeBase_3)
 
 Navigation entre les pages: [React-Navigation](https://reactnavigation.org/docs/getting-started)
+
+a
