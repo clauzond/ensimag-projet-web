@@ -29,7 +29,7 @@ testing_backend:
   stage: test
   image: node:14
   tags:
-    - docker
+    - shell
   script:
     - cd ./back
     - npm i # install all modules
