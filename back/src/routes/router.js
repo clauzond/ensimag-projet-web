@@ -30,6 +30,7 @@ router.use(readOnly);
 // Authentification required
 router.use(auth);
 router.get('/api/whoami', utilisateur.whoami);
+router.get('/api/users', utilisateur.getUsers);
 router.use(story);
 router.use(paragraphe);
 router.use(historique);
