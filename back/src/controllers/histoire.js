@@ -1,7 +1,7 @@
 import has from 'has-keys';
 import status from 'http-status';
 import { Op } from 'sequelize';
-import { Utilisateur, Histoire, Paragraphe } from '../models/index.js';
+import { Histoire, Paragraphe, Utilisateur } from '../models/index.js';
 import { RequestError } from '../util/requestError.js';
 
 async function checkStoryId(req) {
@@ -193,12 +193,12 @@ export const story = {
 		// Change story params
 		if (has(req.body, 'estPublique')) {
 			await story.update({
-				estPublique: req.params.estPublique
+				estPublique: req.body.estPublique
 			});
 		}
 		if (has(req.body, 'estOuverte')) {
 			await story.update({
-				estOuvert: req.params.estOuverte
+				estOuverte: req.body.estOuverte
 			});
 		}
 

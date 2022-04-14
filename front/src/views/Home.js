@@ -1,10 +1,10 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { Text, StatusBar, IconButton } from 'native-base';
+import { Button, IconButton, StatusBar } from 'native-base';
 import React from 'react';
 import { users } from '../services/users';
 import { storyService } from '../services/story';
 import { paragraphService } from '../services/paragraph';
-import { FlatList, SafeAreaView, TouchableOpacity, StyleSheet, Button, View } from 'react-native';
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { PopupComponent } from '../components/popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -115,21 +115,24 @@ export function Home({ navigation }) {
     return (
       <View>
         <Button
-          title={'My stories'}
           onPress={() => {
             setPopupOpened(false);
             navigation.navigate('UserStories');
           }}
-        />
+        >
+          My stories
+        </Button>
         <View style={styles.separator} />
         <Button
-          title={'Disconnect me'}
+          colorScheme={'secondary'}
           onPress={() => {
             setPopupOpened(false);
             setHistory(null);
             AsyncStorage.removeItem('@token').then(_ => navigation.navigate('Welcome'));
           }}
-        />
+        >
+          Disconnect me
+        </Button>
       </View>
     );
   };
