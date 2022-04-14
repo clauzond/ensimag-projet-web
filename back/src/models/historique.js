@@ -27,9 +27,10 @@ Historique.init(
 			}
 		},
 		arrayParagraphe: {
-			type: DataTypes.ARRAY(DataTypes.INTEGER),
+			// [..., {id: int, titre: String}]
+			type: DataTypes.JSON,
 			allowNull: false
-		}
+		},
 	},
 	{
 		sequelize: database

@@ -23,38 +23,41 @@ describe('Test fonctions histoire', () => {
 			through: { titreChoix: 'hey', condititon: null }
 		});
 
-		let u = await u1.setHistorique(h1, [p5.id, p3.id]);
+		let u = await u1.setHistorique(h1, [
+			{ id: p5.id, titre: 'p5' },
+			{ id: p3.id, titre: 'p3' }
+		]);
 		let h = await u1.getHistorique(h1);
 		expect(h.length).toBe(2);
-		expect(h[0]).toBe(p5.id);
-		expect(h[1]).toBe(p3.id);
+		expect(h[0].id).toBe(p5.id);
+		expect(h[1].id).toBe(p3.id);
 
-		await u1.addHistorique(h1, p2);
+		await u1.addHistorique(h1, p2.id, 'a');
 		h = await u1.getHistorique(h1);
 		expect(h.length).toBe(3);
-		expect(h[0]).toBe(p5.id);
-		expect(h[1]).toBe(p3.id);
-		expect(h[2]).toBe(p2.id);
+		expect(h[0].id).toBe(p5.id);
+		expect(h[1].id).toBe(p3.id);
+		expect(h[2].id).toBe(p2.id);
 
-		await u1.removeHistorique(h1, p3);
+		await u1.removeHistorique(h1, p3.id);
 		h = await u1.getHistorique(h1);
 		expect(h.length).toBe(2);
-		expect(h[0]).toBe(p5.id);
-		expect(h[1]).toBe(p2.id);
+		expect(h[0].id).toBe(p5.id);
+		expect(h[1].id).toBe(p2.id);
 
 		await u1.clearHistorique(h1);
 		h = await u1.getHistorique(h1);
 		expect(h.length).toBe(0);
 
-		await u1.addHistorique(h1, p4);
+		await u1.addHistorique(h1, p4.id, 'a');
 		h = await u1.getHistorique(h1);
 		expect(h.length).toBe(1);
-		expect(h[0]).toBe(p4.id);
+		expect(h[0].id).toBe(p4.id);
 
-		await u1.addHistorique(h1, p1);
+		await u1.addHistorique(h1, p1.id, 'b');
 		h = await u1.getHistorique(h1);
 		expect(h.length).toBe(2);
-		expect(h[0]).toBe(p4.id);
-		expect(h[1]).toBe(p1.id);
+		expect(h[0].id).toBe(p4.id);
+		expect(h[1].id).toBe(p1.id);
 	});
 });

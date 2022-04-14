@@ -47,7 +47,7 @@ export const history = {
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
-		const history = await req.user.removeHistorique(story, paragraph);
+		const history = await req.user.removeHistorique(story, paragraph.id);
 		if (history === null) {
 			throw new RequestError(
 				'Paragraph is not in history',
