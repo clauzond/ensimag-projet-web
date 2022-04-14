@@ -7,6 +7,7 @@ import { ParagraphComponent } from '../components/paragraph';
 import { BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { historyService } from '../services/history';
+import Toast from 'react-native-toast-message';
 
 export function Paragraph({ navigation, route }) {
   const { token, history, setHistory } = useAppStateContext();
@@ -40,7 +41,12 @@ export function Paragraph({ navigation, route }) {
       return { id: obj.paragraph.id, title: obj.title };
     });
 
-    const res = await historyService.saveHistory(token, story.id, arrayParagraph);
+    await historyService.saveHistory(token, story.id, arrayParagraph);
+
+    Toast.show({
+      text1: 'History saved',
+      position: 'bottom',
+    });
   };
 
   React.useEffect(() => {
@@ -91,6 +97,7 @@ export function Paragraph({ navigation, route }) {
           onPressSave={onPressSave}
         />
       </ScrollView>
+      <Toast />
     </View>
   );
 }
