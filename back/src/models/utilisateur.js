@@ -8,8 +8,8 @@ export class Utilisateur extends Model {
 	// méthodes pour manipuler Historique(idUtilisateur {pk, fk}, idHistoire {pk, fk}, arrayParagraphe)
 	async setHistorique(histoire, arrayParagraphe) {
 		// Verify that each id exists in Paragraphe
-		for (const id of arrayParagraphe) {
-			if ((await Paragraphe.findByPk(id)) === null) {
+		for (const obj of arrayParagraphe) {
+			if ((await Paragraphe.findByPk(obj.id)) === null) {
 				return null;
 			}
 		}
@@ -30,38 +30,26 @@ export class Utilisateur extends Model {
 		if (historique === null) {
 			return [];
 		}
-		let arrayParagraphe = [];
-		if (historique.arrayParagraphe.length !== 0) {
-			for (const id of String(historique.arrayParagraphe).split(',')) {
-				if (Number.isInteger(Number(id))) {
-					arrayParagraphe.push(Number(id));
-				}
-			}
-		}
-		return arrayParagraphe;
+		return historique.arrayParagraphe;
 	}
 
-	async addHistorique(histoire, paragraphe) {
+	async addHistorique(histoire, idParagraphe, titreParagraphe) {
 		const historique = await Historique.findOne({
 			where: { idUtilisateur: this.id, idHistoire: histoire.get('id') }
 		});
 
 		let newArray;
 		if (historique === null) {
-			newArray = [String(paragraphe.id)];
-			Historique.create({
+			newArray = [{ id: idParagraphe, title: titreParagraphe }];
+			await Historique.create({
 				idUtilisateur: this.id,
 				idHistoire: histoire.get('id'),
 				arrayParagraphe: newArray
 			});
 		} else {
-			if (historique.arrayParagraphe.length === 0) {
-				newArray = [];
-			} else {
-				newArray = String(historique.arrayParagraphe).split(',');
-			}
-			newArray.push(paragraphe.id);
-			historique.update({
+			newArray = historique.arrayParagraphe.slice();
+			newArray.push({ id: idParagraphe, title: titreParagraphe });
+			await historique.update({
 				arrayParagraphe: newArray
 			});
 		}
@@ -69,20 +57,18 @@ export class Utilisateur extends Model {
 		return newArray;
 	}
 
-	async removeHistorique(histoire, paragraphe) {
+	async removeHistorique(histoire, idParagraphe) {
 		const historique = await Historique.findOne({
 			where: { idUtilisateur: this.id, idHistoire: histoire.get('id') }
 		});
 		if (historique !== null || historique.arrayParagraphe.length !== 0) {
 			const newArray = [];
 			let removed = false;
-			for (const id of String(historique.arrayParagraphe).split(',')) {
-				if (Number.isInteger(Number(id))) {
-					if (Number(id) !== paragraphe.id) {
-						newArray.push(Number(id));
-					} else {
-						removed = true;
-					}
+			for (const obj of historique.arrayParagraphe) {
+				if (obj.id !== idParagraphe) {
+					newArray.push(obj);
+				} else {
+					removed = true;
 				}
 			}
 			if (!removed) {

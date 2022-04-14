@@ -40,15 +40,18 @@ describe('POST /api/historique/:idHistoire', () => {
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					arrayParagraphe: [paragraph1.id, paragraph2.id]
+					arrayParagraphe: [
+						{ id: paragraph1.id, title: 'par1' },
+						{ id: paragraph2.id, title: 'par2' }
+					]
 				})
 			);
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.message).toBe('History saved');
 		expect(response.body.history).not.toBe(null);
 		expect(response.body.history.length).toBe(2);
-		expect(response.body.history[0]).toBe(paragraph1.id);
-		expect(response.body.history[1]).toBe(paragraph2.id);
+		expect(response.body.history[0].id).toBe(paragraph1.id);
+		expect(response.body.history[1].id).toBe(paragraph2.id);
 
 		// Modify the user history for this story
 		response = await request(app)
@@ -57,14 +60,15 @@ describe('POST /api/historique/:idHistoire', () => {
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					arrayParagraphe: [paragraph2.id]
+					arrayParagraphe: [{ id: paragraph2.id, title: 'par2' }]
 				})
 			);
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.message).toBe('History saved');
 		expect(response.body.history).not.toBe(null);
 		expect(response.body.history.length).toBe(1);
-		expect(response.body.history[0]).toBe(paragraph2.id);
+		expect(response.body.history[0].id).toBe(paragraph2.id);
+		expect(response.body.history[0].title).toBe('par2');
 
 		// Modify the user history for this story
 		response = await request(app)
@@ -108,7 +112,10 @@ describe('POST /api/historique/:idHistoire', () => {
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					arrayParagraphe: [paragraph2.id, 954789654]
+					arrayParagraphe: [
+						{ id: paragraph2.id, title: 'par2' },
+						{ id: 954789654, title: 'unknown' }
+					]
 				})
 			);
 		expect(response.statusCode).toBe(status.BAD_REQUEST);
@@ -134,15 +141,20 @@ describe('DELETE /api/historique/:idHistoire', () => {
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					arrayParagraphe: [paragraph1.id, paragraph2.id]
+					arrayParagraphe: [
+						{ id: paragraph1.id, title: 'par1' },
+						{ id: paragraph2.id, title: 'par2' }
+					]
 				})
 			);
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.message).toBe('History saved');
 		expect(response.body.history).not.toBe(null);
 		expect(response.body.history.length).toBe(2);
-		expect(response.body.history[0]).toBe(paragraph1.id);
-		expect(response.body.history[1]).toBe(paragraph2.id);
+		expect(response.body.history[0].id).toBe(paragraph1.id);
+		expect(response.body.history[0].title).toBe('par1');
+		expect(response.body.history[1].id).toBe(paragraph2.id);
+		expect(response.body.history[1].title).toBe('par2');
 
 		// Clear history
 		response = await request(app)
@@ -161,9 +173,11 @@ describe('DELETE /api/historique/:idHistoire/paragraphe/:idParagraphe', () => {
 	test('Test of removeHistory for a paragraph', async () => {
 		let response;
 
-		const story = await createStory('Test of removeHistory for a paragraph');
+		const story = await createStory(
+			'Test of removeHistory for a paragraph'
+		);
 		const paragraph1 = await createParagraph(story);
-		const paragraph2 = await createParagraph(story,);
+		const paragraph2 = await createParagraph(story);
 		const token = await getToken('clauzondtuconnais');
 
 		// Modify the user history for this story
@@ -173,15 +187,18 @@ describe('DELETE /api/historique/:idHistoire/paragraphe/:idParagraphe', () => {
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					arrayParagraphe: [paragraph1.id, paragraph2.id]
+					arrayParagraphe: [
+						{ id: paragraph1.id, title: 'par1' },
+						{ id: paragraph2.id, title: 'par2' }
+					]
 				})
 			);
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.message).toBe('History saved');
 		expect(response.body.history).not.toBe(null);
 		expect(response.body.history.length).toBe(2);
-		expect(response.body.history[0]).toBe(paragraph1.id);
-		expect(response.body.history[1]).toBe(paragraph2.id);
+		expect(response.body.history[0].id).toBe(paragraph1.id);
+		expect(response.body.history[1].id).toBe(paragraph2.id);
 
 		// Remove history
 		response = await request(app)
@@ -193,7 +210,7 @@ describe('DELETE /api/historique/:idHistoire/paragraphe/:idParagraphe', () => {
 		expect(response.body.message).toBe('History removed');
 		expect(response.body.history).not.toBe(null);
 		expect(response.body.history.length).toBe(1);
-		expect(response.body.history[0]).toBe(paragraph2.id);
+		expect(response.body.history[0].id).toBe(paragraph2.id);
 
 		// Remove history
 		response = await request(app)
@@ -209,7 +226,9 @@ describe('DELETE /api/historique/:idHistoire/paragraphe/:idParagraphe', () => {
 	test('Test of failed removeHistory for a paragraph (wrong input)', async () => {
 		let response;
 
-		const story = await createStory('Test of failed removeHistory for a paragraph (wrong input)');
+		const story = await createStory(
+			'Test of failed removeHistory for a paragraph (wrong input)'
+		);
 		const paragraph1 = await createParagraph(story);
 		const paragraph2 = await createParagraph(story);
 		const token = await getToken();
@@ -221,14 +240,14 @@ describe('DELETE /api/historique/:idHistoire/paragraphe/:idParagraphe', () => {
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					arrayParagraphe: [paragraph1.id]
+					arrayParagraphe: [{ id: paragraph1.id, title: 'par1' }]
 				})
 			);
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.message).toBe('History saved');
 		expect(response.body.history).not.toBe(null);
 		expect(response.body.history.length).toBe(1);
-		expect(response.body.history[0]).toBe(paragraph1.id);
+		expect(response.body.history[0].id).toBe(paragraph1.id);
 
 		// Remove history
 		response = await request(app)
