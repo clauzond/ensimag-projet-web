@@ -33,6 +33,7 @@ testing_backend:
   script:
     - cd ./back
     - npm i # install all modules
+    - npm update
     - node --version
     - npm run doc
     - npm run test
