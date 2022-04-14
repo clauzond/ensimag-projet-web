@@ -140,5 +140,13 @@ export const utilisateur = {
 			message: 'Returning username',
 			data: req.user.id
 		});
+	},
+	async getUsers(req, res) {
+		const users = await Utilisateur.findAll({ attributes: ['id'] });
+		res.json({
+			status: true,
+			message: 'Returning users list',
+			data: users
+		});
 	}
 };

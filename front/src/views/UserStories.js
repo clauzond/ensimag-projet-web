@@ -8,7 +8,7 @@ import { StoriesComponent } from '../components/stories';
 import { PopupComponent } from '../components/popup';
 
 export function UserStories({ navigation }) {
-  const { token } = useAppStateContext();
+  const { token, username } = useAppStateContext();
   const [stories, setStories] = React.useState('');
   const [popupOpened, setPopupOpened] = React.useState(false);
   const [storySelected, setStorySelected] = React.useState('');
@@ -17,7 +17,7 @@ export function UserStories({ navigation }) {
     const storiesFromApi = await storyService.getUserStories(token);
     setStories(storiesFromApi);
     navigation.setOptions({
-      title: 'Custom your stories',
+      title: 'Customize your stories',
     });
   };
 
@@ -77,6 +77,18 @@ export function UserStories({ navigation }) {
         >
           {storySelected.estOuverte === true ? 'Disable modifications' : 'Allow modifications'}
         </Button>
+        <View style={styles.separator} />
+        {storySelected.idAuteur === username ? (
+          <Button
+            onPress={() =>
+              navigation.navigate('SetCollaborators', {
+                story: storySelected,
+              })
+            }
+          >
+            Set collaborators
+          </Button>
+        ) : null}
       </View>
     );
   };

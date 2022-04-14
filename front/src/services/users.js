@@ -50,4 +50,11 @@ export const users = {
     });
     return response.data.data;
   },
+
+  async userList(token) {
+    const response = await axios.get(`${BACKEND}/api/users`, {
+      headers: { 'x-access-token': token },
+    });
+    return response.data.data;
+  },
 };

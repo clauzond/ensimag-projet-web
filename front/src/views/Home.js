@@ -12,7 +12,7 @@ import { StoriesComponent } from '../components/stories';
 import { historyService } from '../services/history';
 
 export function Home({ navigation }) {
-  const { token, history, setHistory } = useAppStateContext();
+  const { token, setHistory, setUsername } = useAppStateContext();
   const [stories, setStories] = React.useState('');
 
   const [popupOpened, setPopupOpened] = React.useState(false);
@@ -32,6 +32,7 @@ export function Home({ navigation }) {
   const header = async () => {
     if (token !== '') {
       const username = await users.whoami(token);
+      setUsername(username);
       // Set header buttons
       navigation.setOptions({
         title: `Home - ${username}`,
