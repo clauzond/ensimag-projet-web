@@ -1,11 +1,8 @@
 import React from 'react';
-import { Flex, Heading, View, Text, Icon, Box, Button, IconButton } from 'native-base';
+import { Box, Button, Flex, Heading, Icon, Text, View } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppStateContext } from '../contexts/AppState';
-import { storyService } from '../services/story';
 import { users } from '../services/users';
-import { TouchableOpacity } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Welcome({ navigation }) {
@@ -18,11 +15,14 @@ export function Welcome({ navigation }) {
 
   const load = async () => {
     const token = await AsyncStorage.getItem('@token');
-    if (token !== null) {
-      // If the token is already present in storage, connect automatically the user
-      setToken(token);
-      navigation.navigate('Home');
-    }
+    try {
+      await users.whoami(token);
+      if (token !== null) {
+        // If the token is already present in storage, connect automatically the user
+        setToken(token);
+        navigation.navigate('Home');
+      }
+    } catch (e) {}
   };
 
   React.useEffect(() => {
