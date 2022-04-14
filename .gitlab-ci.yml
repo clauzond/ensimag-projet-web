@@ -27,9 +27,7 @@ eslint:
 
 testing_backend:
   stage: test
-  image: node:14
-  tags:
-    - shell
+  image: node:16
   script:
     - cd ./back
     - npm i # install all modules
