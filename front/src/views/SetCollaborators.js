@@ -4,7 +4,8 @@ import React from 'react';
 import { storyService } from '../services/story';
 import { users } from '../services/users';
 import { SafeAreaView, StyleSheet } from 'react-native';
-import CustomMultiPicker from 'react-native-multiple-select-list';
+
+// import CustomMultiPicker from 'react-native-multiple-select-list';
 
 export function SetCollaborators({ navigation, route }) {
   const { token, username } = useAppStateContext();
