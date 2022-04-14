@@ -27,13 +27,12 @@ eslint:
 
 testing_backend:
   stage: test
-  image: node:16
+  image: node:14
   tags:
     - docker
   script:
     - cd ./back
     - npm i # install all modules
-    - npm update
     - node --version
     - npm run doc
     - npm run test
