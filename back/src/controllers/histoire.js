@@ -292,6 +292,58 @@ export const story = {
 			collaborator: collaborator
 		});
 	},
+	async setCollaborators(req, res) {
+		// Get story object
+		const story = await checkStoryId(req);
+
+		// Only the story author can add collaborators
+		if (!(await story.isAuthor(req.user))) {
+			throw new RequestError(
+				'Only the author of the story can add or remove collaborators',
+				status.FORBIDDEN
+			);
+		}
+
+		if (!has(req.body, 'idCollaborateurs')) {
+			throw new RequestError(
+				'You must specify idCollaborateur param',
+				status.BAD_REQUEST
+			);
+		}
+
+		let authorPresentInList = false;
+		for (const collaboratorFromReq of req.body.idCollaborateurs) {
+			// Verify that collaborator exists in database
+			const collaborator = await Utilisateur.findByPk(
+				collaboratorFromReq
+			);
+			if (collaborator === null) {
+				throw new RequestError(
+					'User specified in idCollaborateur was not found',
+					status.NOT_FOUND
+				);
+			}
+
+			// The author must be in collaborators list
+			if (req.user.id === collaborator.id) {
+				authorPresentInList = true;
+			}
+		}
+
+		if (!authorPresentInList) {
+			throw new RequestError(
+				'You cannot remove yourself from collaborators',
+				status.FORBIDDEN
+			);
+		}
+
+		await story.setCollaborateur(req.body.idCollaborateurs);
+
+		res.json({
+			status: true,
+			message: 'Collaborators are set'
+		});
+	},
 	async removeCollaborator(req, res) {
 		// Get story object
 		const story = await checkStoryId(req);

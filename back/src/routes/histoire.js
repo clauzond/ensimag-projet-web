@@ -10,6 +10,7 @@ router.get('/api/histoire/:idHistoire', story.getStory);
 router.put('/api/histoire/:idHistoire', story.updateStory);
 router.get('/api/histoire/:idHistoire/collaborateur', story.getCollaborators);
 router.post('/api/histoire/:idHistoire/collaborateur', story.addCollaborator);
+router.put('/api/histoire/:idHistoire/collaborateur', story.setCollaborators);
 router.delete(
 	'/api/histoire/:idHistoire/collaborateur',
 	story.removeCollaborator

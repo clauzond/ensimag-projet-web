@@ -1,22 +1,27 @@
 import { useAppStateContext } from '../contexts/AppState';
 import { Button, StatusBar } from 'native-base';
 import React from 'react';
-import { storyService } from '../services/story';
 import { users } from '../services/users';
 import { SafeAreaView, StyleSheet } from 'react-native';
-
-// import CustomMultiPicker from 'react-native-multiple-select-list';
+import { MultiSelectComponent } from '../components/multiSelect';
+import { storyService } from '../services/story';
+import Toast from 'react-native-toast-message';
 
 export function SetCollaborators({ navigation, route }) {
-  const { token, username } = useAppStateContext();
-  const { story } = route.params;
+  const { token } = useAppStateContext();
+  const { story, collaborators } = route.params;
 
   const [userList, setUserList] = React.useState({});
-  const [collaboratorList, setCollaboratorList] = React.useState([]);
-  const [newCollaboratorList, setNewCollaboratorList] = React.useState([]);
+  const [newCollaboratorsList, setNewCollaboratorsList] = React.useState();
 
   const load = async () => {
-    setCollaboratorList(await collaboratorsList);
+    const userListFromApi = await users.userList(token);
+    const formatUserList = [];
+    for (const user of userListFromApi) {
+      formatUserList.push({ id: user.id, name: user.id });
+    }
+    setUserList(formatUserList);
+
     navigation.setOptions({
       title: 'Set collaborators',
     });
@@ -26,24 +31,17 @@ export function SetCollaborators({ navigation, route }) {
     load();
   }, []);
 
-  const collaboratorsList = async () => {
-    const userListFromApi = await users.userList(token);
-    const formatUserList = {};
-    for (const user of userListFromApi) {
-      formatUserList[user.id] = user.id;
+  const sendNewCollaborators = async () => {
+    try {
+      await storyService.setCollaborators(token, story.id, newCollaboratorsList);
+      navigation.navigate('UserStories');
+    } catch (e) {
+      Toast.show({
+        type: 'error',
+        text1: e,
+        position: 'bottom',
+      });
     }
-    setUserList(formatUserList);
-
-    const collaboratorListFromApi = await storyService.getCollaborators(token, story.id);
-    const formatCollaboratorList = [];
-    for (const collaborator of collaboratorListFromApi) {
-      formatCollaboratorList.push(collaborator.id);
-    }
-    setCollaboratorList(formatCollaboratorList);
-  };
-
-  const setCollaborators = async () => {
-    // TODO: faire le tri entre les nouveaux et les anciens collaborateurs pour savoir lesquels ajouter/supprimer
   };
 
   // Style
@@ -66,37 +64,20 @@ export function SetCollaborators({ navigation, route }) {
   return (
     //  Main user stories
     <SafeAreaView style={styles.container}>
-      <CustomMultiPicker
-        options={userList}
-        search={true} // should show search bar?
-        multiple={true} //
-        placeholder={'Search users'}
-        placeholderTextColor={'#757575'}
-        returnValue={'value'} // label or value
-        callback={res => {
-          setNewCollaboratorList(res);
-        }} // callback, array of selected items
-        rowBackgroundColor={'#eee'}
-        rowHeight={45}
-        rowRadius={5}
-        searchIconName="ios-checkmark"
-        searchIconColor="red"
-        searchIconSize={30}
-        iconColor={'#00a2dd'}
-        iconSize={30}
-        selectedIconName={'ios-checkmark-circle-outline'}
-        unselectedIconName={'ios-radio-button-off-outline'}
-        scrollViewHeight={'100%'}
-        selected={collaboratorList} // list of options which are selected by default
+      <MultiSelectComponent
+        items={userList}
+        selectedItems={collaborators}
+        select={setNewCollaboratorsList}
       />
       <Button
         style={styles.saveButton}
         size={'lg'}
         colorScheme={'secondary'}
-        onPress={setCollaborators}
+        onPress={sendNewCollaborators}
       >
         Save
       </Button>
+      <Toast />
     </SafeAreaView>
   );
 }

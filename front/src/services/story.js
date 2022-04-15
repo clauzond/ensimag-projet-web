@@ -51,27 +51,12 @@ export const storyService = {
     });
     return response.data.collaborators;
   },
-  async addCollaborator(token, idStory, idCollaborator) {
+  async setCollaborators(token, idStory, collaborators) {
     try {
-      await axios.post(
+      await axios.put(
         `${BACKEND}/api/histoire/${idStory}/collaborateur`,
         {
-          idCollaborateur: idCollaborator,
-        },
-        {
-          headers: { 'x-access-token': token },
-        }
-      );
-    } catch (e) {
-      throw e.response?.data?.message ?? e;
-    }
-  },
-  async removeCollaborator(token, idStory, idCollaborator) {
-    try {
-      await axios.delete(
-        `${BACKEND}/api/histoire/${idStory}/collaborateur`,
-        {
-          idCollaborateur: idCollaborator,
+          idCollaborateurs: collaborators,
         },
         {
           headers: { 'x-access-token': token },

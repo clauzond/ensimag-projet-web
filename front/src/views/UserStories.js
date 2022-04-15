@@ -80,11 +80,20 @@ export function UserStories({ navigation }) {
         <View style={styles.separator} />
         {storySelected.idAuteur === username ? (
           <Button
-            onPress={() =>
+            onPress={async () => {
+              const collaboratorListFromApi = await storyService.getCollaborators(
+                token,
+                storySelected.id
+              );
+              const formatCollaboratorList = [];
+              for (const collaborator of collaboratorListFromApi) {
+                formatCollaboratorList.push(collaborator.id);
+              }
               navigation.navigate('SetCollaborators', {
                 story: storySelected,
-              })
-            }
+                collaborators: formatCollaboratorList,
+              });
+            }}
           >
             Set collaborators
           </Button>
