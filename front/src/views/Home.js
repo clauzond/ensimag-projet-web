@@ -60,7 +60,7 @@ export function Home({ navigation }) {
   const onPressStory = async item => {
     // Set up history
     const savedHistory = token !== '' ? await historyService.getHistory(token, item.id) : null;
-    const toSetHistory = [];
+    let toSetHistory = [];
     if (savedHistory === null || savedHistory.length === 0) {
       const util = await paragraphService.getPublicParagraph(
         token,
@@ -74,12 +74,31 @@ export function Home({ navigation }) {
       });
     } else {
       for (const obj of savedHistory) {
-        const util = await paragraphService.getPublicParagraph(token, item.id, obj.id);
-        toSetHistory.push({
-          title: obj.title,
-          paragraph: util.paragraph,
-          choiceRowArray: util.choiceRowArray,
-        });
+        try {
+          const util = await paragraphService.getPublicParagraph(token, item.id, obj.id);
+          toSetHistory.push({
+            title: obj.title,
+            paragraph: util.paragraph,
+            choiceRowArray: util.choiceRowArray,
+          });
+        } catch {
+          // History is compromised: reset history
+          console.log('HISTORY COMPROMISED; RESETTING');
+          const util = await paragraphService.getPublicParagraph(
+            token,
+            item.id,
+            item.idParagrapheInitial
+          );
+          await historyService.clearHistory(token, item.id);
+          toSetHistory = [
+            {
+              title: util.story.titre,
+              paragraph: util.paragraph,
+              choiceRowArray: util.choiceRowArray,
+            },
+          ];
+          break;
+        }
       }
     }
 

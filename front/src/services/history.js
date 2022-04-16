@@ -26,4 +26,14 @@ export const historyService = {
       throw e.response?.data?.message ?? e;
     }
   },
+  async clearHistory(token, storyId) {
+    try {
+      const response = await axios.delete(`${BACKEND}/api/historique/${storyId}`, {
+        headers: { 'x-access-token': token, 'Content-Type': 'application/json' },
+      });
+      return response.data.history;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
 };
