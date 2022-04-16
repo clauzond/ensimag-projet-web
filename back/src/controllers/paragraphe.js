@@ -206,7 +206,7 @@ export const paragraphe = {
 			req.user !== undefined ? await req.user.getHistorique(story) : [];
 
 		let choiceRowArray = await getValidChoiceArray(paragraph.id, history);
-
+		const alreadySeen = [paragraph.id];
 		while (choiceRowArray.length === 1) {
 			const nextParagraph = await Paragraphe.findByPk(choiceRowArray[0].ChoixId);
 			paragraph.contenu += '\n';
@@ -214,6 +214,12 @@ export const paragraphe = {
 			paragraph.contenu += '\n';
 			paragraph.contenu += nextParagraph.contenu;
 			choiceRowArray = await getValidChoiceArray(nextParagraph.id, history);
+
+			// Avoid circular loops
+			if (alreadySeen.includes(nextParagraph.id)) {
+				break;
+			}
+			alreadySeen.push(nextParagraph.id);
 		}
 
 		res.json({

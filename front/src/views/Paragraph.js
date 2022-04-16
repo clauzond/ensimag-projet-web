@@ -16,11 +16,18 @@ export function Paragraph({ navigation, route }) {
 
   const onPressChoice = async (choiceId, choiceTitle) => {
     const util = await paragraphService.getPublicParagraph(token, story.id, choiceId);
+
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
+
+    // Choice loop: no need to change view
+    if (util.paragraph.id === paragraph.id) {
+      return;
+    }
+
     setHistory([
       ...history,
       { title: choiceTitle, paragraph: util.paragraph, choiceRowArray: util.choiceRowArray },
     ]);
-    scrollRef.current?.scrollTo({ y: 0, animated: false });
     navigation.setParams({
       paragraph: util.paragraph,
       choiceRowArray: util.choiceRowArray,
