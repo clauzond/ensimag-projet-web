@@ -7,7 +7,7 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { StoriesComponent } from '../components/stories';
 import { PopupComponent } from '../components/popup';
 
-export function UserStories({ navigation }) {
+export function UserStories({ navigation, route }) {
   const { token, username } = useAppStateContext();
   const [stories, setStories] = React.useState('');
   const [popupOpened, setPopupOpened] = React.useState(false);
@@ -16,6 +16,20 @@ export function UserStories({ navigation }) {
   const load = async () => {
     const storiesFromApi = await storyService.getUserStories(token);
     setStories(storiesFromApi);
+
+    if (route.params !== undefined) {
+      const { storyCreated } = route.params;
+      if (storyCreated) {
+        // Display popup
+        Toast.show({
+          text1: 'Story created !',
+          position: 'bottom',
+        });
+
+        // TODO: Set back button to Home page
+      }
+    }
+
     navigation.setOptions({
       title: 'Customize your stories',
     });

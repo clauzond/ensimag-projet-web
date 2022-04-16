@@ -32,11 +32,10 @@ export const storyService = {
   },
   async createStory(token, title, isOpened, isPublic) {
     try {
-      const response = await axios.post(`${BACKEND}/api/histoire`,
-          {body: {'titre': title,
-              'estOuverte': isOpened,
-              'estPublique': isPublic}},
-          {headers: { 'x-access-token': token }},
+      const response = await axios.post(
+        `${BACKEND}/api/histoire`,
+        { titre: title, estOuverte: isOpened, estPublique: isPublic },
+        { headers: { 'x-access-token': token } }
       );
       return response.data.histoire;
     } catch (e) {
@@ -82,19 +81,17 @@ export const storyService = {
   async updateParagraph(token, idStory, idParagraph, content) {
     try {
       const response = await axios.put(
-          `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}`,
-          {
-            contenu : content,
-          },
-          {
-            headers: { 'x-access-token': token },
-          },
+        `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}`,
+        {
+          contenu: content,
+        },
+        {
+          headers: { 'x-access-token': token },
+        }
       );
       return response.data.paragraph;
     } catch (e) {
       throw e.response?.data?.message ?? e;
     }
   },
-
-
 };
