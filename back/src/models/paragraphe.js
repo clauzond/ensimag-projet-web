@@ -59,7 +59,7 @@ export class Paragraphe extends Model {
 			if (alreadySeen.includes(choice.id)) {
 				continue;
 			}
-			alreadySeen.push(choice);
+			alreadySeen.push(choice.id);
 			toVisit.push(...(await choice.getChoix()));
 		}
 		return false;
