@@ -58,7 +58,10 @@ export class ParagraphComponent extends React.Component {
             );
           })}
         </Picker>
-        <Button style={styles.save} onPress={this.props.onPressSave}>
+        <Button
+          style={this.props.token !== '' ? styles.save : styles.hidden}
+          onPress={this.props.onPressSave}
+        >
           Save history
         </Button>
       </Box>
