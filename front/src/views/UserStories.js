@@ -112,6 +112,15 @@ export function UserStories({ navigation, route }) {
             Set collaborators
           </Button>
         ) : null}
+        <View style={styles.separator} />
+        <Button
+          onPress={() => {
+            // TODO: amène vers la futur page de modification des paragraphes
+            // navigation.navigate('setParagraphs');
+          }}
+        >
+          Set paragraphs
+        </Button>
       </View>
     );
   };
