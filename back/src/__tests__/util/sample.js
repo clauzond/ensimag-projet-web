@@ -4,7 +4,7 @@ const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fe
 
 async function generateSample() {
     const username = "HelloIAmClauzonD"
-    const story = await createStory("This is a sample story", username, true, "Hello ! This is a sample paragraph from the sample story. There should be some choices !");
+    const story = await createStory("This is a sample story!!", username, true, "Hello ! This is a sample paragraph from the sample story. There should be some choices !");
     const choix1 = await createParagraph(story, "Mon premier choix non final :D", username, story.idParagrapheInitial, null, false);
     await updateParagraph(story, choix1.id, `[Choix 1] ${lorem} [fin Choix 1]`, username);
     const choix2 = await createParagraph(story, "Mon deuxième choix non final :D", username, story.idParagrapheInitial, null, false);
@@ -21,6 +21,25 @@ async function generateSample() {
     await updateParagraph(story, choix2_2.id, `[Choix 2.2] ${lorem} [fin Choix 2.2]`, username);
     const choix2_2_1 = await createParagraph(story, "True ending :D", username, choix2_2.id, null, true);
     await updateParagraph(story, choix2_2_1.id, `[Choix 2.2.1] Ceci est le paragraphe final [fin Choix 2.2.1]`, username);
+
+    // un choix qui revient au début de l'histoire
+    const choix4 = await createParagraph(story, "[Titre Choix 4] Choix qui va retourner en arrière", username, story.idParagrapheInitial, null, false);
+    await updateParagraph(story, choix4.id, `[Choix 4] ${lorem} [fin Choix 4]`, username);
+    const choix4_1 = await createParagraph(story, "[Titre Choix 4.1] Revenir au début de l'histoire", username, choix4.id, story.idParagrapheInitial, true);
+    
+    // un choix qui boucle sur lui-même
+    const choix5 = await createParagraph(story, "[Titre Choix 5] Choix boucleur conclusion", username, story.idParagrapheInitial, story.idParagrapheInitial, true);
+    
+    // un choix qui amène vers une boucle
+    const choix6 = await createParagraph(story, "[Titre Choix 6] Choix qui va boucler peu après", username, story.idParagrapheInitial, null, true);
+    await updateParagraph(story, choix6.id, `[Choix 6] a [fin Choix 6]`, username);
+    const choix6_1 = await createParagraph(story, "[Titre Choix 6.1] ?", username, choix6.id, null, true);
+    await updateParagraph(story, choix6_1.id, `[Choix 6.1] b [fin Choix 6.1]`, username);
+    const choix6_1_1 = await createParagraph(story, "[Titre Choix 6.1.1] ?", username, choix6_1.id, null, true);
+    await updateParagraph(story, choix6_1_1.id, `[Choix 6.1.1] c [fin Choix 6.1.1]`, username);
+    const choix6_1_1_1 = await createParagraph(story, "[Titre Choix 6.1.1.1] ?", username, choix6_1_1.id, null, true);
+    await updateParagraph(story, choix6_1_1_1.id, `[Choix 6.1.1.1] d [fin Choix 6.1.1.1]`, username);
+    const choix6_1_1_1_1 = await createParagraph(story, "[Titre Choix 6.1.1.1.1] ?", username, choix6_1_1_1.id, choix6.id, true);
 }
 
 await generateSample();
