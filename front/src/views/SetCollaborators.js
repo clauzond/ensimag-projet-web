@@ -11,7 +11,7 @@ export function SetCollaborators({ navigation, route }) {
   const { token } = useAppStateContext();
   const { story, collaborators } = route.params;
 
-  const [userList, setUserList] = React.useState({});
+  const [userList, setUserList] = React.useState([]);
   const [newCollaboratorsList, setNewCollaboratorsList] = React.useState();
 
   const load = async () => {

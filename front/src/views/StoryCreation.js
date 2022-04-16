@@ -1,12 +1,10 @@
-import { Text, TextArea, Heading, StatusBar, HStack, Checkbox, Button } from 'native-base';
+import { Button, Checkbox, HStack, StatusBar } from 'native-base';
 import React from 'react';
 import { SafeAreaView, StyleSheet, TextInput } from 'react-native';
 //import SegmentedControlTab from 'react-native-segmented-control-tab';
 import { Formik } from 'formik';
-import axios from 'axios';
-import { BACKEND } from '../globals';
 import { useAppStateContext } from '../contexts/AppState';
-
+import { storyService } from '../services/story';
 
 
 export function StoryCreation({ navigation }) {
@@ -22,21 +20,12 @@ export function StoryCreation({ navigation }) {
     load();
   }, []);
 
-  const setStory = async ({ title, opened, pub, paragraph }) => {
+  const setStory = async ({ title, opened, pub, paragraphContent }) => {
     try {
-      const newStory = await axios.post(`${BACKEND}/api/histoire`,
-      {body: {'titre': title,
-              'estOuverte': opened,
-              'estPublique': pub}},
-      {headers: { 'x-access-token': token }},
-      );
-      await axios.put(`${BACKEND}/api/histoire/${newStory.histoire.id}
-      /paragraphe/${newStory.paragrapheInitial.id}`,
-      {body: {'contenu': paragraph}},
-      {headers: { 'x-access-token': token }},
-      );
+      const newStory = await storyService.createStory(token, title, opened, pub);
+      await storyService.updateParagraph(token, newStory.id, newStory.paragrapheInitial.id, paragraphContent);
     } catch (e) {
-      console.log({ title, opened, pub, paragraph });
+      console.log({ title, opened, pub, paragraphContent });
       console.log(e.response.data);
       throw e.response?.data?.message ?? e;
     }
@@ -63,8 +52,9 @@ export function StoryCreation({ navigation }) {
       marginBottom: 10,
       padding: 10,
     },
-    create: {
+    createButton: {
       width: 125,
+      marginTop: 10,
     },
   });
 
@@ -96,19 +86,19 @@ export function StoryCreation({ navigation }) {
   return (
     <Formik
       initialValues={{
-        title:'', 
-        opened:false, 
-        pub:false, 
-        paragraph:''
+        title:'',
+        opened:false,
+        pub:false,
+        paragraph:'',
       }}
       onSubmit={setStory}
     >
       {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
         <SafeAreaView style={styles.container}>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Story title" 
-            maxLength={255} 
+          <TextInput
+            style={styles.input}
+            placeholder="Story title"
+            maxLength={255}
             onChangeText={handleChange('title')}
             onBlur={handleBlur('title')}
             value={values.title} />
@@ -131,19 +121,19 @@ export function StoryCreation({ navigation }) {
           {renderTab(selectedIndex)} */}
 
           <HStack space={6}>
-            <Checkbox shadow={2} 
+            <Checkbox shadow={2}
               value={values.pub}
-              onChange={(e)=>{handleChange('pub')({target: {value: e}})}}
+              onChange={(e)=>{handleChange('pub')({target: {value: e}});}}
               onBlur={handleBlur('pub')}
               accessibilityLabel="This is a dummy checkbox">
               Make story public
             </Checkbox>
           </HStack>
-          <Button colorScheme="primary" style={styles.create} onPress={handleSubmit}>
-            Create story{values.title}
+          <Button colorScheme="primary" style={styles.createButton} onPress={handleSubmit}>
+            Create story : {values.title}
           </Button>
         </SafeAreaView>
-        
+
       )}
       </Formik>
   );

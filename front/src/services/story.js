@@ -30,6 +30,19 @@ export const storyService = {
       throw e.response?.data?.message ?? e;
     }
   },
+  async createStory(token, title, isOpened, isPublic) {
+    try {
+      const response = await axios.post(`${BACKEND}/api/histoire`,
+          {body: {'titre': title,
+              'estOuverte': isOpened,
+              'estPublique': isPublic}},
+          {headers: { 'x-access-token': token }},
+      );
+      return response.data.histoire;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
   async modifyStory(token, idStory, isOpened, isPublic) {
     try {
       const response = await axios.put(
@@ -66,4 +79,22 @@ export const storyService = {
       throw e.response?.data?.message ?? e;
     }
   },
+  async updateParagraph(token, idStory, idParagraph, content) {
+    try {
+      const response = await axios.put(
+          `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}`,
+          {
+            contenu : content,
+          },
+          {
+            headers: { 'x-access-token': token },
+          },
+      );
+      return response.data.paragraph;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
+
+
 };
