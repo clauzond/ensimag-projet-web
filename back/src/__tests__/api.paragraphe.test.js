@@ -295,7 +295,7 @@ describe('DELETE /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 			.set('x-access-token', token);
 		expect(response.statusCode).toBe(status.BAD_REQUEST);
 		expect(response.body.message).toBe(
-			'The paragraph is the beginning of a story and thus cannot be deleted'
+			'You cannot delete the initial paragraph'
 		);
 	});
 
@@ -352,7 +352,7 @@ describe('DELETE /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 			.set('x-access-token', token);
 		expect(response.statusCode).toBe(status.BAD_REQUEST);
 		expect(response.body.message).toBe(
-			'The paragraph has choices and thus cannot be deleted'
+			'You cannot delete a paragraph with choices'
 		);
 	});
 });

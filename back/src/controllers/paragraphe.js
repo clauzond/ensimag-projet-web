@@ -239,13 +239,19 @@ export const paragraphe = {
 
 		// Check if the paragraph is not already written by another user
 		if (
-			paragraph.estVerrouille &&
 			paragraph.idRedacteur !== null &&
 			paragraph.idRedacteur !== req.user.id
 		) {
 			throw new RequestError(
 				'This paragraph is already modified by another user',
 				status.FORBIDDEN
+			);
+		}
+
+		if (paragraph.estVerrouille) {
+			throw new RequestError(
+				'This paragraph is already locked',
+				status.NOT_MODIFIED
 			);
 		}
 
@@ -338,9 +344,9 @@ export const paragraphe = {
 		const paragraph = await checkParagraphId(req);
 
 		// Check that the paragraph is not the initial paragraph
-		if ((await story.getParagrapheInitial()).id === paragraph.id) {
+		if (story.idParagrapheInitial === paragraph.id) {
 			throw new RequestError(
-				'The paragraph is the beginning of a story and thus cannot be deleted',
+				'You cannot delete the initial paragraph',
 				status.BAD_REQUEST
 			);
 		}
@@ -349,7 +355,7 @@ export const paragraphe = {
 		const nbChoix = await paragraph.countChoix();
 		if (nbChoix > 0) {
 			throw new RequestError(
-				'The paragraph has choices and thus cannot be deleted',
+				'You cannot delete a paragraph with choices',
 				status.BAD_REQUEST
 			);
 		}
