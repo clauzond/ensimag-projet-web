@@ -36,4 +36,64 @@ export const paragraphService = {
       throw e.response?.data?.message ?? e;
     }
   },
+  async updateParagraph(token, idStory, idParagraph, content) {
+    try {
+      const response = await axios.put(
+        `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}`,
+        {
+          contenu: content,
+        },
+        {
+          headers: { 'x-access-token': token },
+        }
+      );
+      return response.data.paragraph;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
+  async askToUpdateParagraph(token, idStory, idParagraph) {
+    try {
+      const response = await axios.put(
+        `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}/modified`,
+        {},
+        {
+          headers: { 'x-access-token': token },
+        }
+      );
+      return response.data.paragraph;
+    } catch (e) {
+      if (e.message === 'Request failed with status code 304') {
+        throw 'You can already modify this paragraph';
+      }
+      throw e.response?.data?.message ?? e;
+    }
+  },
+  async cancelModification(token, idStory, idParagraph) {
+    try {
+      const response = await axios.put(
+        `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}/cancel-modification`,
+        {},
+        {
+          headers: { 'x-access-token': token },
+        }
+      );
+      return response.data.paragraph;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
+  async deleteParagraph(token, idStory, idParagraph) {
+    try {
+      const response = await axios.delete(
+        `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}`,
+        {
+          headers: { 'x-access-token': token },
+        }
+      );
+      return response.data.message;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
 };

@@ -115,8 +115,9 @@ export function UserStories({ navigation, route }) {
         <View style={styles.separator} />
         <Button
           onPress={() => {
-            // TODO: amène vers la futur page de modification des paragraphes
-            // navigation.navigate('setParagraphs');
+            navigation.navigate('SetParagraphs', {
+              story: storySelected,
+            });
           }}
         >
           Set paragraphs

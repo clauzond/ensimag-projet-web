@@ -13,6 +13,7 @@ import { StoryCreation } from './views/StoryCreation';
 import { Paragraph } from './views/Paragraph';
 import { UserStories } from './views/UserStories';
 import { SetCollaborators } from './views/SetCollaborators';
+import { SetParagraphs } from './views/SetParagraphs';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +48,7 @@ export default function App() {
             <Stack.Screen name="Paragraph" component={Paragraph} />
             <Stack.Screen name="UserStories" component={UserStories} />
             <Stack.Screen name="SetCollaborators" component={SetCollaborators} />
+            <Stack.Screen name="SetParagraphs" component={SetParagraphs} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

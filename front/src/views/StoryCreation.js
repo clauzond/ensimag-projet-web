@@ -5,6 +5,7 @@ import { Formik } from 'formik';
 import { useAppStateContext } from '../contexts/AppState';
 import { storyService } from '../services/story';
 import * as Yup from 'yup';
+import { paragraphService } from '../services/paragraph';
 
 export function StoryCreation({ navigation }) {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -24,7 +25,7 @@ export function StoryCreation({ navigation }) {
   const setStory = async ({ title, opened, pub, paragraph }) => {
     try {
       const newStory = await storyService.createStory(token, title, opened, pub);
-      await storyService.updateParagraph(
+      await paragraphService.updateParagraph(
         token,
         newStory.id,
         newStory.idParagrapheInitial,

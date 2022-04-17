@@ -58,10 +58,14 @@ export const storyService = {
     }
   },
   async getCollaborators(token, idStory) {
-    const response = await axios.get(`${BACKEND}/api/histoire/${idStory}/collaborateur`, {
-      headers: { 'x-access-token': token },
-    });
-    return response.data.collaborators;
+    try {
+      const response = await axios.get(`${BACKEND}/api/histoire/${idStory}/collaborateur`, {
+        headers: { 'x-access-token': token },
+      });
+      return response.data.collaborators;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
   },
   async setCollaborators(token, idStory, collaborators) {
     try {
@@ -78,18 +82,12 @@ export const storyService = {
       throw e.response?.data?.message ?? e;
     }
   },
-  async updateParagraph(token, idStory, idParagraph, content) {
+  async getParagraphList(token, idStory) {
     try {
-      const response = await axios.put(
-        `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}`,
-        {
-          contenu: content,
-        },
-        {
-          headers: { 'x-access-token': token },
-        }
-      );
-      return response.data.paragraph;
+      const response = await axios.get(`${BACKEND}/api/histoire/${idStory}/list`, {
+        headers: { 'x-access-token': token },
+      });
+      return response.data.paragraphList;
     } catch (e) {
       throw e.response?.data?.message ?? e;
     }
