@@ -39,6 +39,52 @@ async function checkIsPrivateStory(story, user) {
 }
 
 export const story = {
+	// Returns paragraph (valid and invalid ones) from a specified story
+	async getParagraphList(req, res) {
+		// Get story object
+		const story = await checkStoryId(req);
+
+		const initialParagraph = await story.getParagrapheInitial();
+		const t = {
+			id: initialParagraph.id,
+			ParentId: null,
+			titre: story.titre,
+			contenu: initialParagraph.contenu,
+			estConclusion: initialParagraph.estConclusion,
+			estVerrouille: initialParagraph.estVerrouille,
+			idRedacteur: initialParagraph.idRedacteur
+		};
+
+		const toVisit = [...(await initialParagraph.getChoix())];
+		const alreadySeen = [initialParagraph.id]; // id list
+		const paragraphList = [t]; // paragraph list
+
+		// Breadth-first search
+		while (toVisit.length > 0) {
+			const paragraph = toVisit.pop();
+			if (alreadySeen.includes(paragraph.id)) {
+				continue;
+			}
+			const toShow = {
+				id: paragraph.id,
+				ParentId: paragraph.ChoixTable.ParagrapheId,
+				titre: paragraph.ChoixTable.titreChoix,
+				contenu: paragraph.contenu,
+				estConclusion: paragraph.estConclusion,
+				estVerrouille: paragraph.estVerrouille,
+				idRedacteur: paragraph.idRedacteur
+			};
+			alreadySeen.push(paragraph.id);
+			paragraphList.push(toShow);
+			toVisit.push(...(await paragraph.getChoix()));
+		}
+
+		res.json({
+			status: true,
+			message: 'Returning paragraph list',
+			paragraphList: paragraphList
+		});
+	},
 	async getPublicStories(req, res) {
 		const storiesFromDB = await Histoire.findAll({
 			include: [
