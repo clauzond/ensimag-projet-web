@@ -15,23 +15,23 @@ export function SetParagraph({ navigation, route }) {
   const [paragraphList, setParagraphList] = React.useState([]);
   const [newChoicesList, setNewChoicesList] = React.useState();
 
-  const load = async () => {
-    // TODO: récupérer tous les paragraphes dispo à la place des users
-    const paragraphListFromApi = await users.userList(token);
-    const formatParagraphList = [];
-    for (const paragraph of paragraphListFromApi) {
-      formatParagraphList.push({ id: paragraph.id, name: paragraph.id });
-    }
-    setParagraphList(formatParagraphList);
-
-    navigation.setOptions({
-      title: titlePage,
-    });
-  };
-
   React.useEffect(() => {
+    const load = async () => {
+      // TODO: récupérer tous les paragraphes dispo à la place des users
+      const paragraphListFromApi = await users.userList(token);
+      const formatParagraphList = [];
+      for (const paragraph of paragraphListFromApi) {
+        formatParagraphList.push({ id: paragraph.id, name: paragraph.id });
+      }
+      setParagraphList(formatParagraphList);
+
+      navigation.setOptions({
+        title: titlePage,
+      });
+    };
+
     load();
-  }, []);
+  }, [navigation, token, titlePage]);
 
   // Upload paragraph on server
   const setParagraph = async ({ title, content, isConclusion }) => {
