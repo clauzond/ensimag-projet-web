@@ -20,8 +20,7 @@ export function SetParagraphs({ navigation, route }) {
     setParagraphs(paragraphsFromApi);
 
     // TODO: button to create paragraph + popup "Paragraph created"
-    // TODO: show in another color the paragraph you are working on (estVerrouille + idRedacteur===usernaùe)
-
+    // TODO: show in another color the paragraph you are working on (estVerrouille + idRedacteur===username)
     navigation.setOptions({
       title: 'Customize paragraphs',
     });
@@ -31,6 +30,19 @@ export function SetParagraphs({ navigation, route }) {
     load();
   }, []);
 
+  const getSpecialColor = paragraph => {
+    const workingOn = '#ffc2c2';
+    const authorOf = '#a7ebc6';
+    const free = '#f9c2ff';
+
+    if (paragraph.estVerrouille && paragraph.idRedacteur === username) {
+      return workingOn;
+    } else if (paragraph.idRedacteur === username) {
+      return authorOf;
+    }
+    return free;
+  };
+
   const renderPopupContent = () => {
     return (
       <View>
@@ -38,6 +50,12 @@ export function SetParagraphs({ navigation, route }) {
           <Button
             onPress={async () => {
               // TODO: view to modify paragraph
+              setPopupOpened(false);
+              Toast.show({
+                type: 'error',
+                text1: 'TODO',
+                position: 'bottom',
+              });
             }}
           >
             Update paragraph...
@@ -48,6 +66,13 @@ export function SetParagraphs({ navigation, route }) {
           onPress={async () => {
             try {
               await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
+              const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
+              setParagraphs(paragraphsFromApi);
+              setPopupOpened(false);
+              Toast.show({
+                text1: 'You can now modify this paragraph!',
+                position: 'bottom',
+              });
             } catch (e) {
               setPopupOpened(false);
               Toast.show({
@@ -66,6 +91,13 @@ export function SetParagraphs({ navigation, route }) {
             onPress={async () => {
               try {
                 await paragraphService.cancelModification(token, story.id, paragraphSelected.id);
+                const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
+                setParagraphs(paragraphsFromApi);
+                setPopupOpened(false);
+                Toast.show({
+                  text1: 'Paragraph was sucessfully deleted',
+                  position: 'bottom',
+                });
               } catch (e) {
                 setPopupOpened(false);
                 Toast.show({
@@ -85,6 +117,13 @@ export function SetParagraphs({ navigation, route }) {
             onPress={async () => {
               try {
                 await paragraphService.deleteParagraph(token, story.id, paragraphSelected.id);
+                const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
+                setParagraphs(paragraphsFromApi);
+                setPopupOpened(false);
+                Toast.show({
+                  text1: 'Paragraph was sucessfully deleted',
+                  position: 'bottom',
+                });
               } catch (e) {
                 setPopupOpened(false);
                 Toast.show({
@@ -121,7 +160,11 @@ export function SetParagraphs({ navigation, route }) {
   return (
     //  Main user stories
     <SafeAreaView style={styles.container}>
-      <StoriesComponent onPressStory={onPressStory} stories={paragraphs} />
+      <StoriesComponent
+        onPressStory={onPressStory}
+        stories={paragraphs}
+        getSpecialColor={getSpecialColor}
+      />
 
       {/*Modify story popup*/}
       <PopupComponent

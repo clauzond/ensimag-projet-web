@@ -20,7 +20,12 @@ export class StoriesComponent extends React.Component {
         <Item
           item={item}
           onPress={() => this.props.onPressStory(item)}
-          backgroundColor={{ backgroundColor }}
+          backgroundColor={{
+            backgroundColor:
+              this.props.getSpecialColor !== undefined
+                ? this.props.getSpecialColor(item)
+                : backgroundColor,
+          }}
           textColor={{ color }}
         />
       );
