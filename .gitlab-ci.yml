@@ -5,6 +5,8 @@ stages:
 
 eslint:
   stage: test
+  tags:
+    - docker
   image: node:16
   script:
     # Install eslint tool
