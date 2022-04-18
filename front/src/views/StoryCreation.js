@@ -10,16 +10,16 @@ import { paragraphService } from '../services/paragraph';
 export function StoryCreation({ navigation }) {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  const load = async () => {
-    navigation.setOptions({
-      title: 'Create a story',
-    });
-  };
-
   const { token } = useAppStateContext();
   React.useEffect(() => {
+    const load = async () => {
+      navigation.setOptions({
+        title: 'Create a story',
+      });
+    };
+
     load();
-  }, []);
+  }, [navigation]);
 
   // Upload story on server
   const setStory = async ({ title, opened, pub, paragraph }) => {

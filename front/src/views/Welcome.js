@@ -13,21 +13,20 @@ export function Welcome({ navigation }) {
     navigation.navigate('Home');
   };
 
-  const load = async () => {
-    const token = await AsyncStorage.getItem('@token');
-    try {
-      await users.whoami(token);
-      if (token !== null) {
-        // If the token is already present in storage, connect automatically the user
-        setToken(token);
-        navigation.navigate('Home');
-      }
-    } catch (e) {}
-  };
-
   React.useEffect(() => {
+    const load = async () => {
+      const token = await AsyncStorage.getItem('@token');
+      try {
+        await users.whoami(token);
+        if (token !== null) {
+          // If the token is already present in storage, connect automatically the user
+          setToken(token);
+          navigation.navigate('Home');
+        }
+      } catch (e) {}
+    };
     load();
-  }, []);
+  }, [navigation, setToken]);
 
   return (
     <View>
