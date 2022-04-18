@@ -118,7 +118,7 @@ export function Home({ navigation }) {
       flex: 1,
       marginTop: StatusBar.currentHeight || 0,
     },
-    add_button: {
+    addButton: {
       position: 'absolute',
       bottom: 10,
       right: 10,
@@ -163,7 +163,7 @@ export function Home({ navigation }) {
       <StoriesComponent onPressStory={onPressStory} stories={stories} />
       {token !== '' && (
         <IconButton
-          style={styles.add_button}
+          style={styles.addButton}
           onPress={() => navigation.navigate('StoryCreation')}
           size={'lg'}
           variant="solid"

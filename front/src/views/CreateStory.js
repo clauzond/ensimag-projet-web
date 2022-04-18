@@ -6,17 +6,16 @@ import { useAppStateContext } from '../contexts/AppState';
 import { storyService } from '../services/story';
 import * as Yup from 'yup';
 import { paragraphService } from '../services/paragraph';
+import Toast from 'react-native-toast-message';
 
-export function StoryCreation({ navigation }) {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+export function CreateStory({ navigation }) {
+  const { token } = useAppStateContext();
 
   const load = async () => {
     navigation.setOptions({
       title: 'Create a story',
     });
   };
-
-  const { token } = useAppStateContext();
   React.useEffect(() => {
     load();
   }, []);
@@ -35,8 +34,11 @@ export function StoryCreation({ navigation }) {
         storyCreated: true,
       });
     } catch (e) {
-      console.log(e);
-      throw e.response?.data?.message ?? e;
+      Toast.show({
+        type: 'error',
+        text1: e,
+        position: 'bottom',
+      });
     }
   };
 
@@ -75,33 +77,7 @@ export function StoryCreation({ navigation }) {
 
   const validationSchema = Yup.object({
     title: Yup.string().required('You must specify a title'),
-    paragraph: Yup.string().required('The content of the first paragraph cannot be empty'),
   });
-
-  // Pour la modification de paragraphe
-  const handleIndexChange = i => {
-    setSelectedIndex(i);
-  };
-
-  const renderTab = i => {
-    return (
-      <Formik
-        initialValues={{
-          username: '',
-          password: '',
-          passwordVerify: '',
-        }}
-        onSubmit={handleIndexChange}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
-          <SafeAreaView style={styles.container}>
-            <Text> Choice {i}</Text>
-            <TextInput style={styles.input} placeholder={`Choice ${i}`} maxLength={255} />
-          </SafeAreaView>
-        )}
-      </Formik>
-    );
-  };
 
   return (
     <Formik
@@ -140,14 +116,6 @@ export function StoryCreation({ navigation }) {
           />
           {errors.paragraph && <Text style={styles.inputError}>{errors.paragraph}</Text>}
 
-          {/* Pour la modification de paragraphe
-          <SegmentedControlTab
-            values={['First', 'Second', 'Third']}
-            selectedIndex={selectedIndex}
-            onTabPress={handleIndexChange}
-          />
-          {renderTab(selectedIndex)} */}
-
           {/*IsPublic input*/}
           <Checkbox
             shadow={2}
@@ -168,6 +136,7 @@ export function StoryCreation({ navigation }) {
           <Button colorScheme="primary" style={styles.createButton} onPress={handleSubmit}>
             Create story : {values.title}
           </Button>
+          <Toast />
         </SafeAreaView>
       )}
     </Formik>

@@ -1,5 +1,5 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { Button, StatusBar } from 'native-base';
+import { Button, IconButton, StatusBar } from 'native-base';
 import Toast from 'react-native-toast-message';
 import React from 'react';
 import { storyService } from '../services/story';
@@ -7,6 +7,7 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { StoriesComponent } from '../components/stories';
 import { PopupComponent } from '../components/popup';
 import { paragraphService } from '../services/paragraph';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export function SetParagraphs({ navigation, route }) {
   const { token, username } = useAppStateContext();
@@ -19,7 +20,7 @@ export function SetParagraphs({ navigation, route }) {
     const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
     setParagraphs(paragraphsFromApi);
 
-    // TODO: button to create paragraph + popup "Paragraph created"
+    // TODO: popup "Paragraph created"
     // TODO: show in another color the paragraph you are working on (estVerrouille + idRedacteur===username)
     navigation.setOptions({
       title: 'Customize paragraphs',
@@ -49,16 +50,23 @@ export function SetParagraphs({ navigation, route }) {
         {paragraphSelected.idRedacteur === username ? (
           <Button
             onPress={async () => {
-              // TODO: view to modify paragraph
               setPopupOpened(false);
-              Toast.show({
-                type: 'error',
-                text1: 'TODO',
-                position: 'bottom',
+
+              // TODO: récupérer les choix déjà fait pour ce paragraph
+              const choiceListFromApi = [];
+
+              const formatChoiceList = [];
+              for (const choice of choiceListFromApi) {
+                formatChoiceList.push(choice.id);
+              }
+
+              navigation.navigate('SetParagraph', {
+                titlePage: 'Modify paragraph',
+                choices: formatChoiceList,
               });
             }}
           >
-            Update paragraph...
+            Update paragraph
           </Button>
         ) : null}
         <View style={styles.separator} />
@@ -155,15 +163,39 @@ export function SetParagraphs({ navigation, route }) {
     separator: {
       marginVertical: 8,
     },
+    addButton: {
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 50,
+    },
   });
 
   return (
-    //  Main user stories
     <SafeAreaView style={styles.container}>
       <StoriesComponent
         onPressStory={onPressStory}
         stories={paragraphs}
         getSpecialColor={getSpecialColor}
+      />
+
+      <IconButton
+        style={styles.addButton}
+        onPress={() =>
+          navigation.navigate('SetParagraph', {
+            titlePage: 'Create paragraph',
+            choices: [],
+          })
+        }
+        size={'lg'}
+        variant="solid"
+        colorScheme="primary"
+        _icon={{
+          as: MaterialIcons,
+          name: 'add',
+        }}
       />
 
       {/*Modify story popup*/}

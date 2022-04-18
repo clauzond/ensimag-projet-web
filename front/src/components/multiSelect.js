@@ -28,8 +28,8 @@ export class MultiSelectComponent extends Component {
         onSelectedItemsChange={this.onSelectedItemsChange}
         selectedItems={selectedItems}
         fixedHeight={true}
-        selectText="Pick collaborators"
-        searchInputPlaceholderText="Search users..."
+        selectText={this.props.selectText}
+        searchInputPlaceholderText={this.props.searchInputPlaceholderText}
         tagRemoveIconColor="#CCC"
         tagBorderColor="#CCC"
         tagTextColor="#000"

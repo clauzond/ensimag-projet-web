@@ -9,11 +9,12 @@ import { Welcome } from './views/Welcome';
 import { Register } from './views/Register';
 import { Login } from './views/Login';
 import { Home } from './views/Home';
-import { StoryCreation } from './views/StoryCreation';
+import { CreateStory } from './views/CreateStory';
 import { Paragraph } from './views/Paragraph';
 import { UserStories } from './views/UserStories';
 import { SetCollaborators } from './views/SetCollaborators';
 import { SetParagraphs } from './views/SetParagraphs';
+import { SetParagraph } from './views/SetParagraph';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,11 +45,12 @@ export default function App() {
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="StoryCreation" component={StoryCreation} />
+            <Stack.Screen name="StoryCreation" component={CreateStory} />
             <Stack.Screen name="Paragraph" component={Paragraph} />
             <Stack.Screen name="UserStories" component={UserStories} />
             <Stack.Screen name="SetCollaborators" component={SetCollaborators} />
             <Stack.Screen name="SetParagraphs" component={SetParagraphs} />
+            <Stack.Screen name="SetParagraph" component={SetParagraph} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

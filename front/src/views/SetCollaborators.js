@@ -68,6 +68,8 @@ export function SetCollaborators({ navigation, route }) {
         items={userList}
         selectedItems={collaborators}
         select={setNewCollaboratorsList}
+        selectText={'Pick collaborators'}
+        searchInputPlaceholderText={'Search users...'}
       />
       <Button
         style={styles.saveButton}
