@@ -17,45 +17,43 @@ export function Home({ navigation }) {
 
   const [popupOpened, setPopupOpened] = React.useState(false);
 
-  const load = async () => {
-    if (token !== '') {
-      // Authentified user case
-      const storiesFromApi = await storyService.getPublicAuthentifiedStories(token);
-      setStories(storiesFromApi);
-    } else {
-      // Guest user case
-      const storiesFromApi = await storyService.getPublicStories();
-      setStories(storiesFromApi);
-    }
-  };
-
-  const header = async () => {
-    if (token !== '') {
-      const username = await users.whoami(token);
-      setUsername(username);
-      // Set header buttons
-      navigation.setOptions({
-        title: `Home - ${username}`,
-        headerRight: () => (
-          <TouchableOpacity>
-            <IconButton
-              size={'lg'}
-              _icon={{
-                as: MaterialIcons,
-                name: 'more-vert',
-              }}
-              onPress={() => setPopupOpened(true)}
-            />
-          </TouchableOpacity>
-        ),
-        headerBackVisible: false,
-      });
-    }
-  };
-
   React.useEffect(() => {
-    load().then(_ => header());
-  }, []);
+    const load = async () => {
+      if (token !== '') {
+        // Authentified user case
+        const storiesFromApi = await storyService.getPublicAuthentifiedStories(token);
+        setStories(storiesFromApi);
+      } else {
+        // Guest user case
+        const storiesFromApi = await storyService.getPublicStories();
+        setStories(storiesFromApi);
+      }
+
+      if (token !== '') {
+        const username = await users.whoami(token);
+        setUsername(username);
+        // Set header buttons
+        navigation.setOptions({
+          title: `Home - ${username}`,
+          headerRight: () => (
+            <TouchableOpacity>
+              <IconButton
+                size={'lg'}
+                _icon={{
+                  as: MaterialIcons,
+                  name: 'more-vert',
+                }}
+                onPress={() => setPopupOpened(true)}
+              />
+            </TouchableOpacity>
+          ),
+          headerBackVisible: false,
+        });
+      }
+    };
+
+    load();
+  }, [navigation, setUsername, token]);
 
   const onPressStory = async item => {
     // Set up history

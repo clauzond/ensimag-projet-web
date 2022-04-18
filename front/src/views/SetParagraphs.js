@@ -16,20 +16,20 @@ export function SetParagraphs({ navigation, route }) {
   const [popupOpened, setPopupOpened] = React.useState(false);
   const [paragraphSelected, setParagraphSelected] = React.useState('');
 
-  const load = async () => {
-    const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
-    setParagraphs(paragraphsFromApi);
-
-    // TODO: popup "Paragraph created"
-    // TODO: show in another color the paragraph you are working on (estVerrouille + idRedacteur===username)
-    navigation.setOptions({
-      title: 'Customize paragraphs',
-    });
-  };
-
   React.useEffect(() => {
+    const load = async () => {
+      const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
+      setParagraphs(paragraphsFromApi);
+
+      // TODO: popup "Paragraph created"
+      // TODO: show in another color the paragraph you are working on (estVerrouille + idRedacteur===username)
+      navigation.setOptions({
+        title: 'Customize paragraphs',
+      });
+    };
+
     load();
-  }, []);
+  }, [navigation, story.id, token]);
 
   const getSpecialColor = paragraph => {
     const workingOn = '#ffc2c2';

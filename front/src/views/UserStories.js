@@ -13,7 +13,7 @@ export function UserStories({ navigation, route }) {
   const [popupOpened, setPopupOpened] = React.useState(false);
   const [storySelected, setStorySelected] = React.useState('');
 
-  const load = async () => {
+  const load = React.useCallback(async () => {
     const storiesFromApi = await storyService.getUserStories(token);
     setStories(storiesFromApi);
 
@@ -33,11 +33,11 @@ export function UserStories({ navigation, route }) {
     navigation.setOptions({
       title: 'Customize your stories',
     });
-  };
+  }, [navigation, route.params, token]);
 
   React.useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
   const renderPopupContent = () => {
     return (

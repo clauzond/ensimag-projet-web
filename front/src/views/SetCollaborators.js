@@ -14,22 +14,22 @@ export function SetCollaborators({ navigation, route }) {
   const [userList, setUserList] = React.useState([]);
   const [newCollaboratorsList, setNewCollaboratorsList] = React.useState();
 
-  const load = async () => {
-    const userListFromApi = await users.userList(token);
-    const formatUserList = [];
-    for (const user of userListFromApi) {
-      formatUserList.push({ id: user.id, name: user.id });
-    }
-    setUserList(formatUserList);
-
-    navigation.setOptions({
-      title: 'Set collaborators',
-    });
-  };
-
   React.useEffect(() => {
+    const load = async () => {
+      const userListFromApi = await users.userList(token);
+      const formatUserList = [];
+      for (const user of userListFromApi) {
+        formatUserList.push({ id: user.id, name: user.id });
+      }
+      setUserList(formatUserList);
+
+      navigation.setOptions({
+        title: 'Set collaborators',
+      });
+    };
+
     load();
-  }, []);
+  }, [navigation, token]);
 
   const sendNewCollaborators = async () => {
     try {

@@ -23,13 +23,13 @@ export default function App() {
   const [history, setHistory] = React.useState([]);
   const [username, setUsername] = React.useState('');
 
-  const load = async () => {
-    const tokenFromStorage = await AsyncStorage.getItem('@token');
-    if (tokenFromStorage !== '') {
-      setToken(tokenFromStorage);
-    }
-  };
   React.useEffect(() => {
+    const load = async () => {
+      const tokenFromStorage = await AsyncStorage.getItem('@token');
+      if (tokenFromStorage !== '') {
+        setToken(tokenFromStorage);
+      }
+    };
     load();
   }, []);
 

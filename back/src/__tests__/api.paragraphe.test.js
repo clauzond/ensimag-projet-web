@@ -477,7 +477,9 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/modified', () =
 		const token = await getToken(username);
 		const story = await createStory(
 			'1. Test of askToUpdateParagraph',
-			username
+			username,
+			undefined,
+			"JeRempliUnPeu"
 		);
 
 		// Ask to update story's initial paragraph

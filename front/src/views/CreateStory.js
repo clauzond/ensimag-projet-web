@@ -10,15 +10,15 @@ import Toast from 'react-native-toast-message';
 
 export function CreateStory({ navigation }) {
   const { token } = useAppStateContext();
-
-  const load = async () => {
-    navigation.setOptions({
-      title: 'Create a story',
-    });
-  };
   React.useEffect(() => {
+    const load = async () => {
+      navigation.setOptions({
+        title: 'Create a story',
+      });
+    };
+
     load();
-  }, []);
+  }, [navigation]);
 
   // Upload story on server
   const setStory = async ({ title, opened, pub, paragraph }) => {
