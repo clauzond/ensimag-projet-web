@@ -78,7 +78,7 @@ testing_frontend:
     # npm install will generate necessary files including react.gradle
     # https://stackoverflow.com/questions/44437554/react-native-react-gradle-does-not-exist
     - npm install
-    - npm run build-test
+    - npx detox build --configuration android.headless
     - npx detox test --configuration android.headless
   artifacts:
     paths:
