@@ -40,6 +40,7 @@ async function checkIsPrivateStory(story, user) {
 
 export const story = {
 	// Returns paragraph (valid and invalid ones) from a specified story
+	// Requires to be logged in
 	async getParagraphList(req, res) {
 		// Get story object
 		const story = await checkStoryId(req);
@@ -63,6 +64,13 @@ export const story = {
 		while (toVisit.length > 0) {
 			const paragraph = toVisit.pop();
 			if (alreadySeen.includes(paragraph.id)) {
+				continue;
+			}
+			// Only show paragraphs that are free / that you are the redactor of
+			if (
+				paragraph.idRedacteur !== null &&
+				paragraph.idRedacteur !== req.user.id
+			) {
 				continue;
 			}
 			const toShow = {
