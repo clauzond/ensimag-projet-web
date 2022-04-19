@@ -99,6 +99,7 @@ export function CreateStory({ navigation }) {
           <TextInput
             style={styles.input}
             placeholder="Story title"
+            placeholderTextColor={'rgb(100,96,96)'}
             maxLength={255}
             onChangeText={handleChange('title')}
             onBlur={handleBlur('title')}
@@ -110,6 +111,7 @@ export function CreateStory({ navigation }) {
           <TextInput
             style={styles.multiLinesInput}
             placeholder="Content of the first paragraph"
+            placeholderTextColor={'rgb(100,96,96)'}
             maxLength={255}
             multiline
             numberOfLines={5}
