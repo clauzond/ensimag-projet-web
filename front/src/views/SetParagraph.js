@@ -1,7 +1,6 @@
 import { Button, Checkbox, StatusBar, Text } from 'native-base';
 import React from 'react';
 import { SafeAreaView, StyleSheet, TextInput } from 'react-native';
-import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Toast from 'react-native-toast-message';
 import { MultiSelectComponent } from '../components/multiSelect';
@@ -10,10 +9,11 @@ import { useAppStateContext } from '../contexts/AppState';
 
 export function SetParagraph({ navigation, route }) {
   const { token } = useAppStateContext();
-  const { titlePage, choices, isCreation } = route.params;
+  const { titlePage, paragraphContent, isCreation, isNewParagraph } = route.params;
 
   const [paragraphList, setParagraphList] = React.useState([]);
-  const [newChoicesList, setNewChoicesList] = React.useState();
+  const [parentList, setParentList] = React.useState();
+  const [childList, setChildList] = React.useState();
 
   React.useEffect(() => {
     const load = async () => {
@@ -36,8 +36,9 @@ export function SetParagraph({ navigation, route }) {
   // Upload paragraph on server
   const setParagraph = async ({ title, content, isConclusion }) => {
     try {
-      console.log(newChoicesList);
-      // TODO : envoyer la creation/modif sur le back. La nouvelle liste de choix est dans la var newChoicesList
+      console.log(parentList);
+      console.log(childList);
+      // TODO : envoyer la creation/modif sur le back.
       // TODO : retourner sur la page de l'histoire avec la popup OK
     } catch (e) {
       Toast.show({
@@ -84,11 +85,6 @@ export function SetParagraph({ navigation, route }) {
     },
   });
 
-  const validationSchema = Yup.object({
-    // title: Yup.string().required('You must specify the title of the paragraph'),
-    content: Yup.string().required('You must specify the content of the paragraph'),
-  });
-
   return (
     <Formik
       initialValues={{
@@ -96,7 +92,6 @@ export function SetParagraph({ navigation, route }) {
         content: '',
         isConclusion: false,
       }}
-      validationSchema={validationSchema}
       onSubmit={setParagraph}
     >
       {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
@@ -112,23 +107,30 @@ export function SetParagraph({ navigation, route }) {
               value={values.title}
             />
           )}
-          {errors.title && <Text style={styles.inputError}>{errors.title}</Text>}
+          {isCreation === true && errors.title && (
+            <Text style={styles.inputError}>{errors.title}</Text>
+          )}
 
           {/*Paragraph content*/}
-          <TextInput
-            style={styles.multiLinesInput}
-            placeholder="Content of the paragraph"
-            maxLength={255}
-            multiline
-            numberOfLines={5}
-            onChangeText={handleChange('content')}
-            onBlur={handleBlur('content')}
-            value={values.content}
-          />
-          {errors.content && <Text style={styles.inputError}>{errors.content}</Text>}
+          {((isCreation === true && isNewParagraph === true) || isCreation === false) && (
+            <TextInput
+              defaultValue={paragraphContent !== null ? paragraphContent : null}
+              style={styles.multiLinesInput}
+              placeholder="Content of the paragraph"
+              maxLength={255}
+              multiline
+              numberOfLines={5}
+              onChangeText={handleChange('content')}
+              onBlur={handleBlur('content')}
+              value={values.content}
+            />
+          )}
+          {isCreation === true && isNewParagraph === true && errors.content && (
+            <Text style={styles.inputError}>{errors.content}</Text>
+          )}
 
           {/*IsConclusion input*/}
-          {isCreation === true && (
+          {isCreation === true && isNewParagraph === true && (
             <Checkbox
               shadow={2}
               style={styles.checkBox}
@@ -142,14 +144,27 @@ export function SetParagraph({ navigation, route }) {
             </Checkbox>
           )}
 
-          {/*Choices input*/}
+          {/*Parent paragraph to link input*/}
           {isCreation === true && (
             <MultiSelectComponent
               items={paragraphList}
-              selectedItems={choices}
-              select={setNewChoicesList}
-              selectText={'Pick choices'}
+              selectedItems={[]}
+              select={setParentList}
+              selectText={'Pick parent paragraph'}
               searchInputPlaceholderText={'Search paragraphs...'}
+              singleSelect={true}
+            />
+          )}
+
+          {/*Child paragraph to link input*/}
+          {isCreation === true && isNewParagraph === false && (
+            <MultiSelectComponent
+              items={paragraphList}
+              selectedItems={[]}
+              select={setChildList}
+              selectText={'Pick child paragraph'}
+              searchInputPlaceholderText={'Search paragraphs...'}
+              singleSelect={true}
             />
           )}
 

@@ -48,6 +48,7 @@ export class MultiSelectComponent extends Component {
         submitButtonColor="#db55e5"
         submitButtonText="Save"
         hideSubmitButton={true}
+        single={this.props.singleSelect}
       />
     );
   }

@@ -13,7 +13,8 @@ export function SetParagraphs({ navigation, route }) {
   const { token, username } = useAppStateContext();
   const { story } = route.params;
   const [paragraphs, setParagraphs] = React.useState('');
-  const [popupOpened, setPopupOpened] = React.useState(false);
+  const [popupParagraphOptionsOpened, setPopupParagraphOptionsOpened] = React.useState(false);
+  const [popupAddParagraphOpened, setPopupAddParagraphOpened] = React.useState(false);
   const [paragraphSelected, setParagraphSelected] = React.useState('');
 
   React.useEffect(() => {
@@ -44,26 +45,18 @@ export function SetParagraphs({ navigation, route }) {
     return free;
   };
 
-  const renderPopupContent = () => {
+  const renderPopupParagraphOptions = () => {
     return (
       <View>
         {paragraphSelected.idRedacteur === username ? (
           <Button
             onPress={async () => {
-              setPopupOpened(false);
-
-              // TODO: récupérer les choix déjà fait pour ce paragraph
-              const choiceListFromApi = [];
-
-              const formatChoiceList = [];
-              for (const choice of choiceListFromApi) {
-                formatChoiceList.push(choice.id);
-              }
-
+              setPopupParagraphOptionsOpened(false);
               navigation.navigate('SetParagraph', {
                 titlePage: 'Modify paragraph',
-                choices: formatChoiceList,
+                paragraphContent: paragraphSelected.contenu,
                 isCreation: false,
+                isNewParagraph: false,
               });
             }}
           >
@@ -77,13 +70,13 @@ export function SetParagraphs({ navigation, route }) {
               await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
               const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
               setParagraphs(paragraphsFromApi);
-              setPopupOpened(false);
+              setPopupParagraphOptionsOpened(false);
               Toast.show({
                 text1: 'You can now modify this paragraph!',
                 position: 'bottom',
               });
             } catch (e) {
-              setPopupOpened(false);
+              setPopupParagraphOptionsOpened(false);
               Toast.show({
                 type: 'error',
                 text1: e,
@@ -102,13 +95,13 @@ export function SetParagraphs({ navigation, route }) {
                 await paragraphService.cancelModification(token, story.id, paragraphSelected.id);
                 const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
                 setParagraphs(paragraphsFromApi);
-                setPopupOpened(false);
+                setPopupParagraphOptionsOpened(false);
                 Toast.show({
                   text1: 'Paragraph was sucessfully deleted',
                   position: 'bottom',
                 });
               } catch (e) {
-                setPopupOpened(false);
+                setPopupParagraphOptionsOpened(false);
                 Toast.show({
                   type: 'error',
                   text1: e,
@@ -128,13 +121,13 @@ export function SetParagraphs({ navigation, route }) {
                 await paragraphService.deleteParagraph(token, story.id, paragraphSelected.id);
                 const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
                 setParagraphs(paragraphsFromApi);
-                setPopupOpened(false);
+                setPopupParagraphOptionsOpened(false);
                 Toast.show({
                   text1: 'Paragraph was sucessfully deleted',
                   position: 'bottom',
                 });
               } catch (e) {
-                setPopupOpened(false);
+                setPopupParagraphOptionsOpened(false);
                 Toast.show({
                   type: 'error',
                   text1: e,
@@ -150,8 +143,40 @@ export function SetParagraphs({ navigation, route }) {
     );
   };
 
+  const renderPopupAddParagraph = () => {
+    return (
+      <View>
+        <Button
+          onPress={() => {
+            navigation.navigate('SetParagraph', {
+              titlePage: 'Create paragraph',
+              paragraphContent: null,
+              isCreation: true,
+              isNewParagraph: true,
+            });
+          }}
+        >
+          Create paragraph
+        </Button>
+        <View style={styles.separator} />
+        <Button
+          onPress={() => {
+            navigation.navigate('SetParagraph', {
+              titlePage: 'Create choice',
+              paragraphContent: null,
+              isCreation: true,
+              isNewParagraph: false,
+            });
+          }}
+        >
+          Create choice
+        </Button>
+      </View>
+    );
+  };
+
   const onPressStory = async item => {
-    setPopupOpened(true);
+    setPopupParagraphOptionsOpened(true);
     setParagraphSelected(item);
   };
 
@@ -184,13 +209,7 @@ export function SetParagraphs({ navigation, route }) {
 
       <IconButton
         style={styles.addButton}
-        onPress={() =>
-          navigation.navigate('SetParagraph', {
-            titlePage: 'Create paragraph',
-            choices: [],
-            isCreation: true,
-          })
-        }
+        onPress={() => setPopupAddParagraphOpened(true)}
         size={'lg'}
         variant="solid"
         colorScheme="primary"
@@ -200,11 +219,18 @@ export function SetParagraphs({ navigation, route }) {
         }}
       />
 
-      {/*Modify story popup*/}
+      {/*Paragraph options popup*/}
       <PopupComponent
-        visible={popupOpened}
-        onClose={() => setPopupOpened(false)}
-        children={renderPopupContent}
+        visible={popupParagraphOptionsOpened}
+        onClose={() => setPopupParagraphOptionsOpened(false)}
+        children={renderPopupParagraphOptions}
+      />
+
+      {/*Add paragraph popup*/}
+      <PopupComponent
+        visible={popupAddParagraphOpened}
+        onClose={() => setPopupAddParagraphOpened(false)}
+        children={renderPopupAddParagraph}
       />
       <Toast />
     </SafeAreaView>
