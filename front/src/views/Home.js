@@ -146,7 +146,7 @@ export function Home({ navigation }) {
           onPress={() => {
             setPopupOpened(false);
             setHistory(null);
-            AsyncStorage.removeItem('@token').then(_ => navigation.navigate('Welcome'));
+            AsyncStorage.removeItem('@token').then(() => navigation.navigate('Welcome'));
           }}
         >
           Disconnect me

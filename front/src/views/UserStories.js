@@ -46,16 +46,16 @@ export function UserStories({ navigation, route }) {
           onPress={() => {
             storyService
               .modifyStory(token, storySelected.id, undefined, !storySelected.estPublique)
-              .then(_ => {
+              .then(() => {
                 setPopupOpened(false);
-                load().then(_ =>
+                load().then(() =>
                   Toast.show({
                     text1: 'Modification saved',
                     position: 'bottom',
                   })
                 );
               })
-              .catch(_ =>
+              .catch(() =>
                 Toast.show({
                   type: 'error',
                   text1: 'An error has occured',
@@ -71,16 +71,16 @@ export function UserStories({ navigation, route }) {
           onPress={() => {
             storyService
               .modifyStory(token, storySelected.id, !storySelected.estOuverte, undefined)
-              .then(_ => {
+              .then(() => {
                 setPopupOpened(false);
-                load().then(_ =>
+                load().then(() =>
                   Toast.show({
                     text1: 'Modification saved',
                     position: 'bottom',
                   })
                 );
               })
-              .catch(_ =>
+              .catch(() =>
                 Toast.show({
                   type: 'error',
                   text1: 'An error has occured',

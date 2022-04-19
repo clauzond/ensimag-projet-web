@@ -36,6 +36,7 @@ export function SetParagraph({ navigation, route }) {
   // Upload paragraph on server
   const setParagraph = async ({ title, content, isConclusion }) => {
     try {
+      console.log(newChoicesList);
       // TODO : envoyer la creation/modif sur le back. La nouvelle liste de choix est dans la var newChoicesList
       // TODO : retourner sur la page de l'histoire avec la popup OK
     } catch (e) {
@@ -77,6 +78,9 @@ export function SetParagraph({ navigation, route }) {
     },
     inputError: {
       color: 'red',
+    },
+    checkBox: {
+      marginBottom: 15,
     },
   });
 
@@ -124,7 +128,7 @@ export function SetParagraph({ navigation, route }) {
           {/*IsConclusion input*/}
           <Checkbox
             shadow={2}
-            style={{ marginBottom: 15 }}
+            style={styles.checkBox}
             value={values.isConclusion}
             onChange={e => {
               handleChange('isConclusion')({ target: { value: e } });

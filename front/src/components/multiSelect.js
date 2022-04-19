@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 import MultiSelect from 'react-native-multiple-select';
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  searchInput: {
+    color: '#CCC',
+  },
+});
 
 export class MultiSelectComponent extends Component {
   constructor(props) {
@@ -37,7 +44,7 @@ export class MultiSelectComponent extends Component {
         selectedItemIconColor="#CCC"
         itemTextColor="#000"
         displayKey="name"
-        searchInputStyle={{ color: '#CCC' }}
+        searchInputStyle={styles.searchInput}
         submitButtonColor="#db55e5"
         submitButtonText="Save"
         hideSubmitButton={true}

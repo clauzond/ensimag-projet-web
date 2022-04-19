@@ -73,6 +73,9 @@ export function CreateStory({ navigation }) {
     inputError: {
       color: 'red',
     },
+    italicText: {
+      fontStyle: 'italic',
+    },
   });
 
   const validationSchema = Yup.object({
@@ -128,9 +131,7 @@ export function CreateStory({ navigation }) {
           >
             Make story public
           </Checkbox>
-          <Text style={{ fontStyle: 'italic' }}>
-            When it ended, the story can be read by anyone
-          </Text>
+          <Text style={styles.italicText}>When it ended, the story can be read by anyone</Text>
 
           {/*Submit button*/}
           <Button colorScheme="primary" style={styles.createButton} onPress={handleSubmit}>
