@@ -23,7 +23,7 @@ router.put(
 	paragraphe.askToUpdateParagraph
 );
 router.post(
-	'/api/histoire/:idHistoire/paragraphe/',
+	'/api/histoire/:idHistoire/paragraphe',
 	paragraphe.createParagraph
 );
 router.delete(

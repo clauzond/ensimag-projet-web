@@ -11,7 +11,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export function SetParagraphs({ navigation, route }) {
   const { token, username } = useAppStateContext();
-  const { story } = route.params;
+  const { story, lastParagraphId } = route.params;
   const [paragraphs, setParagraphs] = React.useState('');
   const [popupParagraphOptionsOpened, setPopupParagraphOptionsOpened] = React.useState(false);
   const [popupAddParagraphOpened, setPopupAddParagraphOpened] = React.useState(false);
@@ -19,18 +19,16 @@ export function SetParagraphs({ navigation, route }) {
 
   React.useEffect(() => {
     const load = async () => {
+      // TODO: que faire des choix entre 2 paragraphes pré-existants ?
       const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
       setParagraphs(paragraphsFromApi);
-
-      // TODO: popup "Paragraph created"
-      // TODO: show in another color the paragraph you are working on (estVerrouille + idRedacteur===username)
       navigation.setOptions({
         title: 'Customize paragraphs',
       });
     };
 
     load();
-  }, [navigation, story.id, token]);
+  }, [navigation, story.id, token, lastParagraphId]);
 
   const getSpecialColor = paragraph => {
     const workingOn = '#ffc2c2';
@@ -53,6 +51,7 @@ export function SetParagraphs({ navigation, route }) {
             onPress={async () => {
               setPopupParagraphOptionsOpened(false);
               navigation.navigate('SetParagraph', {
+                story: story,
                 titlePage: 'Modify paragraph',
                 paragraphContent: paragraphSelected.contenu,
                 isCreation: false,
@@ -149,8 +148,9 @@ export function SetParagraphs({ navigation, route }) {
         <Button
           onPress={() => {
             navigation.navigate('SetParagraph', {
+              story: story,
               titlePage: 'Create paragraph',
-              paragraphContent: null,
+              paragraphContent: '',
               isCreation: true,
               isNewParagraph: true,
             });
@@ -162,8 +162,9 @@ export function SetParagraphs({ navigation, route }) {
         <Button
           onPress={() => {
             navigation.navigate('SetParagraph', {
+              story: story,
               titlePage: 'Create choice',
-              paragraphContent: null,
+              paragraphContent: '',
               isCreation: true,
               isNewParagraph: false,
             });

@@ -160,14 +160,22 @@ export const paragraphe = {
 				);
 			}
 		} else {
-			// Create an empty paragraph
+			// Create the paragraph
 			choice = await Paragraphe.create({
-				contenu: null,
+				contenu: has(req.body, 'contenu') ? req.body.contenu : null,
 				estVerrouille: false,
 				estConclusion: has(req.body, 'estConclusion')
 					? req.body.estConclusion
 					: false
 			});
+
+			if (
+				has(req.body, 'contenu') &&
+				req.body.contenu != null &&
+				req.body.contenu.length !== 0
+			) {
+				await choice.setRedacteur(req.user);
+			}
 		}
 
 		// Add choice to ChoixTable

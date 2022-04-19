@@ -4,24 +4,25 @@ import { SafeAreaView, StyleSheet, TextInput } from 'react-native';
 import { Formik } from 'formik';
 import Toast from 'react-native-toast-message';
 import { MultiSelectComponent } from '../components/multiSelect';
-import { users } from '../services/users';
+import { storyService } from '../services/story';
 import { useAppStateContext } from '../contexts/AppState';
+import { paragraphService } from '../services/paragraph';
 
 export function SetParagraph({ navigation, route }) {
   const { token } = useAppStateContext();
-  const { titlePage, paragraphContent, isCreation, isNewParagraph } = route.params;
+  const { story, titlePage, paragraphContent, isCreation, isNewParagraph } = route.params;
 
   const [paragraphList, setParagraphList] = React.useState([]);
-  const [parentList, setParentList] = React.useState();
-  const [childList, setChildList] = React.useState();
+  const [parentList, setParentList] = React.useState([]);
+  const [childList, setChildList] = React.useState([]);
+  const [conditionList, setConditionList] = React.useState([]);
 
   React.useEffect(() => {
     const load = async () => {
-      // TODO: récupérer tous les paragraphes dispo à la place des users
-      const paragraphListFromApi = await users.userList(token);
+      const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
       const formatParagraphList = [];
-      for (const paragraph of paragraphListFromApi) {
-        formatParagraphList.push({ id: paragraph.id, name: paragraph.id });
+      for (const paragraph of paragraphsFromApi) {
+        formatParagraphList.push({ id: paragraph.id, name: paragraph.titre });
       }
       setParagraphList(formatParagraphList);
 
@@ -31,16 +32,51 @@ export function SetParagraph({ navigation, route }) {
     };
 
     load();
-  }, [navigation, token, titlePage]);
+  }, [navigation, token, titlePage, story.id]);
 
   // Upload paragraph on server
   const setParagraph = async ({ title, content, isConclusion }) => {
     try {
-      console.log(parentList);
-      console.log(childList);
-      // TODO : envoyer la creation/modif sur le back.
-      // TODO : retourner sur la page de l'histoire avec la popup OK
+      const parContent = content.length !== 0 ? content : undefined;
+      const idParent = parentList.length !== 0 ? parentList[0] : undefined;
+      const idChild = childList.length !== 0 ? childList[0] : undefined;
+      const condition = conditionList.length !== 0 ? conditionList[0] : undefined;
+      if (title.length === 0) {
+        Toast.show({
+          type: 'error',
+          text1: 'You must specify a title',
+          position: 'bottom',
+        });
+        return;
+      }
+      if (idParent === undefined) {
+        Toast.show({
+          type: 'error',
+          text1: 'You must choose a parent paragraph',
+          position: 'bottom',
+        });
+        return;
+      }
+      const newParagraph = await paragraphService.createParagraph(
+        token,
+        story.id,
+        title,
+        parContent,
+        idParent,
+        idChild,
+        isConclusion,
+        condition
+      );
+      navigation.navigate('SetParagraphs', {
+        story: story,
+        lastParagraphId: newParagraph.id,
+      });
+      Toast.show({
+        text1: `${isNewParagraph ? 'Paragraph' : 'Choice'} added!`,
+        position: 'bottom',
+      });
     } catch (e) {
+      console.error(e);
       Toast.show({
         type: 'error',
         text1: e,
@@ -89,8 +125,8 @@ export function SetParagraph({ navigation, route }) {
     <Formik
       initialValues={{
         title: '',
-        content: '',
-        isConclusion: false,
+        content: paragraphContent,
+        isConclusion: true, // TODO: pourquoi ça change rien?
       }}
       onSubmit={setParagraph}
     >
@@ -116,7 +152,7 @@ export function SetParagraph({ navigation, route }) {
             <TextInput
               defaultValue={paragraphContent !== null ? paragraphContent : null}
               style={styles.multiLinesInput}
-              placeholder="Content of the paragraph"
+              placeholder="Content of the paragraph (leave empty to allow other collaborators to participate)"
               maxLength={255}
               multiline
               numberOfLines={5}
@@ -168,10 +204,23 @@ export function SetParagraph({ navigation, route }) {
             />
           )}
 
+          {/*Condition*/}
+          {isCreation === true && (
+            <MultiSelectComponent
+              items={paragraphList}
+              selectedItems={[]}
+              select={setConditionList}
+              selectText={'Pick a condition'}
+              searchInputPlaceholderText={'Search paragraphs...'}
+              singleSelect={true}
+            />
+          )}
+
           {/*Submit button*/}
           <Button colorScheme="primary" style={styles.createButton} onPress={handleSubmit}>
             {titlePage}
           </Button>
+          <Toast />
         </SafeAreaView>
       )}
     </Formik>

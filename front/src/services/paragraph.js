@@ -109,4 +109,39 @@ export const paragraphService = {
       throw e.response?.data?.message ?? e;
     }
   },
+  async createParagraph(
+    token,
+    idStory,
+    title,
+    content,
+    idParent,
+    idChild,
+    isConclusion,
+    condition
+  ) {
+    try {
+      const data = { titreChoix: title, idParagraphe: idParent };
+      if (content !== undefined) {
+        data.contenu = content;
+      }
+      if (idChild !== undefined) {
+        data.idChoix = idChild;
+      } else {
+        data.idChoix = null;
+      }
+      if (isConclusion !== undefined) {
+        data.estConclusion = isConclusion;
+      }
+      if (condition !== undefined) {
+        data.condition = condition;
+      }
+
+      const response = await axios.post(`${BACKEND}/api/histoire/${idStory}/paragraphe`, data, {
+        headers: { 'x-access-token': token, 'Content-Type': 'application/json' },
+      });
+      return response.data.choice;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
 };
