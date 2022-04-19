@@ -77,6 +77,26 @@ async function getValidChoiceArray(idParagraph, history) {
 }
 
 export const paragraphe = {
+	async getChoiceList(req, res) {
+		const story = await checkStoryId(req);
+		const paragraph = await checkParagraphId(req);
+
+		if (!story.estOuverte && !(await story.isCollaborator(req.user))) {
+			throw new RequestError(
+				'You are not a collaborator of the story',
+				status.BAD_REQUEST
+			);
+		}
+
+		const choiceList = await paragraph.getChoix();
+
+		res.json({
+			status: true,
+			message: 'Returning choice list',
+			paragraph: paragraph,
+			choiceList: choiceList
+		});
+	},
 	// Create paragraph as a choice
 	async createParagraph(req, res) {
 		const story = await checkStoryId(req);
@@ -208,12 +228,17 @@ export const paragraphe = {
 		let choiceRowArray = await getValidChoiceArray(paragraph.id, history);
 		const alreadySeen = [paragraph.id];
 		while (choiceRowArray.length === 1) {
-			const nextParagraph = await Paragraphe.findByPk(choiceRowArray[0].ChoixId);
+			const nextParagraph = await Paragraphe.findByPk(
+				choiceRowArray[0].ChoixId
+			);
 			paragraph.contenu += '\n';
 			paragraph.contenu += choiceRowArray[0].titreChoix;
 			paragraph.contenu += '\n';
 			paragraph.contenu += nextParagraph.contenu;
-			choiceRowArray = await getValidChoiceArray(nextParagraph.id, history);
+			choiceRowArray = await getValidChoiceArray(
+				nextParagraph.id,
+				history
+			);
 
 			// Avoid circular loops
 			if (alreadySeen.includes(nextParagraph.id)) {

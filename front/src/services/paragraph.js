@@ -96,4 +96,17 @@ export const paragraphService = {
       throw e.response?.data?.message ?? e;
     }
   },
+  async getChoiceList(token, idStory, idParagraph) {
+    try {
+      const response = await axios.get(
+        `${BACKEND}/api/histoire/${idStory}/paragraphe/${idParagraph}/choice-list`,
+        {
+          headers: { 'x-access-token': token },
+        }
+      );
+      return response.data.choiceList;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
+  },
 };

@@ -6,6 +6,10 @@ router.get(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
 	paragraphe.getParagraph
 );
+router.get(
+	'/api/histoire/:idHistoire/paragraphe/:idParagraphe/choice-list',
+	paragraphe.getChoiceList
+);
 router.put(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
 	paragraphe.updateParagraph
