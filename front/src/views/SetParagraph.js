@@ -10,7 +10,7 @@ import { useAppStateContext } from '../contexts/AppState';
 
 export function SetParagraph({ navigation, route }) {
   const { token } = useAppStateContext();
-  const { titlePage, choices } = route.params;
+  const { titlePage, choices, isCreation } = route.params;
 
   const [paragraphList, setParagraphList] = React.useState([]);
   const [newChoicesList, setNewChoicesList] = React.useState();
@@ -85,7 +85,7 @@ export function SetParagraph({ navigation, route }) {
   });
 
   const validationSchema = Yup.object({
-    title: Yup.string().required('You must specify the title of the paragraph'),
+    // title: Yup.string().required('You must specify the title of the paragraph'),
     content: Yup.string().required('You must specify the content of the paragraph'),
   });
 
@@ -102,14 +102,16 @@ export function SetParagraph({ navigation, route }) {
       {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
         <SafeAreaView style={styles.container}>
           {/*Title input*/}
-          <TextInput
-            style={styles.input}
-            placeholder="Paragraph title"
-            maxLength={255}
-            onChangeText={handleChange('title')}
-            onBlur={handleBlur('title')}
-            value={values.title}
-          />
+          {isCreation === true && (
+            <TextInput
+              style={styles.input}
+              placeholder="Paragraph title"
+              maxLength={255}
+              onChangeText={handleChange('title')}
+              onBlur={handleBlur('title')}
+              value={values.title}
+            />
+          )}
           {errors.title && <Text style={styles.inputError}>{errors.title}</Text>}
 
           {/*Paragraph content*/}
@@ -126,26 +128,30 @@ export function SetParagraph({ navigation, route }) {
           {errors.content && <Text style={styles.inputError}>{errors.content}</Text>}
 
           {/*IsConclusion input*/}
-          <Checkbox
-            shadow={2}
-            style={styles.checkBox}
-            value={values.isConclusion}
-            onChange={e => {
-              handleChange('isConclusion')({ target: { value: e } });
-            }}
-            onBlur={handleBlur('isConclusion')}
-          >
-            Make this paragraph a conclusion
-          </Checkbox>
+          {isCreation === true && (
+            <Checkbox
+              shadow={2}
+              style={styles.checkBox}
+              value={values.isConclusion}
+              onChange={e => {
+                handleChange('isConclusion')({ target: { value: e } });
+              }}
+              onBlur={handleBlur('isConclusion')}
+            >
+              Make this paragraph a conclusion
+            </Checkbox>
+          )}
 
           {/*Choices input*/}
-          <MultiSelectComponent
-            items={paragraphList}
-            selectedItems={choices}
-            select={setNewChoicesList}
-            selectText={'Pick choices'}
-            searchInputPlaceholderText={'Search paragraphs...'}
-          />
+          {isCreation === true && (
+            <MultiSelectComponent
+              items={paragraphList}
+              selectedItems={choices}
+              select={setNewChoicesList}
+              selectText={'Pick choices'}
+              searchInputPlaceholderText={'Search paragraphs...'}
+            />
+          )}
 
           {/*Submit button*/}
           <Button colorScheme="primary" style={styles.createButton} onPress={handleSubmit}>

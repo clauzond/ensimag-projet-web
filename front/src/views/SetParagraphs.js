@@ -63,6 +63,7 @@ export function SetParagraphs({ navigation, route }) {
               navigation.navigate('SetParagraph', {
                 titlePage: 'Modify paragraph',
                 choices: formatChoiceList,
+                isCreation: false,
               });
             }}
           >
@@ -187,6 +188,7 @@ export function SetParagraphs({ navigation, route }) {
           navigation.navigate('SetParagraph', {
             titlePage: 'Create paragraph',
             choices: [],
+            isCreation: true,
           })
         }
         size={'lg'}
