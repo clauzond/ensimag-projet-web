@@ -114,6 +114,7 @@ export function SetParagraph({ navigation, route }) {
           {/*Paragraph content*/}
           {((isCreation === true && isNewParagraph === true) || isCreation === false) && (
             <TextInput
+              // TODO: afficher le contenu initial pour pouvoir le modifier
               defaultValue={paragraphContent !== null ? paragraphContent : null}
               style={styles.multiLinesInput}
               placeholder="Content of the paragraph"
