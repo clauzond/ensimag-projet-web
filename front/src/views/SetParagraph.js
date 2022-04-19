@@ -137,6 +137,7 @@ export function SetParagraph({ navigation, route }) {
             <TextInput
               style={styles.input}
               placeholder="Paragraph title"
+              placeholderTextColor={'rgb(100,96,96)'}
               maxLength={255}
               onChangeText={handleChange('title')}
               onBlur={handleBlur('title')}
@@ -150,9 +151,11 @@ export function SetParagraph({ navigation, route }) {
           {/*Paragraph content*/}
           {((isCreation === true && isNewParagraph === true) || isCreation === false) && (
             <TextInput
+              // TODO: afficher le contenu initial pour pouvoir le modifier
               defaultValue={paragraphContent !== null ? paragraphContent : null}
               style={styles.multiLinesInput}
               placeholder="Content of the paragraph (leave empty to allow other collaborators to participate)"
+              placeholderTextColor={'rgb(100,96,96)'}
               maxLength={255}
               multiline
               numberOfLines={5}
