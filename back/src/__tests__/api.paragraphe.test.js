@@ -404,7 +404,7 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 					contenu: ''
 				})
 			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.FORBIDDEN);
 
 		response = await request(app)
 			.put(
@@ -413,7 +413,7 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(JSON.stringify({}));
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.FORBIDDEN);
 
 		response = await request(app)
 			.put(
@@ -426,46 +426,7 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 					contenu: null
 				})
 			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
-
-		response = await request(app)
-			.put(
-				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
-			)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
-					contenu:
-						'Je teste que les contenus identiques renvoient NOT_MODIFIED'
-				})
-			);
-
-		expect(response.statusCode).toBe(status.OK);
-		expect(response.body.paragraph.contenu).toBe(
-			'Je teste que les contenus identiques renvoient NOT_MODIFIED'
-		);
-
-		await request(app)
-			.put(
-				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}/modified`
-			)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token);
-
-		response = await request(app)
-			.put(
-				`/api/histoire/${story.id}/paragraphe/${story.idParagrapheInitial}`
-			)
-			.set('Content-Type', 'application/json')
-			.set('x-access-token', token)
-			.send(
-				JSON.stringify({
-					contenu:
-						'Je teste que les contenus identiques renvoient NOT_MODIFIED'
-				})
-			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.FORBIDDEN);
 	});
 });
 

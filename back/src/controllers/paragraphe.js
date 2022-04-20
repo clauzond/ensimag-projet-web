@@ -319,12 +319,11 @@ export const paragraphe = {
 		if (
 			!has(req.body, 'contenu') ||
 			req.body.contenu == null ||
-			req.body.contenu.length === 0 ||
-			req.body.contenu === paragraph.contenu
+			req.body.contenu.length === 0
 		) {
 			throw new RequestError(
 				'Content cannot be null or empty',
-				status.NOT_MODIFIED
+				status.FORBIDDEN
 			);
 		}
 
