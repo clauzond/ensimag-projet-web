@@ -1,7 +1,12 @@
 import has from 'has-keys';
 import status from 'http-status';
 import { Op } from 'sequelize';
-import { Histoire, Paragraphe, Utilisateur } from '../models/index.js';
+import {
+	ChoixTable,
+	Histoire,
+	Paragraphe,
+	Utilisateur
+} from '../models/index.js';
 import { RequestError } from '../util/requestError.js';
 
 async function checkStoryId(req) {
@@ -52,7 +57,10 @@ export const story = {
 			contenu: initialParagraph.contenu,
 			estConclusion: initialParagraph.estConclusion,
 			estVerrouille: initialParagraph.estVerrouille,
-			idRedacteur: initialParagraph.idRedacteur
+			idRedacteur: initialParagraph.idRedacteur,
+			choices: [...(await initialParagraph.getChoix())].map(
+				e => e.contenu
+			)
 		};
 
 		const toVisit = [...(await initialParagraph.getChoix())];
@@ -86,17 +94,21 @@ export const story = {
 				ParentId: paragraph.ChoixTable.ParagrapheId
 			});
 			// Add paragraph to list, and if a choice already exists, expand the title
-			if (paragraphDict[paragraph.id] == undefined) {
+			if (paragraphDict[paragraph.id] == null) {
 				paragraphDict[paragraph.id] = {
 					id: paragraph.id,
 					titre: paragraph.ChoixTable.titreChoix,
 					contenu: paragraph.contenu,
 					estConclusion: paragraph.estConclusion,
 					estVerrouille: paragraph.estVerrouille,
-					idRedacteur: paragraph.idRedacteur
+					idRedacteur: paragraph.idRedacteur,
+					choices: [...(await paragraph.getChoix())].map(
+						e => e.contenu
+					)
 				};
 			} else {
-				paragraphDict[paragraph.id].titre += '\n' + paragraph.ChoixTable.titreChoix;
+				paragraphDict[paragraph.id].titre +=
+					'\n' + paragraph.ChoixTable.titreChoix;
 			}
 			// Continue search
 			toVisit.push(...(await paragraph.getChoix()));

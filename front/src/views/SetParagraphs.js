@@ -20,8 +20,10 @@ export function SetParagraphs({ navigation, route }) {
   React.useEffect(() => {
     const load = async () => {
       // TODO: que faire des choix entre 2 paragraphes pré-existants ?
+      // TODO: ajouter les choix à la liste des paragraphes
       const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
       setParagraphs(paragraphsFromApi);
+      console.log(paragraphsFromApi);
       navigation.setOptions({
         title: 'Customize paragraphs',
       });
