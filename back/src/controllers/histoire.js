@@ -48,7 +48,6 @@ export const story = {
 		const initialParagraph = await story.getParagrapheInitial();
 		const t = {
 			id: initialParagraph.id,
-			ParentId: null,
 			titre: story.titre,
 			contenu: initialParagraph.contenu,
 			estConclusion: initialParagraph.estConclusion,
@@ -57,13 +56,21 @@ export const story = {
 		};
 
 		const toVisit = [...(await initialParagraph.getChoix())];
-		const alreadySeen = [initialParagraph.id]; // id list
-		const paragraphList = [t]; // paragraph list
+		const alreadySeen = [{ id: initialParagraph.id, ParentId: null }]; // id list
+		const paragraphDict = {}; // paragraph list
+		paragraphDict[t.id] = t;
 
 		// Breadth-first search
 		while (toVisit.length > 0) {
 			const paragraph = toVisit.pop();
-			if (alreadySeen.includes(paragraph.id)) {
+			if (
+				alreadySeen.some(obj => {
+					return (
+						obj.id === paragraph.id &&
+						obj.ParentId === paragraph.ChoixTable.ParagrapheId
+					);
+				})
+			) {
 				continue;
 			}
 			// Only show paragraphs that are free / that you are the redactor of
@@ -73,20 +80,32 @@ export const story = {
 			) {
 				continue;
 			}
-			const toShow = {
+			// Add choice to alreadySeen
+			alreadySeen.push({
 				id: paragraph.id,
-				ParentId: paragraph.ChoixTable.ParagrapheId,
-				titre: paragraph.ChoixTable.titreChoix,
-				contenu: paragraph.contenu,
-				estConclusion: paragraph.estConclusion,
-				estVerrouille: paragraph.estVerrouille,
-				idRedacteur: paragraph.idRedacteur
-			};
-			alreadySeen.push(paragraph.id);
-			paragraphList.push(toShow);
+				ParentId: paragraph.ChoixTable.ParagrapheId
+			});
+			// Add paragraph to list, and if a choice already exists, expand the title
+			if (paragraphDict[paragraph.id] == undefined) {
+				paragraphDict[paragraph.id] = {
+					id: paragraph.id,
+					titre: paragraph.ChoixTable.titreChoix,
+					contenu: paragraph.contenu,
+					estConclusion: paragraph.estConclusion,
+					estVerrouille: paragraph.estVerrouille,
+					idRedacteur: paragraph.idRedacteur
+				};
+			} else {
+				paragraphDict[paragraph.id].titre += '\n' + paragraph.ChoixTable.titreChoix;
+			}
+			// Continue search
 			toVisit.push(...(await paragraph.getChoix()));
 		}
 
+		const paragraphList = [];
+		for (const key in paragraphDict) {
+			paragraphList.push(paragraphDict[key]);
+		}
 		res.json({
 			status: true,
 			message: 'Returning paragraph list',
