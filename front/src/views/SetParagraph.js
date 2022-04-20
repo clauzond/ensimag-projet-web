@@ -99,12 +99,14 @@ export function SetParagraph({ navigation, route }) {
       borderBottomWidth: 1,
       marginBottom: 10,
       padding: 10,
+      color: '#000',
     },
     multiLinesInput: {
       width: 300,
       borderBottomWidth: 1,
       marginBottom: 15,
       padding: 10,
+      color: '#000',
     },
     createButton: {
       position: 'absolute',
@@ -126,7 +128,7 @@ export function SetParagraph({ navigation, route }) {
       initialValues={{
         title: '',
         content: paragraphContent,
-        isConclusion: true, // TODO: pourquoi ça change rien?
+        isConclusion: true,
       }}
       onSubmit={setParagraph}
     >
@@ -151,7 +153,6 @@ export function SetParagraph({ navigation, route }) {
           {/*Paragraph content*/}
           {((isCreation === true && isNewParagraph === true) || isCreation === false) && (
             <TextInput
-              // TODO: afficher le contenu initial pour pouvoir le modifier
               defaultValue={paragraphContent !== null ? paragraphContent : null}
               style={styles.multiLinesInput}
               placeholder="Content of the paragraph (leave empty to allow other collaborators to participate)"

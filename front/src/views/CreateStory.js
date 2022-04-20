@@ -56,12 +56,14 @@ export function CreateStory({ navigation }) {
       borderBottomWidth: 1,
       marginBottom: 10,
       padding: 10,
+      color: '#000',
     },
     multiLinesInput: {
       width: 300,
       borderBottomWidth: 1,
       marginBottom: 15,
       padding: 10,
+      color: '#000',
     },
     createButton: {
       position: 'absolute',
