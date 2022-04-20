@@ -80,6 +80,7 @@ export function CreateStory({ navigation }) {
 
   const validationSchema = Yup.object({
     title: Yup.string().required('You must specify a title'),
+    paragraph: Yup.string().required('The init paragraph content cannot be null'),
   });
 
   return (

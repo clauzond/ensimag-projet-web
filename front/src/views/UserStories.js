@@ -3,7 +3,7 @@ import { Button, StatusBar } from 'native-base';
 import Toast from 'react-native-toast-message';
 import React from 'react';
 import { storyService } from '../services/story';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { BackHandler, SafeAreaView, StyleSheet, View } from 'react-native';
 import { StoriesComponent } from '../components/stories';
 import { PopupComponent } from '../components/popup';
 
@@ -14,6 +14,10 @@ export function UserStories({ navigation, route }) {
   const [storySelected, setStorySelected] = React.useState('');
 
   const load = React.useCallback(async () => {
+    navigation.setOptions({
+      title: 'Customize your stories',
+    });
+
     const storiesFromApi = await storyService.getUserStories(token);
     setStories(storiesFromApi);
 
@@ -26,13 +30,22 @@ export function UserStories({ navigation, route }) {
           position: 'bottom',
         });
 
-        // TODO: Set back button to Home page
+        // Set Home page display on back press
+        const onBackPress = () => {
+          navigation.navigate('Home');
+          return true;
+        };
+
+        // For the top-left back button
+        navigation.setOptions({
+          headerBackVisible: false,
+        });
+
+        // For the hard back button
+        BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
       }
     }
-
-    navigation.setOptions({
-      title: 'Customize your stories',
-    });
   }, [navigation, route.params, token]);
 
   React.useEffect(() => {
