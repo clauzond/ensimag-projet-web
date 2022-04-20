@@ -21,7 +21,6 @@ export function SetParagraphs({ navigation, route }) {
 
   React.useEffect(() => {
     const load = async () => {
-      // TODO: que faire des choix entre 2 paragraphes pré-existants ?
       // TODO: ajouter les choix à la liste des paragraphes
       const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
       setParagraphs(paragraphsFromApi);
@@ -49,50 +48,30 @@ export function SetParagraphs({ navigation, route }) {
   const renderPopupParagraphOptions = () => {
     return (
       <View>
-        {paragraphSelected.idRedacteur === username && paragraphSelected.estVerrouille ? (
-          <Button
-            onPress={async () => {
-              setPopupParagraphOptionsOpened(false);
-              navigation.navigate('SetParagraph', {
-                story: story,
-                titlePage: 'Modify paragraph',
-                paragraphContent: paragraphSelected.contenu,
-                isCreation: false,
-                isNewParagraph: false,
-                paragraphSelected: paragraphSelected,
-              });
-            }}
-          >
-            Update paragraph
-          </Button>
-        ) : null}
-        <View style={styles.separator} />
+        <Button
+          onPress={async () => {
+            // If paragraph is not locked, lock it before modifying 
+            if (!paragraphSelected.estVerrouille) {
+              await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
+              const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
+              setParagraphs(paragraphsFromApi);
+            }
+            setPopupParagraphOptionsOpened(false);
+            navigation.navigate('SetParagraph', {
+              story: story,
+              titlePage: 'Modify paragraph',
+              paragraphContent: paragraphSelected.contenu,
+              isCreation: false,
+              isNewParagraph: false,
+              paragraphSelected: paragraphSelected,
+            });
+          }}
+        >
+          {paragraphSelected.idRedacteur === username && paragraphSelected.estVerrouille
+            ? 'Update paragraph'
+            : 'Lock and update paragraph'}
+        </Button>
 
-        {!paragraphSelected.estVerrouille ? (
-          <Button
-            onPress={async () => {
-              try {
-                await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
-                const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
-                setParagraphs(paragraphsFromApi);
-                setPopupParagraphOptionsOpened(false);
-                Toast.show({
-                  text1: 'You can now modify this paragraph!',
-                  position: 'bottom',
-                });
-              } catch (e) {
-                setPopupParagraphOptionsOpened(false);
-                Toast.show({
-                  type: 'error',
-                  text1: e,
-                  position: 'bottom',
-                });
-              }
-            }}
-          >
-            Ask to update paragraph
-          </Button>
-        ) : null}
         <View style={styles.separator} />
         {paragraphSelected.idRedacteur === username ? (
           <Button
