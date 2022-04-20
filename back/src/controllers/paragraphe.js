@@ -284,7 +284,7 @@ export const paragraphe = {
 		if (paragraph.estVerrouille) {
 			throw new RequestError(
 				'This paragraph is already locked',
-				status.NOT_MODIFIED
+				status.BAD_REQUEST
 			);
 		}
 
@@ -323,18 +323,22 @@ export const paragraphe = {
 		) {
 			throw new RequestError(
 				'Content cannot be null or empty',
-				status.FORBIDDEN
+				status.BAD_REQUEST
 			);
 		}
 
 		// Check that user can write on this paragraph
 		await checkIfUserIsWriter(req.user, paragraph);
 
-		// Update paragraph data
-		await paragraph.update({
-			contenu: String(req.body.contenu),
-			estVerrouille: false
-		});
+		// Update paragraph data if it's different
+		// If it's the same, don't bother updating but tell the client
+		// the update was succesful anyways
+		if (req.body.contenu !== paragraph.contenu) {
+			await paragraph.update({
+				contenu: String(req.body.contenu),
+				estVerrouille: false
+			});
+		}
 
 		res.json({
 			status: true,

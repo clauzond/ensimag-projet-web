@@ -364,7 +364,7 @@ export const story = {
 		if (await story.hasCollaborateur(collaborator)) {
 			throw new RequestError(
 				'User specified in idCollaborateur is already a collaborator of this story',
-				status.NOT_MODIFIED
+				status.BAD_REQUEST
 			);
 		}
 
@@ -471,7 +471,7 @@ export const story = {
 		if (!(await story.hasCollaborateur(collaborator))) {
 			throw new RequestError(
 				'User specified in idCollaborateur is not a collaborator of this story',
-				status.NOT_MODIFIED
+				status.BAD_REQUEST
 			);
 		}
 
