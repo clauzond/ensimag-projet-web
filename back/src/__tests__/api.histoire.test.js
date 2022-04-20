@@ -638,7 +638,7 @@ describe('POST /api/histoire/:idHistoire/collaborateur', () => {
 					idCollaborateur: collaboratorName
 				})
 			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
 	});
 
 	test('Test of add collaborator without specify parameter', async () => {
@@ -851,7 +851,7 @@ describe('DELETE /api/histoire/:idHistoire/collaborateur', () => {
 				})
 			);
 
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
 	});
 
 	test('Test of remove the author to a story', async () => {

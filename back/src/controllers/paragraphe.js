@@ -284,7 +284,7 @@ export const paragraphe = {
 		if (paragraph.estVerrouille) {
 			throw new RequestError(
 				'This paragraph is already locked',
-				status.NOT_MODIFIED
+				status.BAD_REQUEST
 			);
 		}
 
@@ -323,7 +323,7 @@ export const paragraphe = {
 		) {
 			throw new RequestError(
 				'Content cannot be null or empty',
-				status.NOT_MODIFIED
+				status.BAD_REQUEST
 			);
 		}
 

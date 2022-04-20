@@ -404,7 +404,7 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 					contenu: ''
 				})
 			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
 
 		response = await request(app)
 			.put(
@@ -413,7 +413,7 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token)
 			.send(JSON.stringify({}));
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
 
 		response = await request(app)
 			.put(
@@ -426,7 +426,7 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 					contenu: null
 				})
 			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.BAD_REQUEST);
 
 		response = await request(app)
 			.put(
@@ -436,14 +436,13 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					contenu:
-						'Je teste que les contenus identiques renvoient NOT_MODIFIED'
+					contenu: 'Je teste que les contenus identiques sont ok'
 				})
 			);
 
 		expect(response.statusCode).toBe(status.OK);
 		expect(response.body.paragraph.contenu).toBe(
-			'Je teste que les contenus identiques renvoient NOT_MODIFIED'
+			'Je teste que les contenus identiques sont ok'
 		);
 
 		await request(app)
@@ -461,11 +460,10 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe', () => {
 			.set('x-access-token', token)
 			.send(
 				JSON.stringify({
-					contenu:
-						'Je teste que les contenus identiques renvoient NOT_MODIFIED'
+					contenu: 'Je teste que les contenus identiques sont ok'
 				})
 			);
-		expect(response.statusCode).toBe(status.NOT_MODIFIED);
+		expect(response.statusCode).toBe(status.OK);
 	});
 });
 
@@ -479,7 +477,7 @@ describe('PUT /api/histoire/:idHistoire/paragraphe/:idParagraphe/modified', () =
 			'1. Test of askToUpdateParagraph',
 			username,
 			undefined,
-			"JeRempliUnPeu"
+			'JeRempliUnPeu'
 		);
 
 		// Ask to update story's initial paragraph
