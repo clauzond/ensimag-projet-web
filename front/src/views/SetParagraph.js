@@ -37,39 +37,45 @@ export function SetParagraph({ navigation, route }) {
   // Upload paragraph on server
   const setParagraph = async ({ title, content, isConclusion }) => {
     try {
-      const parContent = content.length !== 0 ? content : undefined;
-      const idParent = parentList.length !== 0 ? parentList[0] : undefined;
-      const idChild = childList.length !== 0 ? childList[0] : undefined;
-      const condition = conditionList.length !== 0 ? conditionList[0] : undefined;
-      if (title.length === 0) {
-        Toast.show({
-          type: 'error',
-          text1: 'You must specify a title',
-          position: 'bottom',
-        });
-        return;
+      let { paragraphSelected } = route.params;
+      if (isCreation) {
+        const parContent = content.length !== 0 ? content : undefined;
+        const idParent = parentList.length !== 0 ? parentList[0] : undefined;
+        const idChild = childList.length !== 0 ? childList[0] : undefined;
+        const condition = conditionList.length !== 0 ? conditionList[0] : undefined;
+        if (title.length === 0 && isCreation) {
+          Toast.show({
+            type: 'error',
+            text1: 'You must specify a title',
+            position: 'bottom',
+          });
+          return;
+        }
+        if (idParent === undefined) {
+          Toast.show({
+            type: 'error',
+            text1: 'You must choose a parent paragraph',
+            position: 'bottom',
+          });
+          return;
+        }
+        paragraphSelected = await paragraphService.createParagraph(
+          token,
+          story.id,
+          title,
+          parContent,
+          idParent,
+          idChild,
+          isConclusion,
+          condition
+        );
+      } else {
+        await paragraphService.updateParagraph(token, story.id, paragraphSelected.id, content);
       }
-      if (idParent === undefined) {
-        Toast.show({
-          type: 'error',
-          text1: 'You must choose a parent paragraph',
-          position: 'bottom',
-        });
-        return;
-      }
-      const newParagraph = await paragraphService.createParagraph(
-        token,
-        story.id,
-        title,
-        parContent,
-        idParent,
-        idChild,
-        isConclusion,
-        condition
-      );
+
       navigation.navigate('SetParagraphs', {
         story: story,
-        lastParagraphId: newParagraph.id,
+        lastParagraphId: paragraphSelected.id,
       });
       Toast.show({
         text1: `${isNewParagraph ? 'Paragraph' : 'Choice'} added!`,

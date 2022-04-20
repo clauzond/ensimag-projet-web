@@ -46,7 +46,7 @@ export function SetParagraphs({ navigation, route }) {
   const renderPopupParagraphOptions = () => {
     return (
       <View>
-        {paragraphSelected.idRedacteur === username ? (
+        {paragraphSelected.idRedacteur === username && paragraphSelected.estVerrouille ? (
           <Button
             onPress={async () => {
               setPopupParagraphOptionsOpened(false);
@@ -56,6 +56,7 @@ export function SetParagraphs({ navigation, route }) {
                 paragraphContent: paragraphSelected.contenu,
                 isCreation: false,
                 isNewParagraph: false,
+                paragraphSelected: paragraphSelected,
               });
             }}
           >
@@ -63,29 +64,32 @@ export function SetParagraphs({ navigation, route }) {
           </Button>
         ) : null}
         <View style={styles.separator} />
-        <Button
-          onPress={async () => {
-            try {
-              await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
-              const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
-              setParagraphs(paragraphsFromApi);
-              setPopupParagraphOptionsOpened(false);
-              Toast.show({
-                text1: 'You can now modify this paragraph!',
-                position: 'bottom',
-              });
-            } catch (e) {
-              setPopupParagraphOptionsOpened(false);
-              Toast.show({
-                type: 'error',
-                text1: e,
-                position: 'bottom',
-              });
-            }
-          }}
-        >
-          Ask to update paragraph
-        </Button>
+
+        {!paragraphSelected.estVerrouille ? (
+          <Button
+            onPress={async () => {
+              try {
+                await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
+                const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
+                setParagraphs(paragraphsFromApi);
+                setPopupParagraphOptionsOpened(false);
+                Toast.show({
+                  text1: 'You can now modify this paragraph!',
+                  position: 'bottom',
+                });
+              } catch (e) {
+                setPopupParagraphOptionsOpened(false);
+                Toast.show({
+                  type: 'error',
+                  text1: e,
+                  position: 'bottom',
+                });
+              }
+            }}
+          >
+            Ask to update paragraph
+          </Button>
+        ) : null}
         <View style={styles.separator} />
         {paragraphSelected.idRedacteur === username ? (
           <Button
