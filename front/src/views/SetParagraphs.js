@@ -62,7 +62,7 @@ export function SetParagraphs({ navigation, route }) {
               titlePage: 'Modify paragraph',
               paragraphContent: paragraphSelected.contenu,
               isCreation: false,
-              isNewParagraph: false,
+              isNewParagraph: true,
               paragraphSelected: paragraphSelected,
             });
           }}

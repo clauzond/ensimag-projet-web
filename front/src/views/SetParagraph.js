@@ -78,7 +78,7 @@ export function SetParagraph({ navigation, route }) {
         lastParagraphId: paragraphSelected.id,
       });
       Toast.show({
-        text1: `${isNewParagraph ? 'Paragraph' : 'Choice'} added!`,
+        text1: `${isNewParagraph ? 'Paragraph' : 'Choice'} ${isCreation ? 'added' : 'updated'}!`,
         position: 'bottom',
       });
     } catch (e) {

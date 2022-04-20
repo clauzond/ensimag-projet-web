@@ -338,6 +338,8 @@ export const paragraphe = {
 				contenu: String(req.body.contenu),
 				estVerrouille: false
 			});
+		} else if (paragraph.estVerrouille) {
+			await paragraph.update({ estVerrouille: false });
 		}
 
 		res.json({
