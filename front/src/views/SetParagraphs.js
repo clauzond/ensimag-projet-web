@@ -8,14 +8,16 @@ import { StoriesComponent } from '../components/stories';
 import { PopupComponent } from '../components/popup';
 import { paragraphService } from '../services/paragraph';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useIsFocused } from '@react-navigation/native'
 
 export function SetParagraphs({ navigation, route }) {
   const { token, username } = useAppStateContext();
-  const { story, lastParagraphId } = route.params;
+  const { story } = route.params;
   const [paragraphs, setParagraphs] = React.useState('');
   const [popupParagraphOptionsOpened, setPopupParagraphOptionsOpened] = React.useState(false);
   const [popupAddParagraphOpened, setPopupAddParagraphOpened] = React.useState(false);
   const [paragraphSelected, setParagraphSelected] = React.useState('');
+  const isFocused = useIsFocused();
 
   React.useEffect(() => {
     const load = async () => {
@@ -23,14 +25,13 @@ export function SetParagraphs({ navigation, route }) {
       // TODO: ajouter les choix à la liste des paragraphes
       const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
       setParagraphs(paragraphsFromApi);
-      console.log(paragraphsFromApi);
       navigation.setOptions({
         title: 'Customize paragraphs',
       });
     };
-
+    
     load();
-  }, [navigation, story.id, token, lastParagraphId]);
+  }, [isFocused]);
 
   const getSpecialColor = paragraph => {
     const workingOn = '#ffc2c2';
