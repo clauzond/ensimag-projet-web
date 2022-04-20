@@ -319,8 +319,7 @@ export const paragraphe = {
 		if (
 			!has(req.body, 'contenu') ||
 			req.body.contenu == null ||
-			req.body.contenu.length === 0 ||
-			req.body.contenu === paragraph.contenu
+			req.body.contenu.length === 0
 		) {
 			throw new RequestError(
 				'Content cannot be null or empty',
@@ -331,11 +330,15 @@ export const paragraphe = {
 		// Check that user can write on this paragraph
 		await checkIfUserIsWriter(req.user, paragraph);
 
-		// Update paragraph data
-		await paragraph.update({
-			contenu: String(req.body.contenu),
-			estVerrouille: false
-		});
+		// Update paragraph data if it's different
+		// If it's the same, don't bother updating but tell the client
+		// the update was succesful anyways
+		if (req.body.contenu !== paragraph.contenu) {
+			await paragraph.update({
+				contenu: String(req.body.contenu),
+				estVerrouille: false
+			});
+		}
 
 		res.json({
 			status: true,
