@@ -7,7 +7,6 @@ export const users = {
    * @returns token The token of the successful login
    */
   async register(username, password) {
-    console.log('try register', username, password);
     try {
       await axios.post(`${BACKEND}/api/register`, {
         username,
@@ -29,7 +28,6 @@ export const users = {
    * @returns token The token of the successful login
    */
   async login(username, password) {
-    console.log('try register', username, password);
     try {
       const response = await axios.post(`${BACKEND}/api/login`, {
         username,

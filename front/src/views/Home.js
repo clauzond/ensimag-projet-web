@@ -38,6 +38,7 @@ export function Home({ navigation }) {
           headerRight: () => (
             <TouchableOpacity>
               <IconButton
+                testID={'options'}
                 size={'lg'}
                 _icon={{
                   as: MaterialIcons,
@@ -161,6 +162,7 @@ export function Home({ navigation }) {
       <StoriesComponent onPressStory={onPressStory} stories={stories} />
       {token !== '' && (
         <IconButton
+          testID={'addStoryButton'}
           style={styles.addButton}
           onPress={() => navigation.navigate('StoryCreation')}
           size={'lg'}
