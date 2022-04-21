@@ -13,6 +13,7 @@ export function SetParagraph({ navigation, route }) {
   const { story, titlePage, paragraphContent, isCreation, isNewParagraph } = route.params;
 
   const [paragraphList, setParagraphList] = React.useState([]);
+  const [paragraphListWithoutConclusion, setParagraphListWithoutConclusion] = React.useState([]);
   const [parentList, setParentList] = React.useState([]);
   const [childList, setChildList] = React.useState([]);
   const [conditionList, setConditionList] = React.useState([]);
@@ -21,10 +22,15 @@ export function SetParagraph({ navigation, route }) {
     const load = async () => {
       const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
       const formatParagraphList = [];
+      const formatParagraphListWithoutConclusion = [];
       for (const paragraph of paragraphsFromApi) {
         formatParagraphList.push({ id: paragraph.id, name: paragraph.titre });
+        if (paragraph.estConclusion === false) {
+          formatParagraphListWithoutConclusion.push({ id: paragraph.id, name: paragraph.titre });
+        }
       }
       setParagraphList(formatParagraphList);
+      setParagraphListWithoutConclusion(formatParagraphListWithoutConclusion);
 
       navigation.setOptions({
         title: titlePage,
@@ -193,7 +199,7 @@ export function SetParagraph({ navigation, route }) {
           {/*Parent paragraph to link input*/}
           {isCreation === true && (
             <MultiSelectComponent
-              items={paragraphList}
+              items={paragraphListWithoutConclusion}
               selectedItems={[]}
               select={setParentList}
               selectText={'Pick parent paragraph'}

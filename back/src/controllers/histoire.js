@@ -1,12 +1,7 @@
 import has from 'has-keys';
 import status from 'http-status';
 import { Op } from 'sequelize';
-import {
-	ChoixTable,
-	Histoire,
-	Paragraphe,
-	Utilisateur
-} from '../models/index.js';
+import { Histoire, Paragraphe, Utilisateur } from '../models/index.js';
 import { RequestError } from '../util/requestError.js';
 
 async function checkStoryId(req) {

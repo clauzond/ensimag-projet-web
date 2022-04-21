@@ -8,7 +8,7 @@ import { StoriesComponent } from '../components/stories';
 import { PopupComponent } from '../components/popup';
 import { paragraphService } from '../services/paragraph';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useIsFocused } from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native';
 
 export function SetParagraphs({ navigation, route }) {
   const { token, username } = useAppStateContext();
@@ -28,9 +28,9 @@ export function SetParagraphs({ navigation, route }) {
         title: 'Customize paragraphs',
       });
     };
-    
+
     load();
-  }, [isFocused]);
+  }, [isFocused, token, story.id, navigation]);
 
   const getSpecialColor = paragraph => {
     const workingOn = '#ffc2c2';
@@ -50,7 +50,7 @@ export function SetParagraphs({ navigation, route }) {
       <View>
         <Button
           onPress={async () => {
-            // If paragraph is not locked, lock it before modifying 
+            // If paragraph is not locked, lock it before modifying
             if (!paragraphSelected.estVerrouille) {
               await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
               const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
