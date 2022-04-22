@@ -25,15 +25,18 @@ npx react-native run-android
 # Lancer les tests
 
 ```
+cd back && npm run create db && npm start # lancer le back
 npm run build-test # compile l'appli test
-npm run android-test # lance react native en mode test
+npm react-native start # lance react native
 npm run test # installe l'appli et lance le test detox
 ```
+
+Entre chaque lancement des tests, il faudra vider la base de données.
 
 Si ca marche pas, vérifiez que vous avec l'émulateur du `pixel3A` ca s'installe de android studio. 
 Il faudra le renommer dans avd manager en "pixel3A".
 
-Pour relancer un test rapidement:
+Pour relancer un test rapidement (sans ré-installer l'appli)
 
 ```
 npm run test-reuse

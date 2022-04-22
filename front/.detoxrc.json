@@ -8,12 +8,12 @@
       "binaryPath": "SPECIFY_PATH_TO_YOUR_APP_BINARY"
     },
     "android.release": {
-      "build": "cd android && RN_SRC_EXT=e2e.js ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release",
+      "build": "cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release",
       "type": "android.apk",
       "binaryPath": "android/app/build/outputs/apk/release/app-release.apk"
     },
     "android.debug": {
-      "build": "cd android && RN_SRC_EXT=e2e.js ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug",
+      "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug",
       "type": "android.apk",
       "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk"
     }
@@ -54,7 +54,7 @@
     },
     "android.headless": {
       "device": "emulator.headless",
-      "app": "android.release"
+      "app": "android.debug"
     }
   }
 }

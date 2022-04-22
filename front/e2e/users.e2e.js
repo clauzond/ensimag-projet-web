@@ -9,7 +9,6 @@ describe('User login signup test', () => {
   });
 
   beforeEach(async () => {
-    // to avoid auto login with stored token from previous test, clear storage
     await device.reloadReactNative();
   });
 
@@ -18,14 +17,14 @@ describe('User login signup test', () => {
    * @returns {Promise<void>}
    */
   const connectUser = async () => {
-    await expect(element(by.text('Home'))).toBeVisible();
+    await expect(element(by.text(`Home - ${username}`))).toBeVisible();
     await device.pressBack();
     await element(by.text('Login')).tap();
 
-    await element(by.id('username')).typeText(username);
+    await element(by.id('username')).replaceText(username);
     await element(by.id('username')).tapReturnKey();
 
-    await element(by.id('password')).typeText('123456');
+    await element(by.id('password')).replaceText('123456');
     await element(by.id('password')).tapReturnKey();
 
     await element(by.text('Login')).tap();
@@ -66,8 +65,7 @@ describe('User login signup test', () => {
 
   it('should login', async () => {
     // HACK: we are already connected, go back
-    // We should mock AsyncStorage instead, but I didn't get it working yet
-    await expect(element(by.text('Home'))).toBeVisible();
+    await expect(element(by.text(`Home - ${username}`))).toBeVisible();
     await device.pressBack();
 
     await element(by.text('Login')).tap();
@@ -96,14 +94,7 @@ describe('User login signup test', () => {
     await element(by.text('Login')).tap();
   });
 
-  it('should login as guest', async () => {
-    await expect(element(by.text('Home'))).toBeVisible();
-    await device.pressBack();
-    await element(by.text('Continue as guest')).tap();
-  });
-
   it('should display home with a connected user', async () => {
-    await connectUser();
     await expect(element(by.text(`Home - ${username}`))).toBeVisible();
     await expect(element(by.id('options'))).toBeVisible();
     await expect(element(by.id('addStoryButton'))).toBeVisible();
@@ -111,7 +102,7 @@ describe('User login signup test', () => {
 
   it('should display home with a guest user', async () => {
     // Launch app as guest
-    await expect(element(by.text('Home'))).toBeVisible();
+    await expect(element(by.text(`Home - ${username}`))).toBeVisible();
     await device.pressBack();
     await element(by.text('Continue as guest')).tap();
 
@@ -132,8 +123,6 @@ describe('User login signup test', () => {
   });
 
   it('should disconnect user', async () => {
-    await connectUser();
-
     // Disconnect user
     await element(by.id('options')).tap();
     await element(by.text('Disconnect me')).tap();
@@ -144,7 +133,16 @@ describe('User login signup test', () => {
   });
 
   it('should display user stories', async () => {
-    await connectUser();
+    // Login manually, since we disconnected in the previous test "should- disconnect user"
+    await element(by.text('Login')).tap();
+
+    await element(by.id('username')).replaceText(username);
+    await element(by.id('username')).tapReturnKey();
+
+    await element(by.id('password')).replaceText('123456');
+    await element(by.id('password')).tapReturnKey();
+
+    await element(by.text('Login')).tap();
 
     // Open user stories
     await element(by.id('options')).tap();
