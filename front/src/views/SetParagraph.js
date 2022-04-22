@@ -140,7 +140,7 @@ export function SetParagraph({ navigation, route }) {
       initialValues={{
         title: '',
         content: paragraphContent,
-        isConclusion: true,
+        isConclusion: false,
       }}
       onSubmit={setParagraph}
     >
