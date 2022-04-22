@@ -54,7 +54,7 @@
     },
     "android.headless": {
       "device": "emulator.headless",
-      "app": "android.debug"
+      "app": "android.release"
     }
   }
 }
