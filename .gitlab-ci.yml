@@ -2,6 +2,9 @@ stages:
   - test
   - badge
   - deploy
+  # We can only run the frontend test once on the production app,
+  # so it must run after deploy.
+  - test-frontend 
 
 eslint:
   stage: test
@@ -71,12 +74,12 @@ heroku:
 # CD: test frondend
 # https://haseebmajid.dev/blog/build-android-apk-with-gitlab-ci-for-react-native
 testing_frontend:
+  stage: test-frontend
   tags:
     - webmobile
     - shell
   script:
     - source /matieres/4MM1CAW/bashrc2web
-    - cd back/ && npm i && npm run create-db && npm run doc && npm run start; cd ..
     - cd front/
     # npm install will generate necessary files including react.gradle
     # https://stackoverflow.com/questions/44437554/react-native-react-gradle-does-not-exist
