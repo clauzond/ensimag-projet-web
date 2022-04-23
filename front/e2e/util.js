@@ -33,4 +33,14 @@ async function registerUser(username) {
   await element(by.text('Register')).tap();
 }
 
-export { connectUser, registerUser };
+// Note : this function works only from home page
+async function createStory(title, paragraphContent, isPublic) {
+  await element(by.id('addStoryButton')).tap();
+
+  await element(by.id('title')).typeText(title);
+  await element(by.id('paragraph')).typeText(paragraphContent);
+  isPublic !== undefined && isPublic === true ? await element(by.id('pub')).tap() : null;
+  await element(by.id('submit')).tap();
+}
+
+export { connectUser, registerUser, createStory };
