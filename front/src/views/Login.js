@@ -1,19 +1,19 @@
 import React from 'react';
 import {
-  Flex,
-  HStack,
-  VStack,
-  Heading,
-  Icon,
   Box,
   Button,
   Center,
+  Flex,
   FormControl,
+  Heading,
+  HStack,
+  Icon,
   Input,
   ScrollView,
-  WarningOutlineIcon,
-  Text,
   Spinner,
+  Text,
+  VStack,
+  WarningOutlineIcon,
 } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -95,7 +95,7 @@ export function Login({ navigation }) {
                       <FormControl.Label>Username</FormControl.Label>
                       <Input
                         testID="username"
-                        placeholder="clauzond"
+                        placeholder="Username"
                         onChangeText={handleChange('username')}
                         onBlur={handleBlur('username')}
                         value={values.username}

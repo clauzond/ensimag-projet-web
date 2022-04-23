@@ -1,4 +1,4 @@
-import { Text, Box, Button, StatusBar } from 'native-base';
+import { Box, Button, StatusBar, Text } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -20,6 +20,9 @@ const styles = StyleSheet.create({
   },
   save: {
     marginTop: 15,
+  },
+  picker: {
+    color: 'black',
   },
 });
 
@@ -43,6 +46,7 @@ export class ParagraphComponent extends React.Component {
           );
         })}
         <Picker
+          style={styles.picker}
           selectedValue={this.props.history[this.props.history.length - 1].paragraph.id}
           onValueChange={(itemValue, itemIndex) => {
             this.props.onPressHistory(itemIndex);
