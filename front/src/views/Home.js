@@ -93,7 +93,6 @@ export function Home({ navigation }) {
           });
         } catch {
           // History is compromised: reset history
-          console.log('HISTORY COMPROMISED; RESETTING');
           const util = await paragraphService.getPublicParagraph(
             token,
             item.id,
