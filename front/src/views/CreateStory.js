@@ -104,6 +104,7 @@ export function CreateStory({ navigation }) {
             placeholder="Story title"
             placeholderTextColor={'rgb(100,96,96)'}
             maxLength={255}
+            testID={'title'}
             onChangeText={handleChange('title')}
             onBlur={handleBlur('title')}
             value={values.title}
@@ -118,6 +119,7 @@ export function CreateStory({ navigation }) {
             maxLength={255}
             multiline
             numberOfLines={5}
+            testID={'paragraph'}
             onChangeText={handleChange('paragraph')}
             onBlur={handleBlur('paragraph')}
             value={values.paragraph}
@@ -128,6 +130,7 @@ export function CreateStory({ navigation }) {
           <Checkbox
             shadow={2}
             value={values.pub}
+            testID={'pub'}
             onChange={e => {
               handleChange('pub')({ target: { value: e } });
             }}
@@ -139,7 +142,12 @@ export function CreateStory({ navigation }) {
           <Text style={styles.italicText}>When it ended, the story can be read by anyone</Text>
 
           {/*Submit button*/}
-          <Button colorScheme="primary" style={styles.createButton} onPress={handleSubmit}>
+          <Button
+            colorScheme="primary"
+            style={styles.createButton}
+            testID={'submit'}
+            onPress={handleSubmit}
+          >
             Create story : {values.title}
           </Button>
           <Toast />
