@@ -65,7 +65,7 @@ export function Home({ navigation }) {
     };
 
     load();
-  }, [navigation, setUsername, token]);
+  }, [navigation, onRefresh, setUsername, styles.headerRight, token]);
 
   const onPressStory = async item => {
     // Set up history
