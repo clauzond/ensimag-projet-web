@@ -64,8 +64,18 @@ export function Home({ navigation }) {
       }
     };
 
+    const onRefresh = async () => {
+      const refreshStories = await storyService.getPublicAuthentifiedStories(token);
+      setStories(refreshStories);
+
+      Toast.show({
+        text1: 'Story list reloaded',
+        position: 'bottom',
+      });
+    };
+
     load();
-  }, [navigation, onRefresh, setUsername, styles.headerRight, token]);
+  }, [navigation, setUsername, styles.headerRight, token]);
 
   const onPressStory = async item => {
     // Set up history
@@ -118,16 +128,6 @@ export function Home({ navigation }) {
       story: item,
       paragraph: toSetHistory[toSetHistory.length - 1].paragraph,
       choiceRowArray: toSetHistory[toSetHistory.length - 1].choiceRowArray,
-    });
-  };
-
-  const onRefresh = async () => {
-    const refreshStories = await storyService.getPublicAuthentifiedStories(token);
-    setStories(refreshStories);
-
-    Toast.show({
-      text1: 'Story list reloaded',
-      position: 'bottom',
     });
   };
 
