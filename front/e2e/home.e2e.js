@@ -15,6 +15,7 @@ describe('Home page test', () => {
     await registerUser(username);
     await expect(element(by.text(`Home - ${username}`))).toBeVisible();
     await expect(element(by.id('options'))).toBeVisible();
+    await expect(element(by.id('refresh'))).toBeVisible();
     await expect(element(by.id('addStoryButton'))).toBeVisible();
   });
 
@@ -27,6 +28,7 @@ describe('Home page test', () => {
     await expect(element(by.text('Home'))).toBeVisible();
     await expect(element(by.text(`Home - ${username}`))).not.toBeVisible();
     await expect(element(by.id('options'))).not.toBeVisible();
+    await expect(element(by.id('refresh'))).not.toBeVisible();
     await expect(element(by.id('addStoryButton'))).not.toBeVisible();
   });
 
@@ -38,6 +40,15 @@ describe('Home page test', () => {
 
     await expect(element(by.text('My stories'))).toBeVisible();
     await expect(element(by.text('Disconnect me'))).toBeVisible();
+  });
+
+  it('should display reload popup', async () => {
+    // Tap on refresh button
+    await element(by.id('refresh')).tap();
+
+    await expect(element(by.text('Story list reloaded'))).toBeVisible();
+    await expect(element(by.text(`Home - ${username}`))).toBeVisible();
+    await expect(element(by.id('addStoryButton'))).toBeVisible();
   });
 
   it('should disconnect user', async () => {

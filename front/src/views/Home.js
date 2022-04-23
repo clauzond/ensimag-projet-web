@@ -10,6 +10,7 @@ import { PopupComponent } from '../components/popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StoriesComponent } from '../components/stories';
 import { historyService } from '../services/history';
+import Toast from 'react-native-toast-message';
 
 export function Home({ navigation }) {
   const { token, setHistory, setUsername } = useAppStateContext();
@@ -23,20 +24,23 @@ export function Home({ navigation }) {
         // Authentified user case
         const storiesFromApi = await storyService.getPublicAuthentifiedStories(token);
         setStories(storiesFromApi);
-      } else {
-        // Guest user case
-        const storiesFromApi = await storyService.getPublicStories();
-        setStories(storiesFromApi);
-      }
 
-      if (token !== '') {
         const username = await users.whoami(token);
         setUsername(username);
         // Set header buttons
         navigation.setOptions({
           title: `Home - ${username}`,
           headerRight: () => (
-            <TouchableOpacity>
+            <TouchableOpacity style={styles.headerRight}>
+              <IconButton
+                testID={'refresh'}
+                size={'lg'}
+                _icon={{
+                  as: MaterialIcons,
+                  name: 'refresh',
+                }}
+                onPress={onRefresh}
+              />
               <IconButton
                 testID={'options'}
                 size={'lg'}
@@ -50,6 +54,13 @@ export function Home({ navigation }) {
           ),
           headerBackVisible: false,
         });
+      } else {
+        // Guest user case
+        const storiesFromApi = await storyService.getPublicStories();
+        setStories(storiesFromApi);
+      }
+
+      if (token !== '') {
       }
     };
 
@@ -111,6 +122,16 @@ export function Home({ navigation }) {
     });
   };
 
+  const onRefresh = async () => {
+    const refreshStories = await storyService.getPublicAuthentifiedStories(token);
+    setStories(refreshStories);
+
+    Toast.show({
+      text1: 'Story list reloaded',
+      position: 'bottom',
+    });
+  };
+
   // Style
   const styles = StyleSheet.create({
     container: {
@@ -127,6 +148,9 @@ export function Home({ navigation }) {
     },
     separator: {
       marginVertical: 8,
+    },
+    headerRight: {
+      flexDirection: 'row',
     },
   });
 
@@ -181,6 +205,7 @@ export function Home({ navigation }) {
         onClose={() => setPopupOpened(false)}
         children={renderPopupContent}
       />
+      <Toast />
     </SafeAreaView>
   );
 }
