@@ -15,8 +15,29 @@ import Toast from 'react-native-toast-message';
 export function Home({ navigation }) {
   const { token, setHistory, setUsername } = useAppStateContext();
   const [stories, setStories] = React.useState('');
-
   const [popupOpened, setPopupOpened] = React.useState(false);
+
+  // Style
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      marginTop: StatusBar.currentHeight || 0,
+    },
+    addButton: {
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 50,
+    },
+    separator: {
+      marginVertical: 8,
+    },
+    headerRight: {
+      flexDirection: 'row',
+    },
+  });
 
   React.useEffect(() => {
     const load = async () => {
@@ -39,7 +60,15 @@ export function Home({ navigation }) {
                   as: MaterialIcons,
                   name: 'refresh',
                 }}
-                onPress={onRefresh}
+                onPress={async () => {
+                  const refreshStories = await storyService.getPublicAuthentifiedStories(token);
+                  setStories(refreshStories);
+
+                  Toast.show({
+                    text1: 'Story list reloaded',
+                    position: 'bottom',
+                  });
+                }}
               />
               <IconButton
                 testID={'options'}
@@ -59,19 +88,6 @@ export function Home({ navigation }) {
         const storiesFromApi = await storyService.getPublicStories();
         setStories(storiesFromApi);
       }
-
-      if (token !== '') {
-      }
-    };
-
-    const onRefresh = async () => {
-      const refreshStories = await storyService.getPublicAuthentifiedStories(token);
-      setStories(refreshStories);
-
-      Toast.show({
-        text1: 'Story list reloaded',
-        position: 'bottom',
-      });
     };
 
     load();
@@ -130,28 +146,6 @@ export function Home({ navigation }) {
       choiceRowArray: toSetHistory[toSetHistory.length - 1].choiceRowArray,
     });
   };
-
-  // Style
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      marginTop: StatusBar.currentHeight || 0,
-    },
-    addButton: {
-      position: 'absolute',
-      bottom: 10,
-      right: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 50,
-    },
-    separator: {
-      marginVertical: 8,
-    },
-    headerRight: {
-      flexDirection: 'row',
-    },
-  });
 
   const renderPopupContent = () => {
     return (
