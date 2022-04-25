@@ -58,44 +58,45 @@ export function Home({ navigation }) {
     load();
   }, [setUsername, token]);
 
-  React.useLayoutEffect(
-    () =>
-      navigation.setOptions({
-        title: `Home - ${username}`,
-        headerRight: () => (
-          <TouchableOpacity style={styles.headerRight}>
-            <IconButton
-              testID={'refresh'}
-              size={'lg'}
-              _icon={{
-                as: MaterialIcons,
-                name: 'refresh',
-              }}
-              onPress={async () => {
-                const refreshStories = await storyService.getPublicAuthentifiedStories(token);
-                setStories(refreshStories);
+  React.useEffect(() => {
+    if (token === '') {
+      return;
+    }
+    navigation.setOptions({
+      title: `Home - ${username}`,
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerRight}>
+          <IconButton
+            testID={'refresh'}
+            size={'lg'}
+            _icon={{
+              as: MaterialIcons,
+              name: 'refresh',
+            }}
+            onPress={async () => {
+              const refreshStories = await storyService.getPublicAuthentifiedStories(token);
+              setStories(refreshStories);
 
-                Toast.show({
-                  text1: 'Story list reloaded',
-                  position: 'bottom',
-                });
-              }}
-            />
-            <IconButton
-              testID={'options'}
-              size={'lg'}
-              _icon={{
-                as: MaterialIcons,
-                name: 'more-vert',
-              }}
-              onPress={() => setPopupOpened(true)}
-            />
-          </TouchableOpacity>
-        ),
-        headerBackVisible: false,
-      }),
-    [navigation, styles.headerRight, token, username]
-  );
+              Toast.show({
+                text1: 'Story list reloaded',
+                position: 'bottom',
+              });
+            }}
+          />
+          <IconButton
+            testID={'options'}
+            size={'lg'}
+            _icon={{
+              as: MaterialIcons,
+              name: 'more-vert',
+            }}
+            onPress={() => setPopupOpened(true)}
+          />
+        </TouchableOpacity>
+      ),
+      headerBackVisible: false,
+    });
+  }, [navigation, styles.headerRight, token, username]);
 
   const onPressStory = async item => {
     // Set up history
