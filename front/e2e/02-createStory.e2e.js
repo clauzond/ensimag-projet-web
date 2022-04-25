@@ -53,7 +53,11 @@ describe('Create story page test', () => {
     await element(by.id('addStoryButton')).tap();
 
     await element(by.id('title')).typeText('MyTitle');
+    await element(by.id('title')).tapReturnKey();
+
     await element(by.id('paragraph')).typeText('MyContent\nNewLine');
+    await element(by.id('paragraph')).tapReturnKey();
+
     await element(by.id('pub')).tap();
     await element(by.id('submit')).tap();
 
@@ -65,7 +69,9 @@ describe('Create story page test', () => {
     await element(by.id('addStoryButton')).tap();
 
     await element(by.id('title')).typeText('MyTitle');
+    await element(by.id('title')).tapReturnKey();
     await element(by.id('paragraph')).typeText('MyContent\nNewLine');
+    await element(by.id('paragraph')).tapReturnKey();
     await element(by.id('submit')).tap();
 
     await expect(element(by.text('Customize your stories'))).toBeVisible();

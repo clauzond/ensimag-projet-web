@@ -28,7 +28,7 @@ describe('User stories page test', () => {
     // Go on user stories page
     await connectUser(username, true);
     await element(by.id('options')).tap();
-    await element(by.id('My Stories')).tap();
+    await element(by.text('My stories')).tap();
 
     await element(by.text(titlePublicStory)).tap();
     await expect(element(by.text('Make story private'))).toBeVisible();
