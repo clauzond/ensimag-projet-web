@@ -31,6 +31,7 @@ async function registerUser(username) {
   await element(by.id('password')).tapReturnKey();
 
   await element(by.text('Register')).tap();
+  await expect(element(by.text(`Home - ${username}`))).toBeVisible();
 }
 
 // Note : this function works only from home page

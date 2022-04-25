@@ -13,7 +13,7 @@ import { historyService } from '../services/history';
 import Toast from 'react-native-toast-message';
 
 export function Home({ navigation }) {
-  const { token, setHistory, setUsername } = useAppStateContext();
+  const { token, username, setHistory, setUsername } = useAppStateContext();
   const [stories, setStories] = React.useState('');
   const [popupOpened, setPopupOpened] = React.useState(false);
 
@@ -48,41 +48,6 @@ export function Home({ navigation }) {
 
         const username = await users.whoami(token);
         setUsername(username);
-        // Set header buttons
-        navigation.setOptions({
-          title: `Home - ${username}`,
-          headerRight: () => (
-            <TouchableOpacity style={styles.headerRight}>
-              <IconButton
-                testID={'refresh'}
-                size={'lg'}
-                _icon={{
-                  as: MaterialIcons,
-                  name: 'refresh',
-                }}
-                onPress={async () => {
-                  const refreshStories = await storyService.getPublicAuthentifiedStories(token);
-                  setStories(refreshStories);
-
-                  Toast.show({
-                    text1: 'Story list reloaded',
-                    position: 'bottom',
-                  });
-                }}
-              />
-              <IconButton
-                testID={'options'}
-                size={'lg'}
-                _icon={{
-                  as: MaterialIcons,
-                  name: 'more-vert',
-                }}
-                onPress={() => setPopupOpened(true)}
-              />
-            </TouchableOpacity>
-          ),
-          headerBackVisible: false,
-        });
       } else {
         // Guest user case
         const storiesFromApi = await storyService.getPublicStories();
@@ -91,7 +56,46 @@ export function Home({ navigation }) {
     };
 
     load();
-  }, [navigation, setUsername, styles.headerRight, token]);
+  }, [setUsername, token]);
+
+  React.useLayoutEffect(
+    () =>
+      navigation.setOptions({
+        title: `Home - ${username}`,
+        headerRight: () => (
+          <TouchableOpacity style={styles.headerRight}>
+            <IconButton
+              testID={'refresh'}
+              size={'lg'}
+              _icon={{
+                as: MaterialIcons,
+                name: 'refresh',
+              }}
+              onPress={async () => {
+                const refreshStories = await storyService.getPublicAuthentifiedStories(token);
+                setStories(refreshStories);
+
+                Toast.show({
+                  text1: 'Story list reloaded',
+                  position: 'bottom',
+                });
+              }}
+            />
+            <IconButton
+              testID={'options'}
+              size={'lg'}
+              _icon={{
+                as: MaterialIcons,
+                name: 'more-vert',
+              }}
+              onPress={() => setPopupOpened(true)}
+            />
+          </TouchableOpacity>
+        ),
+        headerBackVisible: false,
+      }),
+    [navigation, styles.headerRight, token, username]
+  );
 
   const onPressStory = async item => {
     // Set up history

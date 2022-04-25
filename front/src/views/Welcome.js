@@ -17,7 +17,6 @@ export function Welcome({ navigation }) {
     const load = async () => {
       const token = await AsyncStorage.getItem('@token');
       try {
-        await users.whoami(token);
         if (token !== null) {
           // If the token is already present in storage, connect automatically the user
           setToken(token);
