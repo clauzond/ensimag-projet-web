@@ -86,8 +86,6 @@ testing_frontend:
     - npm install
     - npx detox build --configuration android.headless
     - npx detox test --configuration android.headless
-  # Retry once if job fails
-  retry: 1
   artifacts:
     paths:
       - ./front/android/app/build/outputs/
