@@ -15,9 +15,9 @@ describe('User stories page test', () => {
 
   it('should display story created', async () => {
     await registerUser(username);
-    await createStory(titlePublicStory, 'myContent');
+    await createStory(titlePublicStory, 'myContent', true);
     await device.pressBack();
-    await createStory(titlePrivateStory, 'myContent');
+    await createStory(titlePrivateStory, 'myContent', false);
 
     await expect(element(by.text('Customize your stories'))).toBeVisible();
     await expect(element(by.text(titlePublicStory))).toBeVisible();
