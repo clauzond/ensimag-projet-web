@@ -98,7 +98,8 @@ async function createParagraph(
 	username,
 	idParagraphe,
 	idChoix,
-	estConclusion
+	estConclusion,
+	condition
 ) {
 	title = title == undefined ? '' : title;
 	const token =
@@ -107,6 +108,7 @@ async function createParagraph(
 	idParagraphe =
 		idParagraphe == undefined ? story.idParagrapheInitial : idParagraphe;
 	idChoix = idChoix == undefined ? null : idChoix;
+	condition = condition == undefined ? null : condition;
 
 	const response = await request(app)
 		.post(`/api/histoire/${story.id}/paragraphe/`)
@@ -117,7 +119,8 @@ async function createParagraph(
 				titreChoix: title,
 				idParagraphe: idParagraphe,
 				idChoix: idChoix,
-				estConclusion: estConclusion
+				estConclusion: estConclusion,
+				condition: condition
 			})
 		);
 	return response.body.choice;
