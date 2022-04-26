@@ -46,8 +46,8 @@ export function Home({ navigation }) {
         const storiesFromApi = await storyService.getPublicAuthentifiedStories(token);
         setStories(storiesFromApi);
 
-        const username = await users.whoami(token);
-        setUsername(username);
+        const usernameFromAPI = await users.whoami(token);
+        setUsername(usernameFromAPI);
       } else {
         // Guest user case
         const storiesFromApi = await storyService.getPublicStories();

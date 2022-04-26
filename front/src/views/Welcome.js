@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Button, Flex, Heading, Icon, Text, View } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppStateContext } from '../contexts/AppState';
-import { users } from '../services/users';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Welcome({ navigation }) {
