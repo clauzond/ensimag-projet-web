@@ -149,6 +149,7 @@ export function SetParagraph({ navigation, route }) {
           {/*Title input*/}
           {isCreation === true && (
             <TextInput
+              testID={'title'}
               style={styles.input}
               placeholder="Paragraph title"
               placeholderTextColor={'rgb(100,96,96)'}
@@ -165,6 +166,7 @@ export function SetParagraph({ navigation, route }) {
           {/*Paragraph content*/}
           {((isCreation === true && isNewParagraph === true) || isCreation === false) && (
             <TextInput
+              testID={'paragraph'}
               defaultValue={paragraphContent !== null ? paragraphContent : null}
               style={styles.multiLinesInput}
               placeholder="Content of the paragraph (leave empty to allow other collaborators to participate)"
@@ -184,6 +186,7 @@ export function SetParagraph({ navigation, route }) {
           {/*IsConclusion input*/}
           {isCreation === true && isNewParagraph === true && (
             <Checkbox
+              testID={'conclusion'}
               shadow={2}
               style={styles.checkBox}
               value={values.isConclusion}
@@ -233,7 +236,12 @@ export function SetParagraph({ navigation, route }) {
           )}
 
           {/*Submit button*/}
-          <Button colorScheme="primary" style={styles.createButton} onPress={handleSubmit}>
+          <Button
+            testID={'submit'}
+            colorScheme="primary"
+            style={styles.createButton}
+            onPress={handleSubmit}
+          >
             {titlePage}
           </Button>
           <Toast />

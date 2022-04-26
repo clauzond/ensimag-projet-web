@@ -195,6 +195,7 @@ export function SetParagraphs({ navigation, route }) {
       />
 
       <IconButton
+        testID={'addParagraphButton'}
         style={styles.addButton}
         onPress={() => setPopupAddParagraphOpened(true)}
         size={'lg'}

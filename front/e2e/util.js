@@ -1,7 +1,7 @@
 /**
  * This function connects the user on app launch
  * @param goBackBeforeLogin True if you are on home page
- * @returns {Promise<void>}
+ * @returns {Promise<void>}.
  */
 async function connectUser(username, goBackBeforeLogin) {
   if (goBackBeforeLogin) {
@@ -38,8 +38,8 @@ async function registerUser(username) {
 async function createStory(title, paragraphContent, isPublic) {
   await element(by.id('addStoryButton')).tap();
 
-  await element(by.id('title')).typeText(title);
-  await element(by.id('paragraph')).typeText(paragraphContent);
+  await element(by.id('title')).replaceText(title);
+  await element(by.id('paragraph')).replaceText(paragraphContent);
   isPublic !== undefined && isPublic === true ? await element(by.id('pub')).tap() : null;
   await element(by.id('submit')).tap();
 }
