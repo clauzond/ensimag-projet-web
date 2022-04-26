@@ -35,6 +35,7 @@ async function registerUser(username) {
 }
 
 // Note : this function works only from home page
+
 async function createStory(title, paragraphContent, isPublic) {
   await element(by.id('addStoryButton')).tap();
 
