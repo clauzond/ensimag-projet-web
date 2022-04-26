@@ -21,7 +21,14 @@ export async function auth(req, res, next) {
 	}
 
 	const token = req.get('x-access-token');
+	if (token == null || token === 'null') {
+		throw new RequestError(
+			"You must specify your access token in the 'x-access-token' header",
+			status.BAD_REQUEST
+		);
+	}
 
+	console.info('got token: ', token);
 	if (!jws.verify(token, 'HS256', SECRET)) {
 		throw new RequestError('Invalid token', status.BAD_REQUEST);
 	}

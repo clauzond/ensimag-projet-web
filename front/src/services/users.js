@@ -43,10 +43,14 @@ export const users = {
    * Get the user associated with the given token
    */
   async whoami(token) {
-    const response = await axios.get(`${BACKEND}/api/whoami`, {
-      headers: { 'x-access-token': token },
-    });
-    return response.data.data;
+    try {
+      const response = await axios.get(`${BACKEND}/api/whoami`, {
+        headers: { 'x-access-token': token },
+      });
+      return response.data.data;
+    } catch (e) {
+      throw e.response?.data?.message ?? e;
+    }
   },
 
   async userList(token) {

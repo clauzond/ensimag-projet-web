@@ -25,6 +25,7 @@
     "create-db": "node --es-module-specifier-resolution=node src/createDb.js",
     "start-dev": "nodemon --es-module-specifier-resolution=node src/server.js",
     "doc": "node src/util/swagger.js",
+    "sample-db": "npm run doc; npm run create-db; node --es-module-specifier-resolution=node src/__tests__/util/sample.js;",
     "test": "DB=sqlite.db npm run create-db && DB=sqlite.db NODE_OPTIONS=\"--experimental-vm-modules --es-module-specifier-resolution=node\" jest api.* --runInBand && DB=sqlite.db NODE_OPTIONS=\"--experimental-vm-modules --es-module-specifier-resolution=node\" jest model.* --runInBand",
     "test-windows": "jest api.* --runInBand; jest model.* --runInBand",
     "deploy": "git subtree push --prefix back heroku master"

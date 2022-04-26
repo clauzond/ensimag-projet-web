@@ -10,12 +10,34 @@ import { PopupComponent } from '../components/popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StoriesComponent } from '../components/stories';
 import { historyService } from '../services/history';
+import Toast from 'react-native-toast-message';
 
 export function Home({ navigation }) {
-  const { token, setHistory, setUsername } = useAppStateContext();
+  const { token, username, setHistory, setUsername } = useAppStateContext();
   const [stories, setStories] = React.useState('');
-
   const [popupOpened, setPopupOpened] = React.useState(false);
+
+  // Style
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      marginTop: StatusBar.currentHeight || 0,
+    },
+    addButton: {
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 50,
+    },
+    separator: {
+      marginVertical: 8,
+    },
+    headerRight: {
+      flexDirection: 'row',
+    },
+  });
 
   React.useEffect(() => {
     const load = async () => {
@@ -23,38 +45,58 @@ export function Home({ navigation }) {
         // Authentified user case
         const storiesFromApi = await storyService.getPublicAuthentifiedStories(token);
         setStories(storiesFromApi);
+
+        const usernameFromAPI = await users.whoami(token);
+        setUsername(usernameFromAPI);
       } else {
         // Guest user case
         const storiesFromApi = await storyService.getPublicStories();
         setStories(storiesFromApi);
       }
-
-      if (token !== '') {
-        const username = await users.whoami(token);
-        setUsername(username);
-        // Set header buttons
-        navigation.setOptions({
-          title: `Home - ${username}`,
-          headerRight: () => (
-            <TouchableOpacity>
-              <IconButton
-                testID={'options'}
-                size={'lg'}
-                _icon={{
-                  as: MaterialIcons,
-                  name: 'more-vert',
-                }}
-                onPress={() => setPopupOpened(true)}
-              />
-            </TouchableOpacity>
-          ),
-          headerBackVisible: false,
-        });
-      }
     };
 
     load();
-  }, [navigation, setUsername, token]);
+  }, [setUsername, token]);
+
+  React.useEffect(() => {
+    if (token === '') {
+      return;
+    }
+    navigation.setOptions({
+      title: `Home - ${username}`,
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerRight}>
+          <IconButton
+            testID={'refresh'}
+            size={'lg'}
+            _icon={{
+              as: MaterialIcons,
+              name: 'refresh',
+            }}
+            onPress={async () => {
+              const refreshStories = await storyService.getPublicAuthentifiedStories(token);
+              setStories(refreshStories);
+
+              Toast.show({
+                text1: 'Story list reloaded',
+                position: 'bottom',
+              });
+            }}
+          />
+          <IconButton
+            testID={'options'}
+            size={'lg'}
+            _icon={{
+              as: MaterialIcons,
+              name: 'more-vert',
+            }}
+            onPress={() => setPopupOpened(true)}
+          />
+        </TouchableOpacity>
+      ),
+      headerBackVisible: false,
+    });
+  }, [navigation, styles.headerRight, token, username]);
 
   const onPressStory = async item => {
     // Set up history
@@ -82,7 +124,6 @@ export function Home({ navigation }) {
           });
         } catch {
           // History is compromised: reset history
-          console.log('HISTORY COMPROMISED; RESETTING');
           const util = await paragraphService.getPublicParagraph(
             token,
             item.id,
@@ -110,25 +151,6 @@ export function Home({ navigation }) {
       choiceRowArray: toSetHistory[toSetHistory.length - 1].choiceRowArray,
     });
   };
-
-  // Style
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      marginTop: StatusBar.currentHeight || 0,
-    },
-    addButton: {
-      position: 'absolute',
-      bottom: 10,
-      right: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 50,
-    },
-    separator: {
-      marginVertical: 8,
-    },
-  });
 
   const renderPopupContent = () => {
     return (
@@ -181,6 +203,7 @@ export function Home({ navigation }) {
         onClose={() => setPopupOpened(false)}
         children={renderPopupContent}
       />
+      <Toast />
     </SafeAreaView>
   );
 }
