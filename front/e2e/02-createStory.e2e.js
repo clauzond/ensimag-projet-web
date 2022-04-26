@@ -31,6 +31,7 @@ describe('Create story page test', () => {
 
     await element(by.id('title')).tap();
     await element(by.id('title')).typeText('MyTitle');
+    await element(by.id('title')).tapReturnKey();
     await expect(element(by.text('You must specify a title'))).not.toBeVisible();
     await expect(element(by.text('The init paragraph content cannot be null'))).toBeVisible();
 
@@ -40,6 +41,7 @@ describe('Create story page test', () => {
 
     await element(by.id('paragraph')).tap();
     await element(by.id('paragraph')).typeText('MyContent\nNewLine');
+    await element(by.id('paragraph')).tapReturnKey();
     await expect(element(by.text('You must specify a title'))).toBeVisible();
     await expect(element(by.text('The init paragraph content cannot be null'))).not.toBeVisible();
 
@@ -68,8 +70,10 @@ describe('Create story page test', () => {
     await connectUser(username, true);
     await element(by.id('addStoryButton')).tap();
 
+    await element(by.id('title')).tap();
     await element(by.id('title')).typeText('MyTitle');
     await element(by.id('title')).tapReturnKey();
+    await element(by.id('paragraph')).tap();
     await element(by.id('paragraph')).typeText('MyContent\nNewLine');
     await element(by.id('paragraph')).tapReturnKey();
     await element(by.id('submit')).tap();
