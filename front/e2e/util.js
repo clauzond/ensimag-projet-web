@@ -49,17 +49,17 @@ export async function createParagraph(
   title,
   paragraph,
   parentParagraph,
-  { isConclusion = false, condition = null, childParagraph = null }
+  { isConclusion = false, condition = null, childParagraph = null } = {}
 ) {
   await element(by.id('addParagraphButton')).tap();
   await element(by.text('Create paragraph')).tap();
 
   await element(by.id('title')).tap();
-  await element(by.id('title')).typeText(title);
+  await element(by.id('title')).replaceText(title);
   await device.pressBack();
 
   await element(by.id('paragraph')).tap();
-  await element(by.id('paragraph')).typeText(paragraph);
+  await element(by.id('paragraph')).replaceText(paragraph);
   await device.pressBack();
 
   await element(by.text('Pick parent paragraph')).tap();
