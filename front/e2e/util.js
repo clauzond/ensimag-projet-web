@@ -3,7 +3,7 @@
  * @param goBackBeforeLogin True if you are on home page
  * @returns {Promise<void>}.
  */
-async function connectUser(username, goBackBeforeLogin) {
+export async function connectUser(username, goBackBeforeLogin) {
   if (goBackBeforeLogin) {
     await expect(element(by.text(`Home - ${username}`))).toBeVisible();
     await device.pressBack();
@@ -19,7 +19,7 @@ async function connectUser(username, goBackBeforeLogin) {
   await element(by.text('Login')).tap();
 }
 
-async function registerUser(username) {
+export async function registerUser(username) {
   await element(by.text('Sign up')).tap();
 
   await element(by.id('username')).replaceText(username);
@@ -35,7 +35,7 @@ async function registerUser(username) {
 }
 
 // Note : this function works only from home page
-async function createStory(title, paragraphContent, isPublic) {
+export async function createStory(title, paragraphContent, isPublic) {
   await element(by.id('addStoryButton')).tap();
 
   await element(by.id('title')).replaceText(title);
@@ -45,7 +45,7 @@ async function createStory(title, paragraphContent, isPublic) {
 }
 
 // Note: function works only from set paragaphs screen
-async function createParagraph(
+export async function createParagraph(
   title,
   paragraph,
   parentParagraph,
@@ -81,5 +81,3 @@ async function createParagraph(
 
   await element(by.id('submit')).tap();
 }
-
-export { connectUser, registerUser, createStory };
