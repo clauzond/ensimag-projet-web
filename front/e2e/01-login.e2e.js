@@ -12,32 +12,32 @@ describe('User login signup test', () => {
   it('should signup', async () => {
     await element(by.text('Sign up')).tap();
     await element(by.id('username')).typeText('');
-    await element(by.id('username')).tapReturnKey();
+    await device.pressBack();
 
     await expect(element(by.text('You must specify an username'))).toBeVisible();
 
     await element(by.id('username')).typeText(username);
-    await element(by.id('username')).tapReturnKey();
+    await device.pressBack();
 
     await element(by.id('password')).typeText('');
-    await element(by.id('password')).tapReturnKey();
+    await device.pressBack();
 
     await expect(element(by.text('You must specify a password'))).toBeVisible();
 
     await element(by.id('password')).typeText('a');
-    await element(by.id('password')).tapReturnKey();
+    await device.pressBack();
 
     await expect(element(by.text('Password must be at least 6 characters'))).toBeVisible();
 
     await element(by.id('password')).replaceText('123456');
     await element(by.id('password')).tapReturnKey();
     await element(by.id('passwordVerify')).typeText('789123');
-    await element(by.id('password')).tapReturnKey();
+    await device.pressBack();
 
     await expect(element(by.text('Passwords must match'))).toBeVisible();
 
     await element(by.id('passwordVerify')).replaceText('123456');
-    await element(by.id('password')).tapReturnKey();
+    await device.pressBack();
 
     await element(by.text('Register')).tap();
     await expect(element(by.text(`Home - ${username}`))).toBeVisible();
