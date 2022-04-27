@@ -80,9 +80,7 @@ testing_frontend:
     - shell
   script:
     - source /matieres/4MM1CAW/bashrc2web
-    - cd back/
-    - npm run create-db
-    - cd ../front/
+    - cd front/
     # npm install will generate necessary files including react.gradle
     # https://stackoverflow.com/questions/44437554/react-native-react-gradle-does-not-exist
     - npm install
