@@ -44,4 +44,42 @@ async function createStory(title, paragraphContent, isPublic) {
   await element(by.id('submit')).tap();
 }
 
+// Note: function works only from set paragaphs screen
+async function createParagraph(
+  title,
+  paragraph,
+  parentParagraph,
+  { isConclusion = false, condition = null, childParagraph = null }
+) {
+  await element(by.id('addParagraphButton')).tap();
+  await element(by.text('Create paragraph')).tap();
+
+  await element(by.id('title')).tap();
+  await element(by.id('title')).typeText(title);
+  await device.pressBack();
+
+  await element(by.id('paragraph')).tap();
+  await element(by.id('paragraph')).typeText(paragraph);
+  await device.pressBack();
+
+  await element(by.text('Pick parent paragraph')).tap();
+  await element(by.text(parentParagraph)).tap();
+
+  if (isConclusion) {
+    await element(by.id('conclusion')).tap();
+  }
+
+  if (condition != null) {
+    await element(by.text('Pick a condition')).tap();
+    await element(by.text(parentParagraph)).tap();
+  }
+
+  if (childParagraph != null) {
+    await element(by.text('Pick child paragraph')).tap();
+    await element(by.text(parentParagraph)).tap();
+  }
+
+  await element(by.id('submit')).tap();
+}
+
 export { connectUser, registerUser, createStory };

@@ -1,4 +1,4 @@
-import { connectUser, createStory, registerUser } from './util';
+import { connectUser, createStory, registerUser, createParagraph } from './util';
 
 const username = 'ParagraphsUser';
 const titleSimpleStory = 'firstStory';
@@ -21,23 +21,8 @@ describe('User stories page test', () => {
 
     await element(by.text(titleSimpleStory)).tap();
     await element(by.text('Set paragraphs')).tap();
-    await element(by.id('addParagraphButton')).tap();
-    await element(by.text('Create paragraph')).tap();
 
-    await element(by.id('title')).tap();
-    await element(by.id('title')).typeText('Go to end');
-    await device.pressBack();
-
-    await element(by.id('paragraph')).tap();
-    await element(by.id('paragraph')).typeText('End of story');
-    await device.pressBack();
-
-    await element(by.id('conclusion')).tap();
-
-    await element(by.text('Pick parent paragraph')).tap();
-    await element(by.text(titleSimpleStory)).tap();
-
-    await element(by.id('submit')).tap();
+    await createParagraph('Go to end', 'End of story', titleSimpleStory, { isConclusion: true });
 
     // Read the story
     await device.pressBack();
