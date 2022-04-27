@@ -37,7 +37,6 @@ describe('User login signup test', () => {
     await expect(element(by.text('Passwords must match'))).toBeVisible();
 
     await element(by.id('passwordVerify')).replaceText('123456');
-    await device.pressBack();
 
     await element(by.text('Register')).tap();
     await expect(element(by.text(`Home - ${username}`))).toBeVisible();
