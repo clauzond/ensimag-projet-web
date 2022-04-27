@@ -32,11 +32,12 @@ describe('User login signup test', () => {
     await element(by.id('password')).replaceText('123456');
     await element(by.id('password')).tapReturnKey();
     await element(by.id('passwordVerify')).typeText('789123');
-    await element(by.id('password')).tapReturnKey();
+    await element(by.id('passwordVerify')).tapReturnKey();
 
     await expect(element(by.text('Passwords must match'))).toBeVisible();
 
     await element(by.id('passwordVerify')).replaceText('123456');
+    await element(by.id('passwordVerify')).tapReturnKey();
 
     await element(by.text('Register')).tap();
     await expect(element(by.text(`Home - ${username}`))).toBeVisible();

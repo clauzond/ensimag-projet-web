@@ -28,7 +28,7 @@ async function registerUser(username) {
   await element(by.id('password')).replaceText('123456');
   await element(by.id('password')).tapReturnKey();
   await element(by.id('passwordVerify')).replaceText('123456');
-  await element(by.id('password')).tapReturnKey();
+  await element(by.id('passwordVerify')).tapReturnKey();
 
   await element(by.text('Register')).tap();
   await expect(element(by.text(`Home - ${username}`))).toBeVisible();
