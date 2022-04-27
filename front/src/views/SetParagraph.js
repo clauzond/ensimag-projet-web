@@ -88,7 +88,6 @@ export function SetParagraph({ navigation, route }) {
         position: 'bottom',
       });
     } catch (e) {
-      console.error(e);
       Toast.show({
         type: 'error',
         text1: e,

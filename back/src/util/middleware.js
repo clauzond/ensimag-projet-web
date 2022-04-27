@@ -28,7 +28,6 @@ export async function auth(req, res, next) {
 		);
 	}
 
-	console.info('got token: ', token);
 	if (!jws.verify(token, 'HS256', SECRET)) {
 		throw new RequestError('Invalid token', status.BAD_REQUEST);
 	}
