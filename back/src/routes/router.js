@@ -4,16 +4,20 @@ import story from './histoire.js';
 import historique from './historique.js';
 import paragraphe from './paragraphe.js';
 import { serve, setup } from 'swagger-ui-express';
-import swaggerFile from '../../swagger_output.json' assert { type: 'json' };
+// import swaggerFile from '../../swagger_output.json' assert { type: 'json' };
 import { auth } from '../util/middleware.js';
 import status from 'http-status';
 import { RequestError } from '../util/requestError.js';
 import readOnly from './readOnly.js';
 import { utilisateur } from '../controllers/utilisateur.js';
+import { readFile } from 'fs/promises';
 
 const router = express.Router();
 
 // Swagger Documentation (before json as it is not json)
+const swaggerFile = JSON.parse(
+	await readFile(new URL('../../swagger_output.json', import.meta.url))
+);
 router.use('/', serve);
 router.get('/', setup(swaggerFile));
 
