@@ -76,13 +76,7 @@ export const story = {
 			) {
 				continue;
 			}
-			// Only show paragraphs that are free / that you are the redactor of
-			if (
-				paragraph.idRedacteur !== null &&
-				paragraph.idRedacteur !== req.user.id
-			) {
-				continue;
-			}
+
 			// Add choice to alreadySeen
 			alreadySeen.push({
 				id: paragraph.id,

@@ -3,6 +3,8 @@ import { Box, Button, Flex, Heading, Icon, Text, View } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppStateContext } from '../contexts/AppState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import { BackHandler } from 'react-native';
 
 export function Welcome({ navigation }) {
   const { setToken } = useAppStateContext();
@@ -25,6 +27,17 @@ export function Welcome({ navigation }) {
     };
     load();
   }, [navigation, setToken]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        BackHandler.exitApp();
+        return true;
+      };
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
 
   return (
     <View>

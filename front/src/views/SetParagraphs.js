@@ -21,7 +21,6 @@ export function SetParagraphs({ navigation, route }) {
 
   React.useEffect(() => {
     const load = async () => {
-      // TODO: ajouter les choix à la liste des paragraphes
       const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
       setParagraphs(paragraphsFromApi);
       navigation.setOptions({
@@ -33,15 +32,19 @@ export function SetParagraphs({ navigation, route }) {
   }, [isFocused, token, story.id, navigation]);
 
   const getSpecialColor = paragraph => {
-    const workingOn = '#ffc2c2';
+    const workingOn = '#f9ffc2';
     const authorOf = '#a7ebc6';
+    const notAllowed = '#ffc2c2';
     const free = '#f9c2ff';
 
     if (paragraph.estVerrouille && paragraph.idRedacteur === username) {
       return workingOn;
     } else if (paragraph.idRedacteur === username) {
       return authorOf;
+    } else if (paragraph.idRedacteur !== null && paragraph.idRedacteur !== username) {
+      return notAllowed;
     }
+
     return free;
   };
 
@@ -82,7 +85,7 @@ export function SetParagraphs({ navigation, route }) {
                 setParagraphs(paragraphsFromApi);
                 setPopupParagraphOptionsOpened(false);
                 Toast.show({
-                  text1: 'Paragraph was sucessfully deleted',
+                  text1: 'You are not the author of this paragraph anymore',
                   position: 'bottom',
                 });
               } catch (e) {
@@ -108,7 +111,7 @@ export function SetParagraphs({ navigation, route }) {
                 setParagraphs(paragraphsFromApi);
                 setPopupParagraphOptionsOpened(false);
                 Toast.show({
-                  text1: 'Paragraph was sucessfully deleted',
+                  text1: 'Paragraph was successfully deleted',
                   position: 'bottom',
                 });
               } catch (e) {
@@ -163,8 +166,16 @@ export function SetParagraphs({ navigation, route }) {
   };
 
   const onPressStory = async item => {
-    setPopupParagraphOptionsOpened(true);
     setParagraphSelected(item);
+    if (paragraphSelected.idRedacteur !== null && paragraphSelected.idRedacteur !== username) {
+      Toast.show({
+        type: 'error',
+        text1: 'You are not allowed to modify this paragraph',
+        position: 'bottom',
+      });
+    } else {
+      setPopupParagraphOptionsOpened(true);
+    }
   };
 
   // Style
@@ -211,7 +222,7 @@ export function SetParagraphs({ navigation, route }) {
       <PopupComponent
         visible={popupParagraphOptionsOpened}
         onClose={() => setPopupParagraphOptionsOpened(false)}
-        children={renderPopupParagraphOptions}
+        children={renderPopupParagraphOptions(paragraphSelected)}
       />
 
       {/*Add paragraph popup*/}
