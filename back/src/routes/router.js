@@ -4,7 +4,6 @@ import story from './histoire.js';
 import historique from './historique.js';
 import paragraphe from './paragraphe.js';
 import { serve, setup } from 'swagger-ui-express';
-// import swaggerFile from '../../swagger_output.json' assert { type: 'json' };
 import { auth } from '../util/middleware.js';
 import status from 'http-status';
 import { RequestError } from '../util/requestError.js';
