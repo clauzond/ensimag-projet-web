@@ -4,14 +4,14 @@ import { app } from '../../app.js';
 const USERNAME = 'clauzond';
 const PASSWORD = 'clauzondmdp';
 
-async function userRegistration(username) {
+async function userRegistration(username, password) {
 	await request(app)
 		.post('/api/register')
 		.set('Content-Type', 'application/json')
 		.send(
 			JSON.stringify({
 				username: username === undefined ? USERNAME : username,
-				password: PASSWORD
+				password: password === undefined ? PASSWORD : password
 			})
 		);
 }
@@ -22,7 +22,7 @@ async function userRegistration(username) {
  * @returns {Promise<*>}
  */
 async function getToken(username, password) {
-	await userRegistration(username);
+	await userRegistration(username, password);
 
 	const response = await request(app)
 		.post('/api/login')
@@ -46,7 +46,9 @@ async function createStory(
 	password
 ) {
 	const token =
-		username === undefined ? await getToken() : await getToken(username, password);
+		username === undefined
+			? await getToken()
+			: await getToken(username, password);
 
 	const response = await request(app)
 		.post('/api/histoire')
@@ -100,11 +102,12 @@ async function createParagraph(
 	idParagraphe,
 	idChoix,
 	estConclusion,
-	condition
+	condition,
+	password
 ) {
 	title = title == undefined ? '' : title;
 	const token =
-		username == undefined ? await getToken() : await getToken(username);
+		username == undefined ? await getToken() : await getToken(username, password);
 	estConclusion = estConclusion == undefined ? false : estConclusion;
 	idParagraphe =
 		idParagraphe == undefined ? story.idParagrapheInitial : idParagraphe;
@@ -127,9 +130,9 @@ async function createParagraph(
 	return response.body.choice;
 }
 
-async function updateParagraph(story, idParagraphe, contenu, username) {
+async function updateParagraph(story, idParagraphe, contenu, username, password) {
 	const token =
-		username == undefined ? await getToken() : await getToken(username);
+		username == undefined ? await getToken() : await getToken(username, password);
 
 	// Ask to update paragraph
 	await request(app)
