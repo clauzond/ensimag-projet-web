@@ -25,7 +25,7 @@ npx react-native run-android
 # Lancer les tests
 
 ```
-cd back && npm run create-db && npm start # lancer le back
+cd back && npm run doc && npm run create-db && npm start # lancer le back
 npm run build-test # compile l'appli test
 npm start # lance react native
 npm run test # installe l'appli et lance le test detox
@@ -65,5 +65,3 @@ Si ça ne marche pas, désinstallez l'application dans l'émulateur.
 Les composants : [NativeBase](https://docs.nativebase.io/?utm_source=HomePage&utm_medium=header&utm_campaign=NativeBase_3)
 
 Navigation entre les pages : [React-Navigation](https://reactnavigation.org/docs/getting-started)
-
-a

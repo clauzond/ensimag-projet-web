@@ -76,6 +76,48 @@ async function getValidChoiceArray(idParagraph, history) {
 	return choiceRowArray;
 }
 
+async function auxGetParagraph(req, res) {
+	const story = await checkStoryId(req);
+
+	await checkIsPrivateStory(story, req.user);
+
+	const paragraph = await checkParagraphId(req);
+
+	if (paragraph.estVerrouille === true || paragraph.idRedacteur === null) {
+		throw new RequestError('This paragraph is locked', status.FORBIDDEN);
+	}
+
+	const history =
+		req.user !== undefined ? await req.user.getHistorique(story) : [];
+
+	let choiceRowArray = await getValidChoiceArray(paragraph.id, history);
+	const alreadySeen = [paragraph.id];
+	while (choiceRowArray.length === 1) {
+		const nextParagraph = await Paragraphe.findByPk(
+			choiceRowArray[0].ChoixId
+		);
+		paragraph.contenu += '\n';
+		paragraph.contenu += choiceRowArray[0].titreChoix;
+		paragraph.contenu += '\n';
+		paragraph.contenu += nextParagraph.contenu;
+		choiceRowArray = await getValidChoiceArray(nextParagraph.id, history);
+
+		// Avoid circular loops
+		if (alreadySeen.includes(nextParagraph.id)) {
+			break;
+		}
+		alreadySeen.push(nextParagraph.id);
+	}
+
+	res.json({
+		status: true,
+		message: 'Returning paragraph and available choiceRowArray',
+		story: story,
+		paragraph: paragraph,
+		choiceRowArray: choiceRowArray
+	});
+}
+
 export const paragraphe = {
 	async getChoiceList(req, res) {
 		const story = await checkStoryId(req);
@@ -214,54 +256,10 @@ export const paragraphe = {
 	// Read-only for authentified & unauthentified users
 	// If there is only one choice, append the next paragraph
 	async getPublicParagraph(req, res) {
-		const story = await checkStoryId(req);
-
-		await checkIsPrivateStory(story, req.user);
-
-		const paragraph = await checkParagraphId(req);
-
-		if (
-			paragraph.estVerrouille === true ||
-			paragraph.idRedacteur === null
-		) {
-			throw new RequestError(
-				'This paragraph is locked',
-				status.FORBIDDEN
-			);
-		}
-
-		const history =
-			req.user !== undefined ? await req.user.getHistorique(story) : [];
-
-		let choiceRowArray = await getValidChoiceArray(paragraph.id, history);
-		const alreadySeen = [paragraph.id];
-		while (choiceRowArray.length === 1) {
-			const nextParagraph = await Paragraphe.findByPk(
-				choiceRowArray[0].ChoixId
-			);
-			paragraph.contenu += '\n';
-			paragraph.contenu += choiceRowArray[0].titreChoix;
-			paragraph.contenu += '\n';
-			paragraph.contenu += nextParagraph.contenu;
-			choiceRowArray = await getValidChoiceArray(
-				nextParagraph.id,
-				history
-			);
-
-			// Avoid circular loops
-			if (alreadySeen.includes(nextParagraph.id)) {
-				break;
-			}
-			alreadySeen.push(nextParagraph.id);
-		}
-
-		res.json({
-			status: true,
-			message: 'Returning paragraph and available choiceRowArray',
-			story: story,
-			paragraph: paragraph,
-			choiceRowArray: choiceRowArray
-		});
+		auxGetParagraph(req, res);
+	},
+	async getAuthentifiedParagraph(req, res) {
+		auxGetParagraph(req, res);
 	},
 	async askToUpdateParagraph(req, res) {
 		await checkStoryId(req);

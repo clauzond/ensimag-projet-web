@@ -3,8 +3,10 @@ import { createParagraph, createStory, getToken, updateParagraph } from "./setup
 
 
 async function generateSample() {
-    const username = "clap";
-    const story = await createStory("Coincé en D208", username, true, "[sonnerie qui retentit au loin, vous vous réveillez en D208] 'Tiens, c'est bizarre... J'ai du m'assoupir sur mon diagramme de séquence, il fait déjà nuit, il faut que je trouve un moyen de sortir de la salle.'");
+    const username = "root";
+    const password = "azerty";
+
+    const story = await createStory("Coincé en D208", username, true, "[sonnerie qui retentit au loin, vous vous réveillez en D208] 'Tiens, c'est bizarre... J'ai du m'assoupir sur mon diagramme de séquence, il fait déjà nuit, il faut que je trouve un moyen de sortir de la salle.'", password);
     
     const choix1 = await createParagraph(story, "Se diriger vers la porte d'entrée", username, story.idParagrapheInitial, null, false);
     await updateParagraph(story, choix1.id, "Vous vous approchez de la porte d'entrée. La porte semble fermée à clef.", username);
@@ -40,5 +42,41 @@ async function generateSample() {
     const choix1_3_3 = await createParagraph(story, "Regarder par la fenêtre", username, choix1_3.id, choix3.id, false);
 }
 
+async function generateSample2() {
+    const username = "root2";
+    const password = "azerty";
+
+    const story = await createStory("Transformer", username, true, "Aurélien is a student at Ensimag.  He also writes about the history of religion, spirituality and democracy.  He was originally a student at McGill University in Montreal.  He has been a member of the Montreal Catholic Students Association since 1991. But he has one secret : he has been on the internet.", password);
+    
+    const choix1 = await createParagraph(story, "Approach Aurélien", username, story.idParagrapheInitial, null, false);
+    await updateParagraph(story, choix1.id, "'Alright, let's go get some water.'  I said, getting up.  After running for a while,  I arrived at an alley.  I entered the alley, and I was approached by the man in the blue coat.", username);
+    const choix2 = await createParagraph(story, "Go for a walk", username, story.idParagrapheInitial, null, false);
+    await updateParagraph(story, choix2.id, "You're only going to be back around 9pm or so. I'd recommend walking around, but if you want to go back and get a better sense of the city's history , you might have to try exploring the nearby museum.", username);
+    const choix2_1 = await createParagraph(story, "Explore the museum", username, choix2.id, null, false);
+    await updateParagraph(story, choix2_1.id, "You head for the museum.  When you see the red brick wall at the museum that is surrounded by the black metal walls, you are probably here to see one of the three statues. They each hold  a key to unlock a secret door that leads to the back room of the museum.", username);
+    const choix1_2 = await createParagraph(story, "Ask him about the city", username, choix1.id, null, false);
+    await updateParagraph(story, choix1_2.id, "You approach the man in the blue coat and ask him about the city.  He looks at you for a few seconds,  then shakes his head :  'There isn't anything there...'   The police have been watching you closely all this time...  They're still waiting for you to tell them what you saw.", username);
+    const choix1_3 = await createParagraph(story, "Ask him about the statues", username, choix1.id, null, false, choix2_1.id);
+    await updateParagraph(story, choix1_3.id, "You ask Aurélien about the hidden keys in the statues. He says that some were built by his ancestors to protect them from enemies and thieves. Behind the back door rests clauzond.", username);
+   
+    const choix3 = await createParagraph(story, "Explore the museum", username, story.idParagrapheInitial, choix2_1.id, false, choix1_2.id);
+    const choix4 = await createParagraph(story, "Go back to sleep, knowing the museum is safe", username, story.idParagrapheInitial, null, true, choix1_3.id);
+    await updateParagraph(story, choix4.id, "As Aurélien told me, the museum is safe thanks to the three statues hiding the keys. I hope nobody else will get this information.", username);
+
+    const choix1_1 = await createParagraph(story, "Ask him about his name", username, choix1.id, null, false);
+    await updateParagraph(story, choix1_1.id, "You approach the man in the blue coat and ask for his name.  'Aurélien' he says. You ask for his address. He gives you a 'Good morning , Sir' and hands you a piece of paper. You read it and read the date. It is Saturday, September 20, 1984. You take the paper and put it in your pocket.", username);
+    
+    const choix1_1_1 = await createParagraph(story, "Explore the museum", username, choix1_1.id, choix2_1.id, false);
+    const choix1_1_2 = await createParagraph(story, "Go back to the beginning", username, choix1_1.id, story.idParagrapheInitial, false);
+    const choix1_2_1 = await createParagraph(story, "Explore the museum", username, choix1_2.id, choix2_1.id, false);
+    const choix1_2_2 = await createParagraph(story, "Go back to the beginning", username, choix1_2.id, story.idParagrapheInitial, false);
+
+    const choix2_2 = await createParagraph(story, "Wait for 9pm", username, choix2.id, choix1.id, false);
+    
+    const choix1_3_1 = await createParagraph(story, "Go back to the beginning", username, choix1_3.id, story.idParagrapheInitial, false);
+    const choix2_1_1 = await createParagraph(story, "Go back to the beginning", username, choix2_1.id, story.idParagrapheInitial, false);
+}
+
 await generateSample();
+await generateSample2();
 console.log("Done");

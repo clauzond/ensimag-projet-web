@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { connectUser, createStory, registerUser, createParagraph, createChoice } from './util';
+=======
+import { connectUser, createParagraph, createStory, registerUser } from './util';
+>>>>>>> 12177a0a9081b46ee82f43e2cab34db868f8c3cc
 
 const username = 'ParagraphsUser';
 const titleSimpleStory = 'firstStory';

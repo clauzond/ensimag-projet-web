@@ -15,7 +15,10 @@ export function Paragraph({ navigation, route }) {
   const scrollRef = useRef();
 
   const onPressChoice = async (choiceId, choiceTitle) => {
-    const util = await paragraphService.getPublicParagraph(token, story.id, choiceId);
+    const util =
+      token === ''
+        ? await paragraphService.getPublicParagraph(token, story.id, choiceId)
+        : await paragraphService.getAuthentifiedParagraph(token, story.id, choiceId);
 
     scrollRef.current?.scrollTo({ y: 0, animated: false });
 

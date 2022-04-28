@@ -7,6 +7,10 @@ router.get(
 	paragraphe.getParagraph
 );
 router.get(
+	'/api/histoire/:idHistoire/paragraphe/:idParagraphe/authentified',
+	paragraphe.getAuthentifiedParagraph
+);
+router.get(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe/choice-list',
 	paragraphe.getChoiceList
 );

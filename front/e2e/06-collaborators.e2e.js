@@ -34,6 +34,7 @@ describe('Collaborator test', () => {
 
     // Invite user2 as collaborator
     await device.pressBack();
+    await expect(element(by.text(`Home - ${user1}`))).toBeVisible();
     await element(by.id('options')).tap();
     await element(by.text('My stories')).tap();
     await element(by.text(story)).tap();
@@ -42,16 +43,25 @@ describe('Collaborator test', () => {
     await element(by.text(user2)).tap();
     await element(by.text('Save')).tap();
 
-    // Lock the end of story paragraph: start a modification and go back
     await device.pressBack();
+    await expect(element(by.text(`Home - ${user1}`))).toBeVisible();
     await element(by.id('options')).tap();
     await element(by.text('My stories')).tap();
     await element(by.text(story)).tap();
     await element(by.text('Set paragraphs')).tap();
+
+    // Free all paragraphs for modification
+    await element(by.text(story)).tap();
+    await element(by.text('Remove yourself from redaction')).tap();
+    await element(by.text('End of story')).tap();
+    await element(by.text('Remove yourself from redaction')).tap();
+
+    // Lock the end of story paragraph again: start a modification and go back
     await element(by.text('End of story')).tap();
     await device.pressBack();
 
     // Log back in as user2
+    await expect(element(by.text(`Home - ${user1}`))).toBeVisible();
     await element(by.id('options')).tap();
     await element(by.text('Disconnect me')).tap();
     await connectUser(user2);
