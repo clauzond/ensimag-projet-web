@@ -21,7 +21,7 @@ async function userRegistration(username) {
  * @param username This parameter is optional
  * @returns {Promise<*>}
  */
-async function getToken(username) {
+async function getToken(username, password) {
 	await userRegistration(username);
 
 	const response = await request(app)
@@ -30,7 +30,7 @@ async function getToken(username) {
 		.send(
 			JSON.stringify({
 				username: username === undefined ? USERNAME : username,
-				password: PASSWORD
+				password: password === undefined ? PASSWORD : password
 			})
 		);
 
@@ -42,10 +42,11 @@ async function createStory(
 	username,
 	isPublic,
 	firstParagraphContent,
-	leadToConlusion
+	leadToConlusion,
+	password
 ) {
 	const token =
-		username === undefined ? await getToken() : await getToken(username);
+		username === undefined ? await getToken() : await getToken(username, password);
 
 	const response = await request(app)
 		.post('/api/histoire')
