@@ -51,9 +51,6 @@ export async function createParagraph(
   parentParagraph,
   { isConclusion = false, condition = null, childParagraph = null } = {}
 ) {
-  await waitFor(element(by.id('addParagraphButton')))
-    .toBeVisible()
-    .withTimeout(10000);
   await element(by.id('addParagraphButton')).tap();
   await element(by.text('Create paragraph')).tap();
 

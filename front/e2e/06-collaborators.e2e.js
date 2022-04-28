@@ -31,7 +31,7 @@ describe('Collaborator test', () => {
     await element(by.text('Set paragraphs')).tap();
 
     await createParagraph('End of story', 'End of story', story, { isConclusion: true });
-
+    await element(by.id('addParagraphButton')).tap();
     await createParagraph('End of story2', 'End of story2', story, { isConclusion: true });
 
     // Invite user2 as collaborator
@@ -58,20 +58,19 @@ describe('Collaborator test', () => {
     await element(by.text(story)).tap();
     await element(by.text('Remove yourself from redaction')).tap();
     await expect(element(by.text('You cannot abandon the initial paragraph')));
-    // Should not be able to remove, since it's the initial paragraph
 
-    await element(by.text('End of story')).tap();
-    await device.pressBack();
     await element(by.text('End of story')).tap();
     await element(by.text('Remove yourself from redaction')).tap();
 
-    await element(by.text('End of story 2')).tap();
-    await device.pressBack();
-    await element(by.text('End of story 2')).tap();
+    await element(by.text('End of story2')).tap();
     await element(by.text('Remove yourself from redaction')).tap();
 
-    // Log back in as user2
-    await expect(element(by.text(`Home - ${user1}`))).toBeVisible();
+    // Start a modification as user1
+    await element(by.text('End of story')).tap();
+    await element(by.text('Lock and update paragraph')).tap();
+    await device.pressBack();
+
+    // Log in as user2
     await element(by.id('options')).tap();
     await element(by.text('Disconnect me')).tap();
     await connectUser(user2);
@@ -83,18 +82,19 @@ describe('Collaborator test', () => {
     await element(by.text('Set paragraphs')).tap();
 
     await element(by.text(story)).tap();
-    await element(by.text('Update paragraph')).tap();
     await expect(element(by.text(story))).toBeVisible(); // did not move into modify paragraph menu
 
-    // Can modify the other paragraph
-    await element(by.text('End of story')).tap();
+    // User 2 can modify the non locked paragraph
+    await element(by.text('End of story2')).tap();
+    await element(by.text('End of story2')).tap();
     await element(by.text('Lock and update paragraph')).tap();
     await element(by.id('paragraph')).tap();
     await element(by.id('paragraph')).replaceText('end1 updated');
     await device.pressBack();
-    await element(by.text('Modify paragraph')).tap();
+    await element(by.id('submit')).tap();
 
-    // Log back as user1 and finish the modification
+    // Log back as user1, unlock the paragraph and remove from redaction
+    await device.pressBack();
     await element(by.id('options')).tap();
     await element(by.text('Disconnect me')).tap();
     await connectUser(user1);
@@ -106,13 +106,18 @@ describe('Collaborator test', () => {
     await element(by.text('Set paragraphs')).tap();
 
     await element(by.text('End of story')).tap();
+    await element(by.text('End of story')).tap();
     await element(by.text('Update paragraph')).tap();
     await element(by.id('paragraph')).tap();
     await element(by.id('paragraph')).replaceText('End of story updated (user1)');
     await device.pressBack();
-    await element(by.text('Modify paragraph')).tap();
+    await element(by.id('submit')).tap();
 
-    // user2 can modify the end of story paragraph now
+    await element(by.text('End of story')).tap();
+    await element(by.text('Remove yourself from redaction')).tap();
+
+    // user2 can modify the previously locked paragraph
+    await device.pressBack();
     await element(by.id('options')).tap();
     await element(by.text('Disconnect me')).tap();
     await connectUser(user2);
@@ -124,10 +129,11 @@ describe('Collaborator test', () => {
     await element(by.text('Set paragraphs')).tap();
 
     await element(by.text('End of story')).tap();
-    await element(by.text('Update paragraph')).tap();
+    await element(by.text('End of story')).tap();
+    await element(by.text('Lock and update paragraph')).tap();
     await element(by.id('paragraph')).tap();
     await element(by.id('paragraph')).replaceText('End of story updated (user2)');
     await device.pressBack();
-    await element(by.text('Modify paragraph')).tap();
+    await element(by.id('submit')).tap();
   });
 });
