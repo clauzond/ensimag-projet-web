@@ -7,10 +7,10 @@ Installer le projet:
 npm i 
 ```
 
-Mettre en place la base de données (ou remise a zéro):
+Mettre en place la base de données et gen la doc (nécéssaire):
 
 ```
-npm run create-db
+npm run doc && npm run create-db
 ```
 
 Lancer le server:
