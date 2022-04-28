@@ -1,4 +1,4 @@
-import { connectUser, createStory, registerUser, createParagraph } from './util';
+import { connectUser, createStory, registerUser, createParagraph, createChoice } from './util';
 
 const user1 = 'Collaborator1';
 const user2 = 'Collaborator2';
