@@ -1,4 +1,4 @@
-import { connectUser, createParagraph, createStory, registerUser } from './util';
+import { connectUser, createParagraph, createStory, createChoice, registerUser } from './util';
 
 const username = 'ParagraphsUser';
 const titleSimpleStory = 'firstStory';
@@ -36,7 +36,7 @@ describe('Create stories tests', () => {
     await expect(element(by.text('myContent\nGo to end\nEnd of story'))).toBeVisible();
   });
 
-    it('should not show a story, as long as a story branch is not finished', async () => {
+  it('should not show a story, as long as a story branch is not finished', async () => {
     await connectUser(username, true);
 
     await createStory(titleSecondStory, 'content1', true);
@@ -45,8 +45,8 @@ describe('Create stories tests', () => {
     await element(by.text('Set paragraphs')).tap();
 
     await createParagraph('title2', 'content2', titleSecondStory);
-
     await expect(element(by.text('title2'))).toBeVisible();
+    await element(by.id('addParagraphButton')).tap();
     await createParagraph('title3', 'content3', titleSecondStory, { isConclusion: true });
 
     await device.pressBack();
@@ -58,8 +58,8 @@ describe('Create stories tests', () => {
     await expect(
       element(
         by.text(`content1
-title3
-content3`)
+  title3
+  content3`)
       )
     ).toBeVisible();
   });
@@ -73,8 +73,9 @@ content3`)
     await element(by.text('Set paragraphs')).tap();
 
     await createParagraph('title4', 'content4', titleNewStory);
-    await createParagraph('title5', 'content5', titleNewStory, {isConclusion: true});
-
+    await element(by.id('addParagraphButton')).tap();
+    await createParagraph('title5', 'content5', titleNewStory, { isConclusion: true });
+    await element(by.id('addParagraphButton')).tap();
     await createChoice('title6', 'title4', 'title5');
 
     await device.pressBack();
@@ -85,10 +86,9 @@ content3`)
     await expect(element(by.text('content4'))).toBeVisible();
     await expect(element(by.text('title4'))).toBeVisible();
     await expect(element(by.text('title5'))).toBeVisible();
-
   });
-  
-  it('should not be displayed if condition is not met', async() => {
+
+  it('should not be displayed if condition is not met', async () => {
     await connectUser(username, true);
 
     await createStory(titleNewestStory, 'content7', true);
@@ -97,8 +97,10 @@ content3`)
     await element(by.text('Set paragraphs')).tap();
 
     await createParagraph('title8', 'content8', titleNewestStory);
-    await createParagraph('title9', 'content9', titleNewestStory, {condition:'title8'}); // Should not be displayed because paragraph 8 is not visible
-    await createParagraph('title10', 'content10', 'title8', {isConclusion: true});
+    await element(by.id('addParagraphButton')).tap();
+    await createParagraph('title9', 'content9', titleNewestStory, { condition: 'title8' }); // Should not be displayed because paragraph 8 is not visible
+    await element(by.id('addParagraphButton')).tap();
+    await createParagraph('title10', 'content10', 'title8', { isConclusion: true });
 
     await device.pressBack();
     await device.pressBack();
@@ -112,6 +114,4 @@ content3`)
 
     await expect(element(by.text('content7\ntitle8\ncontent8\ntitle10\ncontent10'))).toBeVisible();
   });
-
-
 });

@@ -71,7 +71,7 @@ export async function createParagraph(
 
   if (condition != null) {
     await element(by.text('Pick a condition')).tap();
-    await element(by.text(parentParagraph)).tap();
+    await element(by.text(condition)).tap();
   }
 
   if (childParagraph != null) {
@@ -87,8 +87,8 @@ export async function createChoice(
   title,
   parentParagraph,
   childParagraph,
-  {condition = null} = {}
-){
+  { condition = null } = {}
+) {
   await element(by.id('addParagraphButton')).tap();
   await element(by.text('Create choice')).tap();
 
@@ -97,15 +97,15 @@ export async function createChoice(
   await device.pressBack();
 
   await element(by.text('Pick parent paragraph')).tap();
-  await element(by.text(parentParagraph)).tap();  
+  await element(by.text(parentParagraph)).tap();
 
   await element(by.text('Pick child paragraph')).tap();
   await element(by.text(childParagraph)).tap();
 
-  if (condition!= null) {
+  if (condition != null) {
     await element(by.text('Pick a condition')).tap();
-    await element(by.text(parentParagraph)).tap();
+    await element(by.text(condition)).tap();
   }
 
-  await element(by.text('Create choice')).tap();
+  await element(by.id('submit')).tap();
 }
