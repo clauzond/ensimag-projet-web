@@ -1,4 +1,4 @@
-import { connectUser, createStory, registerUser, createParagraph } from './util';
+import { connectUser, createParagraph, createStory, registerUser } from './util';
 
 const username = 'ParagraphsUser';
 const titleSimpleStory = 'firstStory';
