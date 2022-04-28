@@ -81,3 +81,31 @@ export async function createParagraph(
 
   await element(by.id('submit')).tap();
 }
+
+// Note : same as last function
+export async function createChoice(
+  title,
+  parentParagraph,
+  childParagraph,
+  {condition = null} = {}
+){
+  await element(by.id('addParagraphButton')).tap();
+  await element(by.text('Create choice')).tap();
+
+  await element(by.id('title')).tap();
+  await element(by.id('title')).replaceText(title);
+  await device.pressBack();
+
+  await element(by.text('Pick parent paragraph')).tap();
+  await element(by.text(parentParagraph)).tap();  
+
+  await element(by.text('Pick child paragraph')).tap();
+  await element(by.text(childParagraph)).tap();
+
+  if (condition!= null) {
+    await element(by.text('Pick a condition')).tap();
+    await element(by.text(parentParagraph)).tap();
+  }
+
+  await element(by.text('Create choice')).tap();
+}
