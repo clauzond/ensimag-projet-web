@@ -7,6 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "react-scripts start",
+    "build-apk": "cd android/ && ./gradlew assembleRelease",
     "build-test": "detox build --configuration android.debug",
     "test": "detox test --configuration android.debug",
     "test-reuse": "detox test --configuration android.debug --reuse",
