@@ -3,30 +3,14 @@ import { BACKEND } from '../globals';
 
 export const paragraphService = {
   async getPublicParagraph(token, storyId, paragraphId) {
+    const route =
+      token === ''
+        ? `${BACKEND}/api/readOnly/histoire/${storyId}/paragraphe/${paragraphId}`
+        : `${BACKEND}/api/readOnly/histoire/${storyId}/paragraphe/${paragraphId}/authentified`;
     try {
-      const response = await axios.get(
-        `${BACKEND}/api/readOnly/histoire/${storyId}/paragraphe/${paragraphId}`,
-        {
-          headers: { 'x-access-token': token, 'Content-Type': 'application/json' },
-        }
-      );
-      return {
-        story: response.data.story,
-        paragraph: response.data.paragraph,
-        choiceRowArray: response.data.choiceRowArray,
-      };
-    } catch (e) {
-      throw e.response?.data?.message ?? e;
-    }
-  },
-  async getAuthentifiedParagraph(token, storyId, paragraphId) {
-    try {
-      const response = await axios.get(
-        `${BACKEND}/api/readOnly/histoire/${storyId}/paragraphe/${paragraphId}/authentified`,
-        {
-          headers: { 'x-access-token': token, 'Content-Type': 'application/json' },
-        }
-      );
+      const response = await axios.get(route, {
+        headers: { 'x-access-token': token, 'Content-Type': 'application/json' },
+      });
       return {
         story: response.data.story,
         paragraph: response.data.paragraph,

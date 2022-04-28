@@ -62,7 +62,7 @@ async function getValidChoiceArray(idParagraph, history) {
 	});
 
 	for (const ele of arr) {
-		if (ele.condition !== null && !history.includes(ele.condition)) {
+		if (ele.condition !== null && !history.find(obj => obj.id === ele.condition)) {
 			continue;
 		}
 		const choice = await Paragraphe.findByPk(ele.ChoixId);
@@ -89,6 +89,9 @@ async function auxGetParagraph(req, res) {
 
 	const history =
 		req.user !== undefined ? await req.user.getHistorique(story) : [];
+
+	console.log(req.user !== undefined);
+	console.log(history);
 
 	let choiceRowArray = await getValidChoiceArray(paragraph.id, history);
 	const alreadySeen = [paragraph.id];
@@ -259,6 +262,7 @@ export const paragraphe = {
 		auxGetParagraph(req, res);
 	},
 	async getAuthentifiedParagraph(req, res) {
+		console.log("here");
 		auxGetParagraph(req, res);
 	},
 	async askToUpdateParagraph(req, res) {
