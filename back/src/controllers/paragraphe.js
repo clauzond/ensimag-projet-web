@@ -90,9 +90,6 @@ async function auxGetParagraph(req, res) {
 	const history =
 		req.user !== undefined ? await req.user.getHistorique(story) : [];
 
-	console.log(req.user !== undefined);
-	console.log(history);
-
 	let choiceRowArray = await getValidChoiceArray(paragraph.id, history);
 	const alreadySeen = [paragraph.id];
 	while (choiceRowArray.length === 1) {
@@ -259,11 +256,10 @@ export const paragraphe = {
 	// Read-only for authentified & unauthentified users
 	// If there is only one choice, append the next paragraph
 	async getPublicParagraph(req, res) {
-		auxGetParagraph(req, res);
+		await auxGetParagraph(req, res);
 	},
 	async getAuthentifiedParagraph(req, res) {
-		console.log("here");
-		auxGetParagraph(req, res);
+		await auxGetParagraph(req, res);
 	},
 	async askToUpdateParagraph(req, res) {
 		await checkStoryId(req);
