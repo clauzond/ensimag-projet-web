@@ -1,4 +1,4 @@
-import { connectUser, createStory, registerUser, createParagraph, createChoice } from './util';
+import { connectUser, createStory, registerUser, createParagraph } from './util';
 
 const user1 = 'Collaborator1';
 const user2 = 'Collaborator2';
@@ -32,6 +32,8 @@ describe('Collaborator test', () => {
 
     await createParagraph('End of story', 'End of story', story, { isConclusion: true });
 
+    await createParagraph('End of story2', 'End of story2', story, { isConclusion: true });
+
     // Invite user2 as collaborator
     await device.pressBack();
     await expect(element(by.text(`Home - ${user1}`))).toBeVisible();
@@ -51,14 +53,22 @@ describe('Collaborator test', () => {
     await element(by.text('Set paragraphs')).tap();
 
     // Free all paragraphs for modification
+    await expect(element(by.text(`Customize paragraphs`)));
+    await element(by.text(story)).tap();
     await element(by.text(story)).tap();
     await element(by.text('Remove yourself from redaction')).tap();
+    await expect(element(by.text('You cannot abandon the initial paragraph')));
+    // Should not be able to remove, since it's the initial paragraph
+
+    await element(by.text('End of story')).tap();
+    await device.pressBack();
     await element(by.text('End of story')).tap();
     await element(by.text('Remove yourself from redaction')).tap();
 
-    // Lock the end of story paragraph again: start a modification and go back
-    await element(by.text('End of story')).tap();
+    await element(by.text('End of story 2')).tap();
     await device.pressBack();
+    await element(by.text('End of story 2')).tap();
+    await element(by.text('Remove yourself from redaction')).tap();
 
     // Log back in as user2
     await expect(element(by.text(`Home - ${user1}`))).toBeVisible();
@@ -72,16 +82,15 @@ describe('Collaborator test', () => {
     await element(by.text(story)).tap();
     await element(by.text('Set paragraphs')).tap();
 
-    // End of story para locked -> not allowed to modify
-    await element(by.text('End of story')).tap();
+    await element(by.text(story)).tap();
     await element(by.text('Update paragraph')).tap();
-    await expect(element(by.text('End of story'))).toBeVisible(); // did not move into modify paragraph menu
+    await expect(element(by.text(story))).toBeVisible(); // did not move into modify paragraph menu
 
     // Can modify the other paragraph
-    await element(by.text(story)).tap();
+    await element(by.text('End of story')).tap();
     await element(by.text('Lock and update paragraph')).tap();
     await element(by.id('paragraph')).tap();
-    await element(by.id('paragraph')).replaceText('content1 updated');
+    await element(by.id('paragraph')).replaceText('end1 updated');
     await device.pressBack();
     await element(by.text('Modify paragraph')).tap();
 
