@@ -53,21 +53,30 @@ export function SetParagraphs({ navigation, route }) {
       <View>
         <Button
           onPress={async () => {
-            // If paragraph is not locked, lock it before modifying
-            if (!paragraphSelected.estVerrouille) {
-              await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
-              const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
-              setParagraphs(paragraphsFromApi);
+            try {
+              // If paragraph is not locked, lock it before modifying
+              if (!paragraphSelected.estVerrouille) {
+                await paragraphService.askToUpdateParagraph(token, story.id, paragraphSelected.id);
+                const paragraphsFromApi = await storyService.getParagraphList(token, story.id);
+                setParagraphs(paragraphsFromApi);
+              }
+              setPopupParagraphOptionsOpened(false);
+              navigation.navigate('SetParagraph', {
+                story: story,
+                titlePage: 'Modify paragraph',
+                paragraphContent: paragraphSelected.contenu,
+                isCreation: false,
+                isNewParagraph: true,
+                paragraphSelected: paragraphSelected,
+              });
+            } catch (e) {
+              setPopupParagraphOptionsOpened(false);
+              Toast.show({
+                type: 'error',
+                text1: e,
+                position: 'bottom',
+              });
             }
-            setPopupParagraphOptionsOpened(false);
-            navigation.navigate('SetParagraph', {
-              story: story,
-              titlePage: 'Modify paragraph',
-              paragraphContent: paragraphSelected.contenu,
-              isCreation: false,
-              isNewParagraph: true,
-              paragraphSelected: paragraphSelected,
-            });
           }}
         >
           {paragraphSelected.idRedacteur === username && paragraphSelected.estVerrouille
