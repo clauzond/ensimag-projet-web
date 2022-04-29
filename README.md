@@ -10,7 +10,7 @@ Pour lancer l'application en local, veuillez suivre les instructions dans `front
 
 ## Lancement des tests
 
-Pour lancer les tests, veuillez suivre les instructions dans `back/`.
+Pour lancer les tests, veuillez suivre les instructions dans `front/` ou `back/`.
 Les tests front sont dans `front/e2e/`, les tests back sont dans `back/src/__tests__/`.
 
 ## CI/CD
