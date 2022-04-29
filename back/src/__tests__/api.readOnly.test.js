@@ -278,7 +278,9 @@ describe('GET /api/readOnly/histoire/:idHistoire/paragraphe/:idParagraphe', () =
 			.set('Content-Type', 'application/json')
 			.set('x-access-token', token);
 		expect(response.statusCode).toBe(status.OK);
-		expect(response.body.message).toBe('Returning paragraph and available choiceRowArray');
+		expect(response.body.message).toBe(
+			'Returning paragraph and available choiceRowArray'
+		);
 		expect(response.body.story.id).toBe(story.id);
 		expect(response.body.paragraph.id).toBe(story.idParagrapheInitial);
 	});

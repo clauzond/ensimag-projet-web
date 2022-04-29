@@ -1,4 +1,4 @@
-import { connectUser, createStory, registerUser, createParagraph } from './util';
+import { connectUser, createParagraph, createStory, registerUser } from './util';
 
 const user1 = 'Collaborator1';
 const user2 = 'Collaborator2';
@@ -53,7 +53,7 @@ describe('Collaborator test', () => {
     await element(by.text('Set paragraphs')).tap();
 
     // Free all paragraphs for modification
-    await expect(element(by.text(`Customize paragraphs`)));
+    await expect(element(by.text('Customize paragraphs')));
     await element(by.text(story)).tap();
     await element(by.text(story)).tap();
     await element(by.text('Remove yourself from redaction')).tap();

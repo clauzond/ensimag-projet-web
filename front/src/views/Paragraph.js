@@ -1,10 +1,9 @@
 import { useAppStateContext } from '../contexts/AppState';
-import { View, ScrollView, StatusBar } from 'native-base';
+import { ScrollView, StatusBar, View } from 'native-base';
 import React, { useRef } from 'react';
 import { paragraphService } from '../services/paragraph';
-import { StyleSheet } from 'react-native';
+import { BackHandler, StyleSheet } from 'react-native';
 import { ParagraphComponent } from '../components/paragraph';
-import { BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { historyService } from '../services/history';
 import Toast from 'react-native-toast-message';
@@ -15,7 +14,7 @@ export function Paragraph({ navigation, route }) {
   const scrollRef = useRef();
 
   const onPressChoice = async (choiceId, choiceTitle) => {
-    const util = await paragraphService.getPublicParagraph(token, story.id, choiceId)
+    const util = await paragraphService.getPublicParagraph(token, story.id, choiceId);
 
     scrollRef.current?.scrollTo({ y: 0, animated: false });
 

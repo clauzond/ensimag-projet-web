@@ -30,7 +30,7 @@ Historique.init(
 			// [..., {id: int, title: String}]
 			type: DataTypes.JSON,
 			allowNull: false
-		},
+		}
 	},
 	{
 		sequelize: database

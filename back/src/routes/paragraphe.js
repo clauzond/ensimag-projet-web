@@ -26,10 +26,7 @@ router.put(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe/modified',
 	paragraphe.askToUpdateParagraph
 );
-router.post(
-	'/api/histoire/:idHistoire/paragraphe',
-	paragraphe.createParagraph
-);
+router.post('/api/histoire/:idHistoire/paragraphe', paragraphe.createParagraph);
 router.delete(
 	'/api/histoire/:idHistoire/paragraphe/:idParagraphe',
 	paragraphe.deleteParagraph

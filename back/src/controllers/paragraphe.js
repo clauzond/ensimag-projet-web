@@ -2,7 +2,7 @@ import has from 'has-keys';
 import status from 'http-status';
 import { Op } from 'sequelize';
 import { RequestError } from '../util/requestError.js';
-import { Paragraphe, ChoixTable } from '../models/index.js';
+import { ChoixTable, Paragraphe } from '../models/index.js';
 import { checkIsPrivateStory, checkStoryId } from './histoire.js';
 
 async function checkParagraphId(req) {
@@ -62,7 +62,10 @@ async function getValidChoiceArray(idParagraph, history) {
 	});
 
 	for (const ele of arr) {
-		if (ele.condition !== null && !history.find(obj => obj.id === ele.condition)) {
+		if (
+			ele.condition !== null &&
+			!history.find(obj => obj.id === ele.condition)
+		) {
 			continue;
 		}
 		const choice = await Paragraphe.findByPk(ele.ChoixId);

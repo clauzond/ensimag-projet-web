@@ -1,4 +1,4 @@
-import { Utilisateur, Paragraphe, Histoire } from '../models/index.js';
+import { Histoire, Paragraphe, Utilisateur } from '../models/index.js';
 
 describe('Test fonctions histoire', () => {
 	test('Test unitaire histoire', async () => {
