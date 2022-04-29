@@ -1,3 +1,6 @@
+## Préambule
+L'ensemble des commandes suivantes sont à exécuter depuis le répertoire `./front/`
+
 # Installation
 
 Mettre en place le react native : [suivre le tp react native](https://chamilo.grenoble-inp.fr/courses/ENSIMAG4MMCAWE6/document/tp/projet.html) jusqu'a "Premiere Page". 
@@ -13,10 +16,11 @@ npm start
 Pour lancer le frontend, dans un premier terminal :
 
 ```
+npm i
 npx react-native start
 ```
 
-et dans un deuxième terminal :
+Puis, dans un second terminal :
 
 ```
 npx react-native run-android
@@ -31,34 +35,16 @@ npm start # lance react native
 npm run test # installe l'appli et lance le test detox
 ```
 
-Entre chaque lancement des tests, il faudra vider la base de données.
+Entre chaque lancement des tests, il faudra vider la base de données (`npm run create-db`)
 
-Si ça ne marche pas, vérifiez que vous avec l'émulateur du `pixel3A` ca s'installe de android studio. 
-Il faudra le renommer dans avd manager en "pixel3A".
+Si ça ne marche pas, vérifiez que vous utilisez l'émulateur `pixel3A` (installable depuis Android Studio). 
+Il faudra le renommer dans AVD Manager en "pixel3A".
 
-Pour relancer un test rapidement (sans ré-installer l'appli)
+Pour relancer un test rapidement (sans ré-installer l'appli) :
 
 ```
 npm run test-reuse
 ```
-
-# Générer l'APK
-
-[Guide React-Native](https://reactnative.dev/docs/signed-apk-android)
-
-Générer l'APK:
-```shell
-npm run build-android
-```
-
-L'apk généré se trouve dans `android/app/build/outputs/apk/release/app-release.apk`, installable sur téléphone
-
-Lancer l'APK release sur l'émulateur :
-```
-npx react-native run-android --variant=release
-```
-
-Si ça ne marche pas, désinstallez l'application dans l'émulateur. 
 
 # Documentation
 

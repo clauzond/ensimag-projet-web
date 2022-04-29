@@ -1,4 +1,7 @@
-# Setup
+## Préambule
+L'ensemble des commandes suivantes sont à exécuter depuis le répertoire `./back/`
+
+# Mise en place
 
 [Le site web](https://clauzond.herokuapp.com/)
 
@@ -7,13 +10,19 @@ Installer le projet:
 npm i 
 ```
 
-Mettre en place la base de données et gen la doc (nécéssaire):
+Mettre en place la base de données et générer la documentation :
 
 ```
-npm run doc && npm run create-db
+npm run create-db
+npm run doc
 ```
 
-Lancer le server:
+Installer un jeu de données (facultatif) :
+```
+npm run sample-db
+```
+
+Lancer le serveur :
 ```
 npm start
 ```
@@ -21,7 +30,7 @@ npm start
 Cette commande execute le script `start` dans le `package.json`.
 
 
-Lancer le server avec prise en compte automatique des modifications :
+Lancer le serveur avec prise en compte automatique des modifications :
 ```
 npm start-dev
 ```

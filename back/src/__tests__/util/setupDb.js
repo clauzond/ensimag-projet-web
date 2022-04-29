@@ -19,6 +19,7 @@ async function userRegistration(username, password) {
 /**
  * Return the token of the created user.
  * @param username This parameter is optional
+ * @param password This parameter is optional
  * @returns {Promise<*>}
  */
 async function getToken(username, password) {
@@ -105,14 +106,16 @@ async function createParagraph(
 	condition,
 	password
 ) {
-	title = title == undefined ? '' : title;
+	title = title === undefined ? '' : title;
 	const token =
-		username == undefined ? await getToken() : await getToken(username, password);
-	estConclusion = estConclusion == undefined ? false : estConclusion;
+		username === undefined
+			? await getToken()
+			: await getToken(username, password);
+	estConclusion = estConclusion === undefined ? false : estConclusion;
 	idParagraphe =
-		idParagraphe == undefined ? story.idParagrapheInitial : idParagraphe;
-	idChoix = idChoix == undefined ? null : idChoix;
-	condition = condition == undefined ? null : condition;
+		idParagraphe === undefined ? story.idParagrapheInitial : idParagraphe;
+	idChoix = idChoix === undefined ? null : idChoix;
+	condition = condition === undefined ? null : condition;
 
 	const response = await request(app)
 		.post(`/api/histoire/${story.id}/paragraphe/`)
@@ -130,9 +133,17 @@ async function createParagraph(
 	return response.body.choice;
 }
 
-async function updateParagraph(story, idParagraphe, contenu, username, password) {
+async function updateParagraph(
+	story,
+	idParagraphe,
+	contenu,
+	username,
+	password
+) {
 	const token =
-		username == undefined ? await getToken() : await getToken(username, password);
+		username === undefined
+			? await getToken()
+			: await getToken(username, password);
 
 	// Ask to update paragraph
 	await request(app)

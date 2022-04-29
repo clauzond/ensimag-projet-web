@@ -1,9 +1,7 @@
 import { app } from '../app.js';
 import request from 'supertest';
 import status from 'http-status';
-import { createStory, createParagraph, getToken } from './util/setupDb.js';
-import { history } from '../controllers/historique.js';
-import router from '../routes/historique.js';
+import { createParagraph, createStory, getToken } from './util/setupDb.js';
 
 describe('GET /api/historique/:idHistoire', () => {
 	test('Test of getHistory', async () => {
