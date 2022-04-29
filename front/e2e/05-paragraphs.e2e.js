@@ -36,27 +36,6 @@ describe('Create stories tests', () => {
     await expect(element(by.text('myContent\nGo to end\nEnd of story'))).toBeVisible();
   });
 
-  it('should not show a story, as long as a story branch is not finished', async () => {
-    await connectUser(username, true);
-
-    await createStory(titleSecondStory, 'content1', true);
-
-    await element(by.text(titleSecondStory)).tap();
-    await element(by.text('Set paragraphs')).tap();
-
-    await createParagraph('title2', 'content2', titleSecondStory);
-    await element(by.id('addParagraphButton')).tap();
-    await createParagraph('title3', 'content3', titleSecondStory, { isConclusion: true });
-
-    await device.pressBack();
-    await device.pressBack();
-    await element(by.id('refresh')).tap();
-    await element(by.text(titleSecondStory)).tap();
-
-    // Paragraph title2 in unfinished story branch -> not display
-    await expect(element(by.text(`content1\ntitle3\ncontent3`))).toBeVisible();
-  });
-
   it('should add a choice', async () => {
     await connectUser(username, true);
 
