@@ -45,7 +45,6 @@ describe('Create stories tests', () => {
     await element(by.text('Set paragraphs')).tap();
 
     await createParagraph('title2', 'content2', titleSecondStory);
-    await expect(element(by.text('title2'))).toBeVisible();
     await element(by.id('addParagraphButton')).tap();
     await createParagraph('title3', 'content3', titleSecondStory, { isConclusion: true });
 
@@ -55,13 +54,7 @@ describe('Create stories tests', () => {
     await element(by.text(titleSecondStory)).tap();
 
     // Paragraph title2 in unfinished story branch -> not display
-    await expect(
-      element(
-        by.text(`content1
-  title3
-  content3`)
-      )
-    ).toBeVisible();
+    await expect(element(by.text(`content1\ntitle3\ncontent3`))).toBeVisible();
   });
 
   it('should add a choice', async () => {
