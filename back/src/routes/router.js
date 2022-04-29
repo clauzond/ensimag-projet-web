@@ -10,15 +10,26 @@ import { RequestError } from '../util/requestError.js';
 import readOnly from './readOnly.js';
 import { utilisateur } from '../controllers/utilisateur.js';
 import { readFile } from 'fs/promises';
+import fs from 'fs';
+
+const SWAGGER_PATH = '../../swagger_output.json';
 
 const router = express.Router();
 
+const swaggerExists = fs.existsSync(SWAGGER_PATH);
+
 // Swagger Documentation (before json as it is not json)
-const swaggerFile = JSON.parse(
-	await readFile(new URL('../../swagger_output.json', import.meta.url))
-);
+let swaggerFile;
+if (swaggerExists) {
+	swaggerFile = JSON.parse(
+		await readFile(new URL(SWAGGER_PATH, import.meta.url))
+	);
+}
 router.use('/', serve);
-router.get('/', setup(swaggerFile));
+
+if (swaggerExists) {
+	router.get('/', setup(swaggerFile));
+}
 
 // This middleware adds the json header to every response
 router.use('/', (req, res, next) => {
