@@ -16,7 +16,7 @@ const SWAGGER_PATH = '../../swagger_output.json';
 
 const router = express.Router();
 
-const swaggerExists = fs.existsSync(SWAGGER_PATH);
+const swaggerExists = fs.existsSync(new URL(SWAGGER_PATH, import.meta.url));
 
 // Swagger Documentation (before json as it is not json)
 let swaggerFile;
@@ -25,10 +25,13 @@ if (swaggerExists) {
 		await readFile(new URL(SWAGGER_PATH, import.meta.url))
 	);
 }
+//
 router.use('/', serve);
 
 if (swaggerExists) {
-	router.get('/', setup(swaggerFile));
+	router.get('/',
+	// #swagger.ignore = true
+	setup(swaggerFile));
 }
 
 // This middleware adds the json header to every response
