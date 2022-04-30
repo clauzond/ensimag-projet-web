@@ -123,6 +123,27 @@ async function auxGetParagraph(req, res) {
 
 export const paragraphe = {
 	async getChoiceList(req, res) {
+		// #swagger.tags = ['Paragraph']
+		// #swagger.summary = Get the list of choices for a paragraph
+		/* #swagger.responses[400] = {
+			description: 'Validation error',
+		} */
+		/* #swagger.responses[403] = {
+			description: 'User not authorized to access story',
+		} */
+		/* #swagger.responses[404] = {
+			description: 'Story not found',
+		} */
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Returning choice list',
+				$paragraph: { $ref: '#/definitions/Paragraphe' },
+				$choiceList: [{ $ref: '#/definitions/Choix' }],
+			}
+		}
+		*/
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
@@ -144,6 +165,37 @@ export const paragraphe = {
 	},
 	// Create paragraph as a choice
 	async createParagraph(req, res) {
+		// #swagger.tags = ['Paragraph']
+		// #swagger.summary = Create paragraph as a choice
+		/* #swagger.parameters['json'] = { in: 'body',
+		schema: {
+			$titreChoix:'Paragraph content',
+			$idParagraphe:1,
+			$idChoix:1,
+			contenu: "Mon paragraphe",
+			estConclusion: false,
+			condition: false,
+		}}
+		 */
+		/* #swagger.responses[400] = {
+			description: 'Validation error, or the choice already exists',
+		} */
+		/* #swagger.responses[403] = {
+			description: 'User not authorized to access story',
+		} */
+		/* #swagger.responses[404] = {
+			description: 'Story not found',
+		} */
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Paragraph created',
+				$paragraph: { $ref: '#/definitions/Paragraphe' },
+				$choiceList: [{ $ref: '#/definitions/Choix' }],
+			}
+		}
+		 */
 		const story = await checkStoryId(req);
 
 		// Check if the user is a collaborator of the story
@@ -242,12 +294,33 @@ export const paragraphe = {
 		});
 	},
 	async getParagraph(req, res) {
+		// #swagger.tags = ['Paragraph']
+		// #swagger.summary = Get a	paragraph
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
+		/* #swagger.responses[403] = {
+      description: 'User not authorized to access story',
+    } */
+		/* #swagger.responses[404] = {
+      description: 'Story not found',
+    } */
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Returning paragraph and available choiceRowArray',
+				$story: { $ref: '#/definitions/Histoire' },
+				$paragraph: { $ref: '#/definitions/Paragraphe' },
+				$choiceRowArray: [{ $ref: '#/definitions/Choix' }],
+			}
+		}
+		*/
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 		const choiceRowArray = await ChoixTable.findAll({
 			where: { ParagrapheId: paragraph.id }
 		});
-
 		res.json({
 			status: true,
 			message: 'Returning paragraph',
@@ -259,12 +332,59 @@ export const paragraphe = {
 	// Read-only for authentified & unauthentified users
 	// If there is only one choice, append the next paragraph
 	async getPublicParagraph(req, res) {
+		// #swagger.tags = ['Readonly']
+		// #swagger.summary = Get a	paragraph
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
+		/* #swagger.responses[403] = {
+      description: 'User not authorized to access story',
+    } */
+		/* #swagger.responses[404] = {
+      description: 'Story not found',
+    } */
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Returning paragraph and available choiceRowArray',
+				$story: { $ref: '#/definitions/Histoire' },
+				$paragraph: { $ref: '#/definitions/Paragraphe' },
+				$choiceRowArray: [{ $ref: '#/definitions/Choix' }],
+			}
+		}
+		*/
 		await auxGetParagraph(req, res);
 	},
 	async getAuthentifiedParagraph(req, res) {
+		// #swagger.tags = ['Paragraph']
+		// #swagger.summary = Get a	paragraph
 		await auxGetParagraph(req, res);
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
+		/* #swagger.responses[403] = {
+      description: 'User not authorized to access story',
+    } */
+		/* #swagger.responses[404] = {
+      description: 'Story not found',
+    } */
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Returning paragraph and available choiceRowArray',
+				$story: { $ref: '#/definitions/Histoire' },
+				$paragraph: { $ref: '#/definitions/Paragraphe' },
+				$choiceRowArray: [{ $ref: '#/definitions/Choix' }],
+			}
+		}
+		*/
 	},
 	async askToUpdateParagraph(req, res) {
+		// #swagger.tags = ['Paragraph']
+		// #swagger.summary = Ask to modify a paragraph, acquiring a lock.
+		// #swagger.description = Only one user can modify a paragraph at a time. This operation will fail if another user is already editing this paragraph. <br> Once the paragraph is modified, use this route without <code>/modified</code> prefix confirm.
 		await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
@@ -276,6 +396,9 @@ export const paragraphe = {
 			paragraph.idRedacteur !== null &&
 			paragraph.idRedacteur !== req.user.id
 		) {
+			/* #swagger.responses[403] = {
+        description: 'Paragraph is being modified by another user',
+      } */
 			throw new RequestError(
 				'This paragraph is already modified by another user',
 				status.FORBIDDEN
@@ -283,6 +406,9 @@ export const paragraphe = {
 		}
 
 		if (paragraph.estVerrouille) {
+			/* #swagger.responses[400] = {
+        description: 'You already locked the paragraph, or validation error',
+      } */
 			throw new RequestError(
 				'This paragraph is already locked',
 				status.BAD_REQUEST
@@ -297,6 +423,15 @@ export const paragraphe = {
 		// Put the user as the writer
 		await paragraph.setRedacteur(req.user);
 
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Paragraph modification allowed',
+				$paragraph: { $ref: '#/definitions/Paragraphe' },
+			}
+		}
+		*/
 		res.json({
 			status: true,
 			message: 'Paragraph modification allowed',
@@ -304,6 +439,13 @@ export const paragraphe = {
 		});
 	},
 	async updateParagraph(req, res) {
+		// #swagger.tags = ['Paragraph']
+		// #swagger.summary = Modify a paragraph.
+		// #swagger.description = This is the second step: please query <code>/api/histoire/{idHistoire}/paragraphe/{idParagraphe}/modified</code> first.
+		// #swagger.parameters['json'] = { in: 'body', schema: { $content:'Paragraph content'}}
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
@@ -322,6 +464,9 @@ export const paragraphe = {
 			req.body.contenu == null ||
 			req.body.contenu.length === 0
 		) {
+			/* #swagger.responses[400] = {
+        description: 'Validation error',
+      } */
 			throw new RequestError(
 				'Content cannot be null or empty',
 				status.BAD_REQUEST
@@ -329,6 +474,9 @@ export const paragraphe = {
 		}
 
 		// Check that user can write on this paragraph
+		/* #swagger.responses[403] = {
+      description: 'Paragraph has to be locked first, or you are not allowed to modify this paragraph',
+    } */
 		await checkIfUserIsWriter(req.user, paragraph);
 
 		// Update paragraph data if it's different
@@ -343,6 +491,15 @@ export const paragraphe = {
 			await paragraph.update({ estVerrouille: false });
 		}
 
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Paragraph has been successfully modified',
+				$paragraph: { $ref: '#/definitions/Paragraphe' },
+			}
+		}
+		*/
 		res.json({
 			status: true,
 			message: 'Paragraph has been successfully modified',
@@ -350,9 +507,18 @@ export const paragraphe = {
 		});
 	},
 	async cancelModification(req, res) {
+		// #swagger.tags = ['Paragraph']
+		// #swagger.summary = Release lock on a paragraph
+
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
+		/* #swagger.responses[403] = {
+      description: 'You are not allowed to modify this paragraph',
+    } */
 		// Verify that user is the writer of the paragraph
 		await checkIfUserIsWriter(req.user, paragraph);
 
@@ -372,6 +538,15 @@ export const paragraphe = {
 			estVerrouille: false
 		});
 
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Modification canceled',
+				$paragraph: { $ref: '#/definitions/Paragraphe' },
+			}
+		}
+		*/
 		res.json({
 			status: true,
 			message: 'Modification canceled',
@@ -379,6 +554,12 @@ export const paragraphe = {
 		});
 	},
 	async deleteParagraph(req, res) {
+		// #swagger.tags = ['Paragraph']
+		// #swagger.summary = Delete a paragraph
+
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 

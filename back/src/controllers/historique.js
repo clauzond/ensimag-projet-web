@@ -6,6 +6,17 @@ import { checkParagraphId } from './paragraphe.js';
 
 export const history = {
 	async saveHistory(req, res) {
+		// #swagger.tags = ['History']
+		// #swagger.summary = Save current history
+		/* #swagger.parameters['json'] = { in: 'body',
+		schema: {
+			$arrayParagraphe: [3, 4, 12],
+		}}
+		 */
+
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 
 		if (!has(req.body, 'arrayParagraphe')) {
@@ -33,6 +44,11 @@ export const history = {
 		});
 	},
 	async getHistory(req, res) {
+		// #swagger.tags = ['History']
+		// #swagger.summary = Get the history for a story
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 
 		const history = await req.user.getHistorique(story);
@@ -44,6 +60,11 @@ export const history = {
 		});
 	},
 	async removeHistory(req, res) {
+		// #swagger.tags = ['History']
+		// #swagger.summary = Delete a paragraph from history
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 		const paragraph = await checkParagraphId(req);
 
@@ -62,6 +83,11 @@ export const history = {
 		});
 	},
 	async clearHistory(req, res) {
+		// #swagger.tags = ['History']
+		// #swagger.summary = Delete history for a story
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 
 		const history = await req.user.clearHistorique(story);

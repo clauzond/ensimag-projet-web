@@ -39,10 +39,14 @@ async function checkIsPrivateStory(story, user) {
 }
 
 export const story = {
-	// Returns paragraph (valid and invalid ones) from a specified story
-	// Requires to be logged in
 	async getParagraphList(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Returns paragraph (valid and invalid ones) from a specified story
+
 		// Get story object
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 
 		const initialParagraph = await story.getParagrapheInitial();
@@ -107,13 +111,21 @@ export const story = {
 		for (const key in paragraphDict) {
 			paragraphList.push(paragraphDict[key]);
 		}
+
+		/* #swagger.responses[200] = {
+			schema: { $status:true, $message: 'Returning paragraph list',
+			$paragraphList: [{ $ref: '#/definitions/Paragraphe' }]}
+		} */
 		res.json({
 			status: true,
 			message: 'Returning paragraph list',
 			paragraphList: paragraphList
 		});
 	},
+
 	async getPublicStories(req, res) {
+		// #swagger.tags = ['Readonly']
+		// #swagger.summary = Get all public stories
 		const storiesFromDB = await Histoire.findAll({
 			include: [
 				{
@@ -143,6 +155,10 @@ export const story = {
 			}
 		}
 
+		/* #swagger.responses[200] = {
+			schema: { $status:true, $message: 'Returning public stories',
+			$stories: [{ $ref: '#/definitions/HistoirePara' }]}
+		} */
 		res.json({
 			status: true,
 			message: 'Returning public stories',
@@ -151,6 +167,8 @@ export const story = {
 	},
 
 	async getPublicAuthentifiedStories(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Get all public stories
 		const storiesFromDB = await Histoire.findAll({
 			include: [
 				{
@@ -183,6 +201,10 @@ export const story = {
 			}
 		}
 
+		/* #swagger.responses[200] = {
+			schema: { $status:true, $message: 'Returning stories',
+			$data: [{ $ref: '#/definitions/HistoirePara' }]}
+		} */
 		res.json({
 			status: true,
 			message: 'Returning stories',
@@ -191,8 +213,14 @@ export const story = {
 	},
 
 	async getUserStories(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Get all stories belonging to the current user
 		const stories = await req.user.getHistoire();
 
+		/* #swagger.responses[200] = {
+			schema: { $status:true, $message: 'Returning stories',
+			$data: [{ $ref: '#/definitions/Histoire' }]}
+		} */
 		res.json({
 			status: true,
 			message: 'Returning stories',
@@ -201,6 +229,13 @@ export const story = {
 	},
 
 	async createStory(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Create a story
+		// #swagger.parameters['json'] = { in: 'body', description:'Story', schema: { $ref: '#/definitions/AddStory' }}
+
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		if (!has(req.body, 'titre')) {
 			throw new RequestError('Title not found', status.BAD_REQUEST);
 		}
@@ -237,6 +272,16 @@ export const story = {
 		await histoire.setParagrapheInitial(paragrapheInitial);
 
 		res.statusCode = status.CREATED;
+		/*
+		#swagger.responses[201] = {
+			schema: {
+				$status: true,
+				$message: 'Story created! Returning story and initial paragraph',
+				histoire: { $ref: '#/definitions/Histoire' },
+				paragrapheInitial: { $ref: '#/definitions/Paragraphe' }
+			}
+		}
+		*/
 		res.json({
 			status: true,
 			message: 'Story created! Returning story and initial paragraph',
@@ -245,9 +290,16 @@ export const story = {
 		});
 	},
 	async updateStory(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Update a story (must be the author)
+		// #swagger.parameters['json'] = { in: 'body', description:'Story', schema: { $ref: '#/definitions/AddStory' }}
+
 		// Get story object
 		const story = await checkStoryId(req);
 
+		/* #swagger.responses[403] = {
+      description: 'User is not the author of the story',
+    } */
 		// Check if the user is the author
 		if (!(await story.isAuthor(req.user))) {
 			throw new RequestError(
@@ -256,6 +308,9 @@ export const story = {
 			);
 		}
 
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		// Throws error if the params are not correct
 		if (!has(req.body, 'estOuverte') && !has(req.body, 'estPublique')) {
 			throw new RequestError(
@@ -276,6 +331,15 @@ export const story = {
 			});
 		}
 
+		/*
+		#swagger.responses[201] = {
+			schema: {
+				$status: true,
+				$message: 'Story modified',
+				histoire: { $ref: '#/definitions/Histoire' },
+			}
+		}
+		*/
 		res.json({
 			status: true,
 			message: 'Story modified',
@@ -283,20 +347,62 @@ export const story = {
 		});
 	},
 	async getStory(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Get a story
+
 		// Get story object
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
+		/*
+		#swagger.responses[201] = {
+			schema: {
+				$status: true,
+				$message: 'Returning story',
+				story: { $ref: '#/definitions/Histoire' },
+			}
+		}
+		*/
 		res.json({ status: true, message: 'Returning story', story: story });
 	},
 	async getPublicStory(req, res) {
+		// #swagger.tags = ['Readonly']
+		// #swagger.summary = Get a public story
+
 		// Get story object
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
+		/* #swagger.responses[403] = {
+      description: 'Private story',
+    } */
 		await checkIsPrivateStory(story, req.user);
+		/*
+		#swagger.responses[201] = {
+			schema: {
+				$status: true,
+				$message: 'Returning story',
+				story: { $ref: '#/definitions/Histoire' },
+			}
+		}
+		*/
 		res.json({ status: true, message: 'Returning story', story: story });
 	},
 	async getCollaborators(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Get the collaborators for a story
+
 		// Get story object
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 
+		/* #swagger.responses[403] = {
+      description: 'User is not author of this story',
+    } */
 		// Only the author of the story can see all collaborators
 		if (!(await story.isAuthor(req.user))) {
 			throw new RequestError(
@@ -313,6 +419,15 @@ export const story = {
 			collaborator.pwd = undefined;
 		}
 
+		/*
+		#swagger.responses[201] = {
+			schema: {
+				$status: true,
+				$message: 'Returning collaborators',
+				collaborators: ['root', 'root2'],
+			}
+		}
+		*/
 		res.json({
 			status: true,
 			message: 'Returning collaborators',
@@ -320,9 +435,18 @@ export const story = {
 		});
 	},
 	async addCollaborator(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Add a collaborator to a story
+
 		// Get story object
+		/* #swagger.responses[400] = {
+      description: 'User is already a collaborator, or validation error',
+    } */
 		const story = await checkStoryId(req);
 
+		/* #swagger.responses[403] = {
+      description: 'User is not author of this story',
+    } */
 		// Only the story author can add collaborators
 		if (!(await story.isAuthor(req.user))) {
 			throw new RequestError(
@@ -343,6 +467,9 @@ export const story = {
 			req.body.idCollaborateur
 		);
 		if (collaborator === null) {
+			/* #swagger.responses[404] = {
+        description: 'User specified in idCollaborateur not found',
+      } */
 			throw new RequestError(
 				'User specified in idCollaborateur was not found',
 				status.NOT_FOUND
@@ -359,6 +486,16 @@ export const story = {
 
 		await story.addCollaborateur(collaborator);
 
+		/*
+		#swagger.responses[201] = {
+			schema: {
+				$status: true,
+				$message: 'User added as collaborator of the story',
+				story: { $ref: '#/definitions/Histoire' },
+				collaborator: 'root',
+			}
+		}
+		*/
 		res.json({
 			status: true,
 			message: 'User added as collaborator of the story',
@@ -367,9 +504,18 @@ export const story = {
 		});
 	},
 	async setCollaborators(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Set the collaborators for a story
+
 		// Get story object
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		const story = await checkStoryId(req);
 
+		/* #swagger.responses[403] = {
+      description: 'User is not author of this story, or trying to remove yourself from collaborators',
+    } */
 		// Only the story author can add collaborators
 		if (!(await story.isAuthor(req.user))) {
 			throw new RequestError(
@@ -392,6 +538,9 @@ export const story = {
 				collaboratorFromReq
 			);
 			if (collaborator === null) {
+				/* #swagger.responses[404] = {
+        description: 'User specified in idCollaborateur not found',
+        } */
 				throw new RequestError(
 					'User specified in idCollaborateur was not found',
 					status.NOT_FOUND
@@ -419,11 +568,20 @@ export const story = {
 		});
 	},
 	async removeCollaborator(req, res) {
+		// #swagger.tags = ['Story']
+		// #swagger.summary = Remove a collaborator from a story
+
+		/* #swagger.responses[400] = {
+      description: 'Validation error',
+    } */
 		// Get story object
 		const story = await checkStoryId(req);
 
 		// Only the story author can add collaborators
 		if (!(await story.isAuthor(req.user))) {
+			/* #swagger.responses[403] = {
+        description: 'User is not author of this story, or trying to remove yourself from collaborators',
+      } */
 			throw new RequestError(
 				'Only the author of the story can add or remove collaborators',
 				status.FORBIDDEN
@@ -450,6 +608,9 @@ export const story = {
 			req.body.idCollaborateur
 		);
 		if (collaborator === null) {
+			/* #swagger.responses[404] = {
+        description: 'User specified in idCollaborateur not found',
+      } */
 			throw new RequestError(
 				'User specified in idCollaborateur was not found',
 				status.NOT_FOUND
@@ -466,6 +627,15 @@ export const story = {
 
 		await story.removeCollaborateur(collaborator);
 
+		/*
+		#swagger.responses[200] = {
+			schema: {
+				$status: true,
+				$message: 'Successfully removed collaborator from story',
+				story: { $ref: '#/definitions/Histoire' },
+			}
+		}
+		*/
 		res.json({
 			status: true,
 			message: 'Successfully removed collaborator from story',

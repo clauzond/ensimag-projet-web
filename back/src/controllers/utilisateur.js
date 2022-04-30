@@ -53,11 +53,10 @@ function checkLoginFormat(req) {
 export const utilisateur = {
 	async registerUser(req, res) {
 		// #swagger.tags = ['Authentification']
-		// #swagger.summary = 'Create a new user
-		// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $username: 'clauzond', $password: 'clauzonmdp' }}
+		// #swagger.summary = Create a new user
+		// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $ref: '#/definitions/AddUser'  }}
 		/* #swagger.responses[400] = {
 			description: 'Validation error',
-			schema: { $status:false, $message: 'You must specify the username and password'}
 		} */
 		checkLoginFormat(req);
 		let { username, password } = req.body;
@@ -67,8 +66,7 @@ export const utilisateur = {
 		const userAlreadyExists = await Utilisateur.findByPk(username);
 		if (userAlreadyExists) {
 			/* #swagger.responses[304] = {
-				description: 'User already exists',
-				schema: { $status:true, $message: 'User clauzond is already registered'}
+				description: 'User is already registered	',
 			} */
 			throw new RequestError(
 				`User ${username} is already registered`,
@@ -81,7 +79,6 @@ export const utilisateur = {
 		res.statusCode = status.CREATED;
 		/* #swagger.responses[201] = {
 			description: 'User was registered',
-			schema: { $status:true, $message: 'User clauzond was registered'}
 		} */
 		res.json({ status: true, message: `User ${username} was registered` });
 	},
@@ -89,7 +86,7 @@ export const utilisateur = {
 	async loginUser(req, res) {
 		// #swagger.tags = ['Authentification']
 		// #swagger.summary = 'Login with an existing user'
-		// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $username: 'clauzond', $password: 'clauzonmdp' }}
+		// #swagger.parameters['json'] = { in: 'body', description:'User and password', schema: { $ref: '#/definitions/AddUser' }}
 		checkLoginFormat(req);
 
 		let { username, password } = req.body;
@@ -119,7 +116,6 @@ export const utilisateur = {
 		});
 
 		/* #swagger.responses[200] = {
-			description: 'Returning token',
 			schema: { $status:true, $message: 'Returning token',
 			$data:'eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNsYXV6b25kIn0.t0N93YTKjGXiDwTNlviLhyZyk0aIpGlVS1tdGGKYPbM'}
 		} */
@@ -127,11 +123,10 @@ export const utilisateur = {
 	},
 
 	async whoami(req, res) {
-		// #swagger.tags = ['Authentification']
+		// #swagger.tags = ['Users']
 		// #swagger.summary = 'Check who is the current user'
 
 		/* #swagger.responses[200] = {
-			description: 'Returning username',
 			schema: { $status:true, $message: 'Returning username',
 			$data: 'clauzond'}
 		} */
@@ -141,7 +136,15 @@ export const utilisateur = {
 			data: req.user.id
 		});
 	},
+
 	async getUsers(req, res) {
+		// #swagger.tags = ['Users']
+		// #swagger.summary = 'Get a list of all users'
+
+		/* #swagger.responses[200] = {
+			schema: { $status:true, $message: 'Returning users list',
+			$data: 'clauzond'}
+		} */
 		const users = await Utilisateur.findAll({ attributes: ['id'] });
 		res.json({
 			status: true,
