@@ -61,7 +61,7 @@ export class Utilisateur extends Model {
 		const historique = await Historique.findOne({
 			where: { idUtilisateur: this.id, idHistoire: histoire.get('id') }
 		});
-		if (historique !== null || historique.arrayParagraphe.length !== 0) {
+		if (historique !== null && historique.arrayParagraphe.length !== 0) {
 			const newArray = [];
 			let removed = false;
 			for (const obj of historique.arrayParagraphe) {
@@ -74,7 +74,7 @@ export class Utilisateur extends Model {
 			if (!removed) {
 				return null;
 			}
-			historique.update({
+			await historique.update({
 				arrayParagraphe: newArray
 			});
 			return newArray;
