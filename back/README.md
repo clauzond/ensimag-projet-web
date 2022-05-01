@@ -3,7 +3,7 @@ L'ensemble des commandes suivantes sont à exécuter depuis le répertoire `./ba
 
 # Mise en place
 
-[Le site web](https://clauzond.herokuapp.com/)
+La page d'accueil du site contient la documentation Swagger : [lien](https://clauzond.herokuapp.com/)
 
 Installer le projet:
 ```

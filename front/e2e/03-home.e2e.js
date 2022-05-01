@@ -62,7 +62,7 @@ describe('Home page test', () => {
   });
 
   it('should display user stories', async () => {
-    // Login manually, since we disconnected in the previous test "should- disconnect user"
+    // Login manually, since we disconnected in the previous test "should disconnect user"
     await connectUser(username, false);
 
     // Open user stories

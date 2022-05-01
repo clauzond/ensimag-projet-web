@@ -6,7 +6,7 @@ const doc = {
 		title: 'API Le livre dont vous êtes le héros',
 		description: `Most endpoints here require authentification. To call these, include your user token in the <code>x-access-token</code> header.
 
-<li>To get an token, check the <b>/api/register</b> endpoint.</li>
+<li>To get a token, check the <b>/api/register</b> endpoint.</li>
 <li>Endpoints prefixed with <b>readOnly</b> can be queried without authentification.</li>`
 	},
 	host: 'localhost:3000',

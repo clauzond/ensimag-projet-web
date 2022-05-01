@@ -71,7 +71,7 @@ heroku:
     - gem install dpl --pre
     - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
 
-# CD: test frondend
+# CD: test frontend
 # https://haseebmajid.dev/blog/build-android-apk-with-gitlab-ci-for-react-native
 testing_frontend:
   stage: test-frontend

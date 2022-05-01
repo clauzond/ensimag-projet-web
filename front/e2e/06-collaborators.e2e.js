@@ -84,7 +84,7 @@ describe('Collaborator test', () => {
     await element(by.text(story)).tap();
     await expect(element(by.text(story))).toBeVisible(); // did not move into modify paragraph menu
 
-    // User 2 can modify the non locked paragraph
+    // User 2 can modify the non-locked paragraph
     await element(by.text('End of story2')).tap();
     await element(by.text('End of story2')).tap();
     await element(by.text('Lock and update paragraph')).tap();

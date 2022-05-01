@@ -481,7 +481,7 @@ export const paragraphe = {
 
 		// Update paragraph data if it's different
 		// If it's the same, don't bother updating but tell the client
-		// the update was succesful anyways
+		// the update was successful anyway
 		if (req.body.contenu !== paragraph.contenu) {
 			await paragraph.update({
 				contenu: String(req.body.contenu),
